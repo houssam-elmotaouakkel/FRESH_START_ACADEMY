@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  email          String         @unique(map: "email") @db.VarChar(255)
+  password       String         @db.VarChar(255)
+  firstName      String         @map("first_name") @db.VarChar(100)
+  lastName       String         @map("last_name") @db.VarChar(100)
+  phone          String?        @db.VarChar(20)
+  avatar         String?        @db.VarChar(255)
+  role           Role?          @default(STUDENT)
+  isActive       Boolean?       @default(true) @map("is_active")
+  isVerified     Boolean?       @default(false) @map("is_verified")
+  lastLogin      DateTime?      @map("last_login") @db.DateTime(0)
+  createdAt      DateTime?      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt      DateTime?      @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
+  teacherCourses Course[]       @relation("TeacherCourses")
+  enrollments    Enrollment[]
+  refreshTokens  RefreshToken[]
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String    @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  token     String    @unique(map: "token") @db.VarChar(500)
+  userId    String    @map("user_id") @db.VarChar(36)
+  expiresAt DateTime  @map("expires_at") @db.DateTime(0)
+  createdAt DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "refresh_tokens_ibfk_1")
+
+  @@index([userId], map: "user_id")
+  @@map("refresh_tokens")
+}
+
+model Course {
+  id          String         @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  title       String         @db.VarChar(255)
+  slug        String         @unique(map: "slug") @db.VarChar(255)
+  description String         @db.Text
+  content     String?        @db.LongText
+  category    CourseCategory
+  level       CourseLevel?   @default(BEGINNER)
+  price       Decimal        @db.Decimal(10, 2)
+  duration    Int
+  maxStudents Int?           @default(20) @map("max_students")
+  image       String?        @db.VarChar(255)
+  isOnline    Boolean?       @default(true) @map("is_online")
+  isActive    Boolean?       @default(true) @map("is_active")
+  startDate   DateTime?      @map("start_date") @db.Date
+  endDate     DateTime?      @map("end_date") @db.Date
+  teacherId   String?        @map("teacher_id") @db.VarChar(36)
+  createdAt   DateTime?      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt   DateTime?      @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
+  teacher     User?          @relation("TeacherCourses", fields: [teacherId], references: [id], onUpdate: NoAction, map: "courses_ibfk_1")
+  enrollments Enrollment[]
+
+  @@index([teacherId], map: "teacher_id")
+  @@map("courses")
+}
+
+model Enrollment {
+  id          String            @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  userId      String            @map("user_id") @db.VarChar(36)
+  courseId    String            @map("course_id") @db.VarChar(36)
+  status      EnrollmentStatus? @default(PENDING)
+  enrolledAt  DateTime?         @default(now()) @map("enrolled_at") @db.DateTime(0)
+  completedAt DateTime?         @map("completed_at") @db.DateTime(0)
+  notes       String?           @db.Text
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "enrollments_ibfk_1")
+  course      Course            @relation(fields: [courseId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "enrollments_ibfk_2")
+
+  @@unique([userId, courseId], map: "unique_enrollment")
+  @@index([courseId], map: "course_id")
+  @@map("enrollments")
+}
+
+model Testimonial {
+  id         String    @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  author     String    @db.VarChar(100)
+  role       String    @db.VarChar(50)
+  content    String    @db.Text
+  rating     Int?      @default(5)
+  avatar     String?   @db.VarChar(255)
+  isApproved Boolean?  @default(false) @map("is_approved")
+  isFeatured Boolean?  @default(false) @map("is_featured")
+  createdAt  DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt  DateTime? @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
+
+  @@map("testimonials")
+}
+
+model Contact {
+  id        String         @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  name      String         @db.VarChar(100)
+  email     String         @db.VarChar(255)
+  phone     String?        @db.VarChar(20)
+  subject   String?        @db.VarChar(255)
+  message   String         @db.Text
+  status    ContactStatus? @default(UNREAD)
+  repliedAt DateTime?      @map("replied_at") @db.DateTime(0)
+  createdAt DateTime?      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt DateTime?      @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
+
+  @@map("contacts")
+}
+
+model Setting {
+  id        String    @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  key       String    @unique(map: "setting_key") @map("setting_key") @db.VarChar(100)
+  value     String    @map("setting_value") @db.Text
+  type      String?   @default("string") @db.VarChar(20)
+  createdAt DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
+
+  @@map("settings")
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum CourseCategory {
+  LANGUAGES
+  SUPPORT
+  TRAINING
+  SOFT_SKILLS
+}
+
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum ContactStatus {
+  UNREAD
+  READ
+  REPLIED
+  ARCHIVED
+}

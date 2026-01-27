@@ -1,0 +1,183 @@
+# Architecture
+
+FRESH_START_ACADEMY/
+│
+├── 📁 frontend/
+│   ├── public/
+│   │   └── favicon.ico
+│   ├── src/
+│   │   ├── assets/                   # Images, fonts, icons
+│   │   │   ├── images/
+│   │   │   └── icons/
+│   │   ├── components/
+│   │   │   ├── common/               # Button, Input, Modal, Card, Loader
+│   │   │   ├── layout/               # Header, Footer, Sidebar, Navbar
+│   │   │   └── features/             # CourseCard, TestimonialSlider, ContactForm
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Courses.jsx
+│   │   │   ├── CourseDetail.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Contact.jsx
+│   │   │   ├── About.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── admin/
+│   │   │       ├── AdminDashboard.jsx
+│   │   │       ├── ManageCourses.jsx
+│   │   │       ├── ManageUsers.jsx
+│   │   │       ├── ManageEnrollments.jsx
+│   │   │       ├── ManageContacts.jsx
+│   │   │       └── ManageTestimonials.jsx
+│   │   ├── hooks/
+│   │   │   ├── useAuth.js
+│   │   │   ├── useCourses.js
+│   │   │   └── useApi.js
+│   │   ├── services/                 # Appels API
+│   │   │   ├── api.js
+│   │   │   ├── authService.js
+│   │   │   ├── userService.js
+│   │   │   ├── courseService.js
+│   │   │   ├── enrollmentService.js
+│   │   │   ├── contactService.js
+│   │   │   └── testimonialService.js
+│   │   ├── store/                    # Zustand
+│   │   │   ├── authStore.js
+│   │   │   └── uiStore.js
+│   │   ├── utils/
+│   │   │   ├── constants.js
+│   │   │   ├── helpers.js
+│   │   │   └── validators.js
+│   │   ├── styles/
+│   │   │   └── index.css
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── router.jsx
+│   ├── index.html
+│   ├── .env
+│   ├── .env.example
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   └── package.json
+│
+├── 📁 backend/                       # Backend Express + Node.js
+│   ├── src/
+│   │   ├── config/                   # Configuration
+│   │   │   ├── index.js              # Variables d'environnement
+│   │   │   └── database.js           # Connexion Prisma
+│   │   ├── controllers/              # Logique des endpoints
+│   │   │   ├── authController.js
+│   │   │   ├── userController.js
+│   │   │   ├── courseController.js
+│   │   │   ├── enrollmentController.js
+│   │   │   ├── testimonialController.js
+│   │   │   ├── contactController.js
+│   │   │   └── settingController.js
+│   │   ├── middlewares/              # Middlewares
+│   │   │   ├── auth.js               # JWT verification
+│   │   │   ├── validate.js           # Validation Zod
+│   │   │   ├── errorHandler.js       # Gestion des erreurs
+│   │   │   ├── rateLimiter.js        # Rate limiting
+│   │   │   └── upload.js             # Multer upload
+│   │   ├── routes/                   # Définition des routes
+│   │   │   ├── index.js              # Router principal
+│   │   │   ├── authRoutes.js
+│   │   │   ├── userRoutes.js
+│   │   │   ├── courseRoutes.js
+│   │   │   ├── enrollmentRoutes.js
+│   │   │   ├── testimonialRoutes.js
+│   │   │   ├── contactRoutes.js
+│   │   │   └── settingRoutes.js
+│   │   ├── services/                 # Logique métier
+│   │   │   ├── authService.js
+│   │   │   ├── userService.js
+│   │   │   ├── courseService.js
+│   │   │   ├── enrollmentService.js
+│   │   │   ├── testimonialService.js
+│   │   │   ├── contactService.js
+│   │   │   └── emailService.js
+│   │   ├── validators/               # Schémas de validation (Zod)
+│   │   │   ├── authValidator.js
+│   │   │   ├── userValidator.js
+│   │   │   ├── courseValidator.js
+│   │   │   └── contactValidator.js
+│   │   ├── utils/                    # Helpers
+│   │   │   ├── logger.js             # Winston logger
+│   │   │   ├── apiResponse.js        # Réponses standardisées
+│   │   │   ├── email.js              # Nodemailer
+│   │   │   └── helpers.js
+│   │   └── app.js                    # Point d'entrée Express
+│   ├── prisma/
+│   │   ├── schema.prisma             # Schéma de base de données
+│   │   └── seed.js                   # Données initiales
+│   ├── uploads/                      # Fichiers uploadés
+│   ├── logs/                         # Logs de l'application
+│   ├── .env.example
+│   └── package.json
+│
+├── 📁 docs/                          # Documentation
+│   ├── api.md                        # Documentation API
+│   └── database.md                   # Schéma BDD
+│
+├── 📁 _archive/                      # Ancienne version (référence)
+│   └── index.html
+│
+├── .gitignore
+├── .env.example
+├── docker-compose.yml                # MySQL + phpMyAdmin
+└── README.md
+
+## base de donnés
+
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│     users       │     │    courses      │     │  enrollments    │
+├─────────────────┤     ├─────────────────┤     ├─────────────────┤
+│ id (PK)         │────<│ teacher_id (FK) │     │ id (PK)         │
+│ email           │     │ id (PK)         │>────│ user_id (FK)    │
+│ password        │     │ title           │     │ course_id (FK)  │
+│ firstName       │     │ description     │     │ status          │
+│ lastName        │     │ category        │     │ enrolled_at     │
+│ phone           │     │ level           │     │ completed_at    │
+│ role            │     │ price           │     └─────────────────┘
+│ isActive        │     │ duration        │
+│ created_at      │     │ image           │
+└─────────────────┘     │ isActive        │
+        │               └─────────────────┘
+        │
+        │               ┌─────────────────┐     ┌─────────────────┐
+        │               │  testimonials   │     │    contacts     │
+        │               ├─────────────────┤     ├─────────────────┤
+        └──────────────>│ id (PK)         │     │ id (PK)         │
+                        │ author          │     │ name            │
+                        │ role            │     │ email           │
+                        │ content         │     │ phone           │
+                        │ rating          │     │ message         │
+                        │ isApproved      │     │ status          │
+                        └─────────────────┘     │ created_at      │
+                                                └─────────────────┘
+
+## Flux de Données (Architecture MVP)
+
+┌──────────────────────────────────────────────────────────────────┐
+│                        FRONTEND (React)                          │
+│  ┌─────────┐    ┌──────────┐    ┌─────────┐    ┌─────────────┐  │
+│  │  Pages  │───>│  Hooks   │───>│Services │───>│ Store/State │  │
+│  └─────────┘    └──────────┘    └────┬────┘    └─────────────┘  │
+└───────────────────────────────────────┼──────────────────────────┘
+                                        │ HTTP (Axios)
+                                        ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                        BACKEND (Express)                         │
+│                                                                  │
+│  ┌─────────┐    ┌────────────┐    ┌──────────┐    ┌──────────┐  │
+│  │ Routes  │───>│ Middleware │───>│Controller│───>│ Services │  │
+│  └─────────┘    └────────────┘    └──────────┘    └────┬─────┘  │
+│                  (Auth, Validation)                     │        │
+└─────────────────────────────────────────────────────────┼────────┘
+                                                          │
+                                                          ▼
+                                               ┌──────────────────┐
+                                               │  MySQL (Prisma)  │
+                                               └──────────────────┘
