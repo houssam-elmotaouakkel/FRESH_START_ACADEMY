@@ -1,6 +1,6 @@
 # 🎓 Fresh Start Academy
 
-> Site web d'un centre de langues et communication - Français, Anglais, Arabe, Espagnol, Allemand...
+> Site web d'un centre de langues et communication - Français, Anglais, Arabe, Espagnol, Allemand
 
 [![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19.x-blue?logo=react)](https://react.dev/)
