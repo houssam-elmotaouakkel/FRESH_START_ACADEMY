@@ -1,183 +1,98 @@
-# Architecture
+# 🎓 Fresh Start Academy
 
+> Site web d'un centre de langues et communication - Français, Anglais, Arabe, Espagnol, Allemand
+
+[![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-19.x-blue?logo=react)](https://react.dev/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.x-orange?logo=mysql)](https://mysql.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
+
+---
+
+## 📖 À propos
+
+**Fresh Start Academy** est un site web complet pour un centre de langues. Il permet aux étudiants de découvrir et s'inscrire aux cours, et aux administrateurs de gérer l'ensemble de la plateforme.
+
+## ✨ Fonctionnalités
+
+- 🔐 Authentification sécurisée (JWT)
+- 📚 Catalogue de cours avec filtres
+- 👤 Espace utilisateur (profil, inscriptions)
+- 👨‍💼 Panel d'administration complet
+- 📞 Formulaire de contact
+- ⭐ Témoignages d'étudiants
+
+## 🛠 Stack Technique
+
+| Frontend | Backend | Base de données |
+|----------|---------|-----------------|
+| React 19 | Node.js 20 | MySQL 8 |
+| Vite 7 | Express 5 | Prisma ORM |
+| Tailwind CSS 4 | JWT | |
+| Zustand | Zod | |
+
+## 🚀 Démarrage rapide
+
+### Prérequis
+
+- Node.js 20+
+- MySQL 8+
+- npm
+
+### Installation
+
+```bash
+# Cloner le repository
+git clone https://github.com/houssam-elmotaouakkel/FRESH_START_ACADEMY.git
+cd FRESH_START_ACADEMY
+
+# Installer les dépendances
+cd backend && npm install
+cd ../frontend && npm install
+
+# Configurer les variables d'environnement
+# Copier .env.example vers .env dans backend/ et frontend/
+
+# Initialiser la base de données
+cd backend
+npx prisma generate
+npx prisma db push
+
+# Démarrer les serveurs (dans 2 terminaux)
+# Terminal 1 - Backend
+cd backend && npm run dev
+
+# Terminal 2 - Frontend
+cd frontend && npm run dev
+```
+
+### Accès
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend API | http://localhost:5000/api |
+
+## 📁 Structure
+
+```
 FRESH_START_ACADEMY/
-│
-├── 📁 frontend/
-│   ├── public/
-│   │   └── favicon.ico
-│   ├── src/
-│   │   ├── assets/                   # Images, fonts, icons
-│   │   │   ├── images/
-│   │   │   └── icons/
-│   │   ├── components/
-│   │   │   ├── common/               # Button, Input, Modal, Card, Loader
-│   │   │   ├── layout/               # Header, Footer, Sidebar, Navbar
-│   │   │   └── features/             # CourseCard, TestimonialSlider, ContactForm
-│   │   ├── pages/
-│   │   │   ├── Home.jsx
-│   │   │   ├── Courses.jsx
-│   │   │   ├── CourseDetail.jsx
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── Contact.jsx
-│   │   │   ├── About.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── Dashboard.jsx
-│   │   │   └── admin/
-│   │   │       ├── AdminDashboard.jsx
-│   │   │       ├── ManageCourses.jsx
-│   │   │       ├── ManageUsers.jsx
-│   │   │       ├── ManageEnrollments.jsx
-│   │   │       ├── ManageContacts.jsx
-│   │   │       └── ManageTestimonials.jsx
-│   │   ├── hooks/
-│   │   │   ├── useAuth.js
-│   │   │   ├── useCourses.js
-│   │   │   └── useApi.js
-│   │   ├── services/                 # Appels API
-│   │   │   ├── api.js
-│   │   │   ├── authService.js
-│   │   │   ├── userService.js
-│   │   │   ├── courseService.js
-│   │   │   ├── enrollmentService.js
-│   │   │   ├── contactService.js
-│   │   │   └── testimonialService.js
-│   │   ├── store/                    # Zustand
-│   │   │   ├── authStore.js
-│   │   │   └── uiStore.js
-│   │   ├── utils/
-│   │   │   ├── constants.js
-│   │   │   ├── helpers.js
-│   │   │   └── validators.js
-│   │   ├── styles/
-│   │   │   └── index.css
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── router.jsx
-│   ├── index.html
-│   ├── .env
-│   ├── .env.example
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   └── package.json
-│
-├── 📁 backend/                       # Backend Express + Node.js
-│   ├── src/
-│   │   ├── config/                   # Configuration
-│   │   │   ├── index.js              # Variables d'environnement
-│   │   │   └── database.js           # Connexion Prisma
-│   │   ├── controllers/              # Logique des endpoints
-│   │   │   ├── authController.js
-│   │   │   ├── userController.js
-│   │   │   ├── courseController.js
-│   │   │   ├── enrollmentController.js
-│   │   │   ├── testimonialController.js
-│   │   │   ├── contactController.js
-│   │   │   └── settingController.js
-│   │   ├── middlewares/              # Middlewares
-│   │   │   ├── auth.js               # JWT verification
-│   │   │   ├── validate.js           # Validation Zod
-│   │   │   ├── errorHandler.js       # Gestion des erreurs
-│   │   │   ├── rateLimiter.js        # Rate limiting
-│   │   │   └── upload.js             # Multer upload
-│   │   ├── routes/                   # Définition des routes
-│   │   │   ├── index.js              # Router principal
-│   │   │   ├── authRoutes.js
-│   │   │   ├── userRoutes.js
-│   │   │   ├── courseRoutes.js
-│   │   │   ├── enrollmentRoutes.js
-│   │   │   ├── testimonialRoutes.js
-│   │   │   ├── contactRoutes.js
-│   │   │   └── settingRoutes.js
-│   │   ├── services/                 # Logique métier
-│   │   │   ├── authService.js
-│   │   │   ├── userService.js
-│   │   │   ├── courseService.js
-│   │   │   ├── enrollmentService.js
-│   │   │   ├── testimonialService.js
-│   │   │   ├── contactService.js
-│   │   │   └── emailService.js
-│   │   ├── validators/               # Schémas de validation (Zod)
-│   │   │   ├── authValidator.js
-│   │   │   ├── userValidator.js
-│   │   │   ├── courseValidator.js
-│   │   │   └── contactValidator.js
-│   │   ├── utils/                    # Helpers
-│   │   │   ├── logger.js             # Winston logger
-│   │   │   ├── apiResponse.js        # Réponses standardisées
-│   │   │   ├── email.js              # Nodemailer
-│   │   │   └── helpers.js
-│   │   └── app.js                    # Point d'entrée Express
-│   ├── prisma/
-│   │   ├── schema.prisma             # Schéma de base de données
-│   │   └── seed.js                   # Données initiales
-│   ├── uploads/                      # Fichiers uploadés
-│   ├── logs/                         # Logs de l'application
-│   ├── .env.example
-│   └── package.json
-│
-├── 📁 docs/                          # Documentation
-│   ├── api.md                        # Documentation API
-│   └── database.md                   # Schéma BDD
-│
-├── 📁 _archive/                      # Ancienne version (référence)
-│   └── index.html
-│
-├── .gitignore
-├── .env.example
-├── docker-compose.yml                # MySQL + phpMyAdmin
+├── frontend/          # Application React
+├── backend/           # API Express
+├── _archive/          # Ancienne version HTML (référence)
 └── README.md
+```
 
-## base de donnés
+## 📖 Documentation détaillée
 
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│     users       │     │    courses      │     │  enrollments    │
-├─────────────────┤     ├─────────────────┤     ├─────────────────┤
-│ id (PK)         │────<│ teacher_id (FK) │     │ id (PK)         │
-│ email           │     │ id (PK)         │>────│ user_id (FK)    │
-│ password        │     │ title           │     │ course_id (FK)  │
-│ firstName       │     │ description     │     │ status          │
-│ lastName        │     │ category        │     │ enrolled_at     │
-│ phone           │     │ level           │     │ completed_at    │
-│ role            │     │ price           │     └─────────────────┘
-│ isActive        │     │ duration        │
-│ created_at      │     │ image           │
-└─────────────────┘     │ isActive        │
-        │               └─────────────────┘
-        │
-        │               ┌─────────────────┐     ┌─────────────────┐
-        │               │  testimonials   │     │    contacts     │
-        │               ├─────────────────┤     ├─────────────────┤
-        └──────────────>│ id (PK)         │     │ id (PK)         │
-                        │ author          │     │ name            │
-                        │ role            │     │ email           │
-                        │ content         │     │ phone           │
-                        │ rating          │     │ message         │
-                        │ isApproved      │     │ status          │
-                        └─────────────────┘     │ created_at      │
-                                                └─────────────────┘
+- [Frontend README](frontend/README.md)
+- [Backend README](backend/README.md)
 
-## Flux de Données (Architecture MVP)
+## 👨‍💻 Auteur
 
-┌──────────────────────────────────────────────────────────────────┐
-│                        FRONTEND (React)                          │
-│  ┌─────────┐    ┌──────────┐    ┌─────────┐    ┌─────────────┐  │
-│  │  Pages  │───>│  Hooks   │───>│Services │───>│ Store/State │  │
-│  └─────────┘    └──────────┘    └────┬────┘    └─────────────┘  │
-└───────────────────────────────────────┼──────────────────────────┘
-                                        │ HTTP (Axios)
-                                        ▼
-┌──────────────────────────────────────────────────────────────────┐
-│                        BACKEND (Express)                         │
-│                                                                  │
-│  ┌─────────┐    ┌────────────┐    ┌──────────┐    ┌──────────┐  │
-│  │ Routes  │───>│ Middleware │───>│Controller│───>│ Services │  │
-│  └─────────┘    └────────────┘    └──────────┘    └────┬─────┘  │
-│                  (Auth, Validation)                     │        │
-└─────────────────────────────────────────────────────────┼────────┘
-                                                          │
-                                                          ▼
-                                               ┌──────────────────┐
-                                               │  MySQL (Prisma)  │
-                                               └──────────────────┘
+**Houssam Elmotaouakkel** - [@houssam-elmotaouakkel](https://github.com/houssam-elmotaouakkel)
+
+## 📝 License
+
+MIT License - voir [LICENSE](LICENSE) pour plus de détails.
+
