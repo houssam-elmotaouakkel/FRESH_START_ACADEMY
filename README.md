@@ -90,7 +90,7 @@ FRESH_START_ACADEMY/
 
 ## 👨‍💻 Auteur
 
-**Houssam Elmotaouakkel** - [@houssam-elmotaouakkel](https://github.com/houssam-elmotaouakkel)
+**Houssam El Motaouakkel** - [@houssam-elmotaouakkel](https://github.com/houssam-elmotaouakkel)
 
 ## 📝 License
 
