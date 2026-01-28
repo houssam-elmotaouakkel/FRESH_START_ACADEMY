@@ -6,4 +6,4 @@ node_modules/
 logs/
 *.log
 
-!.env.example
+uploads/
