@@ -63,20 +63,61 @@ Le serveur démarre sur `http://localhost:5000`
 
 ```
 backend/
-├── src/
-│   ├── config/           # Configuration (env, database)
-│   ├── controllers/      # Logique des endpoints
-│   ├── middlewares/      # Auth, validation, errors
-│   ├── routes/           # Définition des routes
-│   ├── services/         # Logique métier
-│   ├── validators/       # Schémas Zod
-│   ├── utils/            # Helpers
-│   └── app.js            # Point d'entrée Express
 ├── prisma/
-│   ├── schema.prisma     # Schéma de base de données
-│   └── seed.js           # Données initiales
-├── .env.example
-└── package.json
+│   └── schema.prisma              # Schéma de base de données
+├── logs/
+│   ├── combined.log               # Logs combinés
+│   └── error.log                  # Logs d'erreurs
+├── uploads/                       # Fichiers uploadés
+├── src/
+│   ├── config/                    # Configuration
+│   │   ├── index.js               # Export de la configuration
+│   │   └── database.js            # Connexion à la base de données
+│   ├── controllers/               # Logique des endpoints
+│   │   ├── authController.js      # Contrôleur authentification
+│   │   ├── userController.js      # Contrôleur utilisateurs
+│   │   ├── courseController.js    # Contrôleur cours
+│   │   ├── enrollmentController.js # Contrôleur inscriptions
+│   │   ├── contactController.js   # Contrôleur contacts
+│   │   └── testimonialController.js # Contrôleur témoignages
+│   ├── middlewares/               # Auth, validation, errors
+│   │   ├── index.js               # Export des middlewares
+│   │   ├── auth.js                # Middleware authentification
+│   │   ├── validate.js            # Middleware validation
+│   │   ├── errorHandler.js        # Gestion des erreurs
+│   │   └── rateLimiter.js         # Limitation de requêtes
+│   ├── routes/                    # Définition des routes
+│   │   ├── apiRouter.js           # Routeur principal API
+│   │   ├── authRoutes.js          # Routes authentification
+│   │   ├── userRoutes.js          # Routes utilisateurs
+│   │   ├── courseRoutes.js        # Routes cours
+│   │   ├── enrollmentRoutes.js    # Routes inscriptions
+│   │   ├── contactRoutes.js       # Routes contacts
+│   │   └── testimonialRoutes.js   # Routes témoignages
+│   ├── services/                  # Logique métier
+│   │   ├── authService.js         # Service authentification
+│   │   ├── userService.js         # Service utilisateurs
+│   │   ├── courseService.js       # Service cours
+│   │   ├── enrollmentService.js   # Service inscriptions
+│   │   ├── contactService.js      # Service contacts
+│   │   └── testimonialService.js  # Service témoignages
+│   ├── validators/                # Schémas Zod
+│   │   ├── authValidator.js       # Validation authentification
+│   │   ├── userValidator.js       # Validation utilisateurs
+│   │   ├── courseValidator.js     # Validation cours
+│   │   ├── enrollmentValidator.js # Validation inscriptions
+│   │   ├── contactValidator.js    # Validation contacts
+│   │   └── testimonialValidator.js # Validation témoignages
+│   ├── utils/                     # Helpers
+│   │   ├── apiResponse.js         # Formatage des réponses API
+│   │   ├── helpers.js             # Fonctions utilitaires
+│   │   └── logger.js              # Configuration du logger
+│   ├── app.js                     # Configuration Express
+│   └── server.js                  # Point d'entrée du serveur
+├── .env.example                   # Variables d'environnement exemple
+├── .gitignore                     # Fichiers ignorés par Git
+├── package.json                   # Dépendances et scripts
+└── package-lock.json              # Versions exactes des dépendances
 ```
 
 ## 🔌 API Endpoints
