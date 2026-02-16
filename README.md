@@ -95,4 +95,3 @@ FRESH_START_ACADEMY/
 ## 📝 License
 
 MIT License - voir [LICENSE](LICENSE) pour plus de détails.
-
