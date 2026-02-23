@@ -1,0 +1,24 @@
+:root {
+  --fsa-font-display: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
+  --fsa-radius-sm: 10px;
+  --fsa-radius-md: 16px;
+  --fsa-radius-lg: 24px;
+  --fsa-shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.08);
+  --fsa-shadow-card: 0 12px 38px rgba(30, 50, 80, 0.12);
+  --fsa-content-max: 1200px;
+}
+
+.surface-card {
+  border-radius: var(--fsa-radius-lg);
+  box-shadow: var(--fsa-shadow-soft);
+}
+
+.surface-soft {
+  border-radius: var(--fsa-radius-md);
+  background: linear-gradient(160deg, rgba(129, 184, 248, 0.1), rgba(221, 228, 233, 0.4));
+}
+
+.content-wrap {
+  margin-inline: auto;
+  max-width: var(--fsa-content-max);
+}
