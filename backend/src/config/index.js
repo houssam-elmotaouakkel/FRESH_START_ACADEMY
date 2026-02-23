@@ -1,8 +1,21 @@
 require('dotenv').config();
 
+const env = process.env.NODE_ENV || 'development';
+const isProduction = env === 'production';
+
+const jwtSecret = process.env.JWT_SECRET || (!isProduction ? 'dev-secret-change-me' : '');
+const jwtRefreshSecret =
+  process.env.JWT_REFRESH_SECRET || (!isProduction ? 'dev-refresh-secret-change-me' : '');
+
+if (isProduction && (!jwtSecret || !jwtRefreshSecret)) {
+  throw new Error(
+    'JWT_SECRET and JWT_REFRESH_SECRET must be set in production environment'
+  );
+}
+
 const config = {
   // Application
-  env: process.env.NODE_ENV || 'development',
+  env,
   port: parseInt(process.env.PORT || '3000', 10),
   apiPrefix: process.env.API_PREFIX || '/api',
 
@@ -11,9 +24,9 @@ const config = {
 
   // JWT
   jwt: {
-    secret: process.env.JWT_SECRET || 'default-secret-change-me',
+    secret: jwtSecret,
     expiresIn: process.env.JWT_EXPIRES_IN || '15m',
-    refreshSecret: process.env.JWT_REFRESH_SECRET || 'default-refresh-secret-change-me',
+    refreshSecret: jwtRefreshSecret,
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   },
 
@@ -23,7 +36,9 @@ const config = {
     port: parseInt(process.env.SMTP_PORT || '587', 10),
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
-    from: process.env.EMAIL_FROM || 'Fresh Start Academy <noreply@freshstartacademy.com>',
+    from:
+      process.env.EMAIL_FROM ||
+      'Fresh Start Academy <noreply@freshstartacademy.com>',
   },
 
   // CORS

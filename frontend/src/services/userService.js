@@ -12,6 +12,10 @@ const userService = {
     const response = await api.put('/users/profile', data);
     return response;
   },
+  changePassword: async (data) => {
+    const response = await api.post('/auth/change-password', data);
+    return response;
+  },
 
   // === ADMIN ===
 
@@ -19,6 +23,9 @@ const userService = {
   getAllUsers: async (params = {}) => {
     const response = await api.get('/users', { params });
     return response;
+  },
+  getUsers: async (params = {}) => {
+    return userService.getAllUsers(params);
   },
 
   // Récupérer un utilisateur

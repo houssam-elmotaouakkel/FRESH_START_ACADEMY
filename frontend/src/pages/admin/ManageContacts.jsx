@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
   FaSearch,
@@ -6,7 +6,6 @@ import {
   FaTrash,
   FaEye,
   FaTimes,
-  FaCheck,
   FaReply,
   FaSpinner
 } from 'react-icons/fa';
@@ -17,7 +16,7 @@ export default function ManageContacts() {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [readFilter, setReadFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, totalPages: 1 });
   
@@ -27,29 +26,38 @@ export default function ManageContacts() {
   const [selectedContact, setSelectedContact] = useState(null);
   const [processing, setProcessing] = useState(false);
 
-  useEffect(() => {
-    fetchContacts();
-  }, [page, readFilter]);
+  const searchRef = useRef(search);
 
-  const fetchContacts = async () => {
+  useEffect(() => {
+    searchRef.current = search;
+  }, [search]);
+
+  const fetchContacts = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
         page,
         limit: 10,
-        ...(search && { search }),
-        ...(readFilter && { isRead: readFilter === 'read' })
+        ...(searchRef.current && { search: searchRef.current }),
+        ...(statusFilter && { status: statusFilter })
       };
-      const response = await contactService.getContacts(params);
-      setContacts(response.data.contacts || []);
-      setPagination(response.data.pagination || { total: 0, totalPages: 1 });
+      const response = await contactService.getAllContacts(params);
+      setContacts(response.data || []);
+      setPagination({
+        total: response.pagination?.totalItems || 0,
+        totalPages: response.pagination?.totalPages || 1,
+      });
     } catch (error) {
       console.error('Error fetching contacts:', error);
       toast.error('Erreur lors du chargement des messages');
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, statusFilter]);
+
+  useEffect(() => {
+    fetchContacts();
+  }, [fetchContacts]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -62,9 +70,9 @@ export default function ManageContacts() {
     setShowDetailModal(true);
     
     // Mark as read if not already
-    if (!contact.isRead) {
+    if (contact.status === 'UNREAD') {
       try {
-        await contactService.markAsRead(contact.id);
+        await contactService.updateStatus(contact.id, 'READ');
         fetchContacts();
       } catch (error) {
         console.error('Error marking as read:', error);
@@ -87,7 +95,7 @@ export default function ManageContacts() {
       fetchContacts();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la suppression');
+      toast.error(error.message || 'Erreur lors de la suppression');
     } finally {
       setProcessing(false);
     }
@@ -126,16 +134,18 @@ export default function ManageContacts() {
             />
           </div>
           <select
-            value={readFilter}
+            value={statusFilter}
             onChange={(e) => {
-              setReadFilter(e.target.value);
+              setStatusFilter(e.target.value);
               setPage(1);
             }}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="">Tous les messages</option>
-            <option value="unread">Non lus</option>
-            <option value="read">Lus</option>
+            <option value="UNREAD">Non lus</option>
+            <option value="READ">Lus</option>
+            <option value="REPLIED">Repondus</option>
+            <option value="ARCHIVED">Archives</option>
           </select>
           <button
             type="submit"
@@ -183,15 +193,15 @@ export default function ManageContacts() {
                 {contacts.map((contact) => (
                   <tr
                     key={contact.id}
-                    className={`hover:bg-gray-50 ${!contact.isRead ? 'bg-blue-50' : ''}`}
+                    className={`hover:bg-gray-50 ${contact.status === 'UNREAD' ? 'bg-blue-50' : ''}`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {!contact.isRead && (
+                        {contact.status === 'UNREAD' && (
                           <span className="w-2 h-2 bg-primary-500 rounded-full mr-3"></span>
                         )}
                         <div>
-                          <div className={`text-sm ${!contact.isRead ? 'font-semibold' : 'font-medium'} text-gray-900`}>
+                          <div className={`text-sm ${contact.status === 'UNREAD' ? 'font-semibold' : 'font-medium'} text-gray-900`}>
                             {contact.name}
                           </div>
                           <div className="text-sm text-gray-500">{contact.email}</div>
@@ -376,3 +386,4 @@ export default function ManageContacts() {
     </div>
   );
 }
+

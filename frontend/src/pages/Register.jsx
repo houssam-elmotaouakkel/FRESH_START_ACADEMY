@@ -40,13 +40,16 @@ export default function Register() {
   }, [clearError]);
 
   const onSubmit = async (data) => {
-    try {
-      const { confirmPassword, ...userData } = data;
-      await registerUser(userData);
-      toast.success('Inscription réussie ! Bienvenue sur Fresh Start Academy.');
-    } catch (err) {
-      toast.error(err.message || 'Erreur lors de l\'inscription');
+    const userData = { ...data };
+    delete userData.confirmPassword;
+    delete userData.terms;
+
+    const result = await registerUser(userData);
+    if (result.success) {
+      toast.success('Inscription reussie ! Bienvenue sur Fresh Start Academy.');
+      return;
     }
+    toast.error(result.error || 'Erreur lors de l\'inscription');
   };
 
   return (
@@ -322,3 +325,4 @@ export default function Register() {
     </div>
   );
 }
+

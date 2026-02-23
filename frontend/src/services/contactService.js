@@ -14,6 +14,9 @@ const contactService = {
     const response = await api.get('/contacts', { params });
     return response;
   },
+  getContacts: async (params = {}) => {
+    return contactService.getAllContacts(params);
+  },
 
   // Statistiques
   getStats: async () => {
@@ -31,6 +34,9 @@ const contactService = {
   updateStatus: async (id, status) => {
     const response = await api.put(`/contacts/${id}/status`, { status });
     return response;
+  },
+  markAsRead: async (id) => {
+    return contactService.updateStatus(id, 'READ');
   },
 
   // Supprimer un message

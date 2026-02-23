@@ -1,11 +1,11 @@
 // URL de l'API
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Rôles
 export const ROLES = {
-  ADMIN: 'ADMIN',
-  TEACHER: 'TEACHER',
-  STUDENT: 'STUDENT',
+  ADMIN: 'Administrateur',
+  TEACHER: 'Enseignant',
+  STUDENT: 'Etudiant',
 };
 
 // Catégories de cours

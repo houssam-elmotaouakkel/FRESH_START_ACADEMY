@@ -22,12 +22,12 @@ function Dashboard() {
   const fetchEnrollments = async () => {
     try {
       const response = await enrollmentService.getMyEnrollments()
-      const data = response.data.enrollments || []
+      const data = response.data || []
       setEnrollments(data)
       
       setStats({
         totalCourses: data.length,
-        inProgress: data.filter(e => e.status === 'ACTIVE').length,
+        inProgress: data.filter(e => e.status === 'CONFIRMED').length,
         completed: data.filter(e => e.status === 'COMPLETED').length
       })
     } catch (error) {
@@ -134,22 +134,22 @@ function Dashboard() {
                       </h3>
                       <div className="flex items-center gap-2 text-sm text-secondary-600">
                         <FiCalendar className="w-4 h-4" />
-                        <span>Inscrit le {formatDate(enrollment.createdAt)}</span>
+                        <span>Inscrit le {formatDate(enrollment.enrolledAt)}</span>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className={`badge ${
                       enrollment.status === 'COMPLETED' ? 'badge-success' :
-                      enrollment.status === 'ACTIVE' ? 'badge-primary' :
+                      enrollment.status === 'CONFIRMED' ? 'badge-primary' :
                       'badge-warning'
                     }`}>
                       {enrollment.status === 'COMPLETED' ? 'Terminé' :
-                       enrollment.status === 'ACTIVE' ? 'En cours' :
+                       enrollment.status === 'CONFIRMED' ? 'En cours' :
                        'En attente'}
                     </span>
                     <Link
-                      to={`/courses/${enrollment.courseId}`}
+                      to={`/courses/${enrollment.course?.id}`}
                       className="text-primary-500 hover:text-primary-600"
                     >
                       <FiArrowRight className="w-5 h-5" />

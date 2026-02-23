@@ -17,7 +17,7 @@ function MyEnrollments() {
   const fetchEnrollments = async () => {
     try {
       const response = await enrollmentService.getMyEnrollments()
-      setEnrollments(response.data.enrollments || [])
+      setEnrollments(response.data || [])
     } catch (error) {
       console.error('Error fetching enrollments:', error)
     } finally {
@@ -33,7 +33,7 @@ function MyEnrollments() {
 
   const statusLabels = {
     PENDING: 'En attente',
-    ACTIVE: 'En cours',
+    CONFIRMED: 'En cours',
     COMPLETED: 'Terminé',
     CANCELLED: 'Annulé'
   }
@@ -66,7 +66,7 @@ function MyEnrollments() {
 
             {/* Status Filter */}
             <div className="flex gap-2 flex-wrap">
-              {['all', 'ACTIVE', 'COMPLETED', 'PENDING'].map((status) => (
+              {['all', 'CONFIRMED', 'COMPLETED', 'PENDING', 'CANCELLED'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setFilter(status)}
@@ -121,7 +121,7 @@ function MyEnrollments() {
                       <div className="flex flex-wrap gap-4 text-sm text-secondary-600">
                         <span className="flex items-center gap-1">
                           <FiCalendar className="w-4 h-4" />
-                          Inscrit le {formatDate(enrollment.createdAt)}
+                          Inscrit le {formatDate(enrollment.enrolledAt)}
                         </span>
                         {enrollment.course?.duration && (
                           <span className="flex items-center gap-1">
@@ -141,14 +141,14 @@ function MyEnrollments() {
                   <div className="flex items-center gap-4">
                     <span className={`badge ${
                       enrollment.status === 'COMPLETED' ? 'badge-success' :
-                      enrollment.status === 'ACTIVE' ? 'badge-primary' :
+                      enrollment.status === 'CONFIRMED' ? 'badge-primary' :
                       enrollment.status === 'CANCELLED' ? 'badge-error' :
                       'badge-warning'
                     }`}>
                       {statusLabels[enrollment.status]}
                     </span>
                     <Link
-                      to={`/courses/${enrollment.courseId}`}
+                      to={`/courses/${enrollment.course?.id}`}
                       className="btn-primary py-2 px-4 flex items-center gap-2"
                     >
                       Voir le cours

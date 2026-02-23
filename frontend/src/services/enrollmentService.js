@@ -38,6 +38,10 @@ const enrollmentService = {
     const response = await api.put(`/enrollments/${id}/status`, { status, notes });
     return response;
   },
+  updateEnrollment: async (id, data) => {
+    const response = await api.put(`/enrollments/${id}/status`, data);
+    return response;
+  },
 
   // Supprimer une inscription
   deleteEnrollment: async (id) => {

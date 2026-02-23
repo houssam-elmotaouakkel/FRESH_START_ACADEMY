@@ -6,9 +6,7 @@ import {
   FaClipboardList,
   FaEnvelope,
   FaStar,
-  FaChartLine,
-  FaArrowUp,
-  FaArrowDown
+  FaArrowUp
 } from 'react-icons/fa';
 import userService from '../../services/userService';
 import courseService from '../../services/courseService';
@@ -41,23 +39,23 @@ export default function AdminDashboard() {
         contactsRes,
         testimonialsRes
       ] = await Promise.all([
-        userService.getUsers({ limit: 1 }),
-        courseService.getCourses({ limit: 1 }),
+        userService.getAllUsers({ limit: 1 }),
+        courseService.getAllCourses({ limit: 1 }),
         enrollmentService.getAllEnrollments({ limit: 5 }),
-        contactService.getContacts({ limit: 5 }),
+        contactService.getAllContacts({ limit: 5 }),
         testimonialService.getAllTestimonials({ limit: 1 })
       ]);
 
       setStats({
-        users: usersRes.data.pagination?.total || 0,
-        courses: coursesRes.data.pagination?.total || 0,
-        enrollments: enrollmentsRes.data.pagination?.total || 0,
-        contacts: contactsRes.data.pagination?.total || 0,
-        testimonials: testimonialsRes.data.pagination?.total || 0
+        users: usersRes.pagination?.totalItems || 0,
+        courses: coursesRes.pagination?.totalItems || 0,
+        enrollments: enrollmentsRes.pagination?.totalItems || 0,
+        contacts: contactsRes.pagination?.totalItems || 0,
+        testimonials: testimonialsRes.pagination?.totalItems || 0
       });
 
-      setRecentEnrollments(enrollmentsRes.data.enrollments || []);
-      setRecentContacts(contactsRes.data.contacts || []);
+      setRecentEnrollments(enrollmentsRes.data || []);
+      setRecentContacts(contactsRes.data || []);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -181,9 +179,9 @@ export default function AdminDashboard() {
                     </div>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        enrollment.status === 'active'
+                        enrollment.status === 'CONFIRMED'
                           ? 'bg-green-100 text-green-700'
-                          : enrollment.status === 'pending'
+                          : enrollment.status === 'PENDING'
                           ? 'bg-yellow-100 text-yellow-700'
                           : 'bg-gray-100 text-gray-700'
                       }`}
@@ -225,7 +223,7 @@ export default function AdminDashboard() {
                       <p className="text-sm text-gray-600 truncate">{contact.subject}</p>
                       <p className="text-xs text-gray-400">{contact.email}</p>
                     </div>
-                    {!contact.isRead && (
+                    {contact.status === 'UNREAD' && (
                       <span className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0 mt-2"></span>
                     )}
                   </div>

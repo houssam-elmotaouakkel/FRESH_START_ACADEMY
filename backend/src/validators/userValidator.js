@@ -1,20 +1,20 @@
 const { z } = require('zod');
 
 /**
- * Schéma de validation pour la mise à jour d'un utilisateur (Admin)
+ * User roles from Prisma schema
+ */
+const ROLES = ['ADMIN', 'TEACHER', 'STUDENT'];
+
+/**
+ * Validation schema for admin user update
  */
 const updateUserSchema = {
   body: z.object({
-    email: z
-      .string()
-      .email('Email invalide')
-      .toLowerCase()
-      .trim()
-      .optional(),
+    email: z.string().email('Email invalide').toLowerCase().trim().optional(),
     firstName: z
       .string()
-      .min(2, 'Prénom trop court')
-      .max(50, 'Prénom trop long')
+      .min(2, 'Prenom trop court')
+      .max(50, 'Prenom trop long')
       .trim()
       .optional(),
     lastName: z
@@ -23,16 +23,9 @@ const updateUserSchema = {
       .max(50, 'Nom trop long')
       .trim()
       .optional(),
-    phone: z
-      .string()
-      .nullable()
-      .optional(),
-    role: z
-      .enum(['USER', 'ADMIN'], { message: 'Rôle invalide' })
-      .optional(),
-    isActive: z
-      .boolean()
-      .optional(),
+    phone: z.string().nullable().optional(),
+    role: z.enum(ROLES, { message: 'Role invalide' }).optional(),
+    isActive: z.boolean().optional(),
   }),
   params: z.object({
     id: z.string().uuid('ID invalide'),
@@ -40,14 +33,14 @@ const updateUserSchema = {
 };
 
 /**
- * Schéma de validation pour la mise à jour du profil (User)
+ * Validation schema for profile update
  */
 const updateProfileSchema = {
   body: z.object({
     firstName: z
       .string()
-      .min(2, 'Prénom trop court')
-      .max(50, 'Prénom trop long')
+      .min(2, 'Prenom trop court')
+      .max(50, 'Prenom trop long')
       .trim()
       .optional(),
     lastName: z
@@ -56,15 +49,12 @@ const updateProfileSchema = {
       .max(50, 'Nom trop long')
       .trim()
       .optional(),
-    phone: z
-      .string()
-      .nullable()
-      .optional(),
+    phone: z.string().nullable().optional(),
   }),
 };
 
 /**
- * Schéma de validation pour les paramètres d'ID (UUID)
+ * Validation schema for UUID path params
  */
 const userIdSchema = {
   params: z.object({
@@ -73,41 +63,23 @@ const userIdSchema = {
 };
 
 /**
- * Schéma de validation pour la pagination et filtres
+ * Validation schema for user list query params
  */
 const listUsersSchema = {
   query: z.object({
-    page: z
-      .string()
-      .regex(/^\d+$/)
-      .transform(Number)
-      .default('1')
-      .optional(),
-    limit: z
-      .string()
-      .regex(/^\d+$/)
-      .transform(Number)
-      .default('10')
-      .optional(),
-    search: z
-      .string()
-      .trim()
-      .optional(),
-    role: z
-      .enum(['USER', 'ADMIN'])
-      .optional(),
+    page: z.string().regex(/^\d+$/).transform(Number).default('1').optional(),
+    limit: z.string().regex(/^\d+$/).transform(Number).default('10').optional(),
+    search: z.string().trim().optional(),
+    role: z.enum(ROLES).optional(),
     isActive: z
       .enum(['true', 'false'])
-      .transform(val => val === 'true')
+      .transform((val) => val === 'true')
       .optional(),
     sortBy: z
       .enum(['createdAt', 'email', 'firstName', 'lastName'])
       .default('createdAt')
       .optional(),
-    sortOrder: z
-      .enum(['asc', 'desc'])
-      .default('desc')
-      .optional(),
+    sortOrder: z.enum(['asc', 'desc']).default('desc').optional(),
   }),
 };
 

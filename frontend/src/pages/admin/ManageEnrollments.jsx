@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import {
   FaSearch,
@@ -25,29 +25,31 @@ export default function ManageEnrollments() {
   const [selectedEnrollment, setSelectedEnrollment] = useState(null);
   const [processing, setProcessing] = useState(null);
 
-  useEffect(() => {
-    fetchEnrollments();
-  }, [page, statusFilter]);
-
-  const fetchEnrollments = async () => {
+  const fetchEnrollments = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
         page,
         limit: 10,
-        ...(search && { search }),
         ...(statusFilter && { status: statusFilter })
       };
       const response = await enrollmentService.getAllEnrollments(params);
-      setEnrollments(response.data.enrollments || []);
-      setPagination(response.data.pagination || { total: 0, totalPages: 1 });
+      setEnrollments(response.data || []);
+      setPagination({
+        total: response.pagination?.totalItems || 0,
+        totalPages: response.pagination?.totalPages || 1,
+      });
     } catch (error) {
       console.error('Error fetching enrollments:', error);
       toast.error('Erreur lors du chargement des inscriptions');
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, statusFilter]);
+
+  useEffect(() => {
+    fetchEnrollments();
+  }, [fetchEnrollments]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -58,11 +60,11 @@ export default function ManageEnrollments() {
   const handleStatusChange = async (enrollmentId, newStatus) => {
     setProcessing(enrollmentId);
     try {
-      await enrollmentService.updateEnrollment(enrollmentId, { status: newStatus });
+      await enrollmentService.updateStatus(enrollmentId, newStatus);
       toast.success('Statut mis à jour avec succès');
       fetchEnrollments();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+      toast.error(error.message || 'Erreur lors de la mise à jour');
     } finally {
       setProcessing(null);
     }
@@ -70,13 +72,13 @@ export default function ManageEnrollments() {
 
   const getStatusBadge = (status) => {
     const styles = {
-      pending: 'bg-yellow-100 text-yellow-700',
-      active: 'bg-green-100 text-green-700',
-      completed: 'bg-blue-100 text-blue-700',
-      cancelled: 'bg-red-100 text-red-700'
+      PENDING: 'bg-yellow-100 text-yellow-700',
+      CONFIRMED: 'bg-green-100 text-green-700',
+      COMPLETED: 'bg-blue-100 text-blue-700',
+      CANCELLED: 'bg-red-100 text-red-700'
     };
     return (
-      <span className={`px-3 py-1 rounded-full text-sm font-medium ${styles[status] || styles.pending}`}>
+      <span className={`px-3 py-1 rounded-full text-sm font-medium ${styles[status] || styles.PENDING}`}>
         {ENROLLMENT_STATUS[status] || status}
       </span>
     );
@@ -192,7 +194,7 @@ export default function ManageEnrollments() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(enrollment.createdAt)}
+                      {formatDate(enrollment.enrolledAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(enrollment.status)}
@@ -207,10 +209,10 @@ export default function ManageEnrollments() {
                           <FaEye className="w-4 h-4" />
                         </button>
                         
-                        {enrollment.status === 'pending' && (
+                        {enrollment.status === 'PENDING' && (
                           <>
                             <button
-                              onClick={() => handleStatusChange(enrollment.id, 'active')}
+                              onClick={() => handleStatusChange(enrollment.id, 'CONFIRMED')}
                               disabled={processing === enrollment.id}
                               className="p-2 text-green-600 hover:text-green-700 disabled:opacity-50"
                               title="Valider"
@@ -222,7 +224,7 @@ export default function ManageEnrollments() {
                               )}
                             </button>
                             <button
-                              onClick={() => handleStatusChange(enrollment.id, 'cancelled')}
+                              onClick={() => handleStatusChange(enrollment.id, 'CANCELLED')}
                               disabled={processing === enrollment.id}
                               className="p-2 text-red-600 hover:text-red-700 disabled:opacity-50"
                               title="Refuser"
@@ -232,9 +234,9 @@ export default function ManageEnrollments() {
                           </>
                         )}
                         
-                        {enrollment.status === 'active' && (
+                        {enrollment.status === 'CONFIRMED' && (
                           <button
-                            onClick={() => handleStatusChange(enrollment.id, 'completed')}
+                            onClick={() => handleStatusChange(enrollment.id, 'COMPLETED')}
                             disabled={processing === enrollment.id}
                             className="p-2 text-blue-600 hover:text-blue-700 disabled:opacity-50"
                             title="Marquer comme terminé"
@@ -317,7 +319,7 @@ export default function ManageEnrollments() {
               </div>
               <div className="flex justify-between py-3 border-b border-gray-100">
                 <span className="text-gray-500">Date d'inscription</span>
-                <span className="text-gray-900">{formatDate(selectedEnrollment.createdAt)}</span>
+                <span className="text-gray-900">{formatDate(selectedEnrollment.enrolledAt)}</span>
               </div>
               <div className="flex justify-between py-3">
                 <span className="text-gray-500">Statut</span>
@@ -326,11 +328,11 @@ export default function ManageEnrollments() {
             </div>
 
             <div className="mt-6 flex gap-3">
-              {selectedEnrollment.status === 'pending' && (
+              {selectedEnrollment.status === 'PENDING' && (
                 <>
                   <button
                     onClick={() => {
-                      handleStatusChange(selectedEnrollment.id, 'active');
+                      handleStatusChange(selectedEnrollment.id, 'CONFIRMED');
                       setShowDetailModal(false);
                     }}
                     className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
@@ -340,7 +342,7 @@ export default function ManageEnrollments() {
                   </button>
                   <button
                     onClick={() => {
-                      handleStatusChange(selectedEnrollment.id, 'cancelled');
+                      handleStatusChange(selectedEnrollment.id, 'CANCELLED');
                       setShowDetailModal(false);
                     }}
                     className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center gap-2"
@@ -363,3 +365,4 @@ export default function ManageEnrollments() {
     </div>
   );
 }
+

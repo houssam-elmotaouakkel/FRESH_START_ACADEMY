@@ -92,7 +92,7 @@ const useAuthStore = create(
         try {
           const response = await authService.getMe();
           set({ user: response.data, isAuthenticated: true, isLoading: false });
-        } catch (error) {
+        } catch {
           set({ isLoading: false });
           get().logout();
         }

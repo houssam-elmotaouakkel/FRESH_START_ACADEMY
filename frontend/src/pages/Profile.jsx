@@ -50,11 +50,11 @@ function Profile() {
     setLoading(true)
     try {
       const response = await userService.updateProfile(data)
-      setUser(response.data.user)
+      setUser(response.data)
       toast.success('Profil mis à jour avec succès')
       setIsEditing(false)
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour')
+      toast.error(error.message || 'Erreur lors de la mise à jour')
     } finally {
       setLoading(false)
     }
@@ -71,7 +71,7 @@ function Profile() {
       setIsChangingPassword(false)
       resetPassword()
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors du changement de mot de passe')
+      toast.error(error.message || 'Erreur lors du changement de mot de passe')
     } finally {
       setLoading(false)
     }
@@ -320,3 +320,4 @@ function Profile() {
 }
 
 export default Profile
+

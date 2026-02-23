@@ -35,12 +35,12 @@ export default function Login() {
   }, [clearError]);
 
   const onSubmit = async (data) => {
-    try {
-      await login(data.email, data.password);
-      toast.success('Connexion réussie !');
-    } catch (err) {
-      toast.error(err.message || 'Erreur de connexion');
+    const result = await login(data.email, data.password);
+    if (result.success) {
+      toast.success('Connexion reussie !');
+      return;
     }
+    toast.error(result.error || 'Erreur de connexion');
   };
 
   return (
@@ -204,3 +204,4 @@ export default function Login() {
     </div>
   );
 }
+

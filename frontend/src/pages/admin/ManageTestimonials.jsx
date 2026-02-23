@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import {
   FaSearch,
@@ -27,29 +27,31 @@ export default function ManageTestimonials() {
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
   const [processing, setProcessing] = useState(null);
 
-  useEffect(() => {
-    fetchTestimonials();
-  }, [page, statusFilter]);
-
-  const fetchTestimonials = async () => {
+  const fetchTestimonials = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
         page,
         limit: 10,
-        ...(search && { search }),
         ...(statusFilter && { isApproved: statusFilter === 'approved' })
       };
       const response = await testimonialService.getAllTestimonials(params);
-      setTestimonials(response.data.testimonials || []);
-      setPagination(response.data.pagination || { total: 0, totalPages: 1 });
+      setTestimonials(response.data || []);
+      setPagination({
+        total: response.pagination?.totalItems || 0,
+        totalPages: response.pagination?.totalPages || 1,
+      });
     } catch (error) {
       console.error('Error fetching testimonials:', error);
       toast.error('Erreur lors du chargement des témoignages');
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, statusFilter]);
+
+  useEffect(() => {
+    fetchTestimonials();
+  }, [fetchTestimonials]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -64,7 +66,7 @@ export default function ManageTestimonials() {
       toast.success(approve ? 'Témoignage approuvé' : 'Témoignage rejeté');
       fetchTestimonials();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+      toast.error(error.message || 'Erreur lors de la mise à jour');
     } finally {
       setProcessing(null);
     }
@@ -90,7 +92,7 @@ export default function ManageTestimonials() {
       fetchTestimonials();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la suppression');
+      toast.error(error.message || 'Erreur lors de la suppression');
     } finally {
       setProcessing(null);
     }
@@ -104,6 +106,16 @@ export default function ManageTestimonials() {
       />
     ));
   };
+
+  const visibleTestimonials = testimonials.filter((testimonial) => {
+    if (!search) return true;
+    const term = search.toLowerCase();
+    return (
+      testimonial.author?.toLowerCase().includes(term) ||
+      testimonial.role?.toLowerCase().includes(term) ||
+      testimonial.content?.toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -153,14 +165,14 @@ export default function ManageTestimonials() {
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
           </div>
-        ) : testimonials.length === 0 ? (
+        ) : visibleTestimonials.length === 0 ? (
           <div className="text-center py-12">
             <FaStar className="mx-auto h-12 w-12 text-gray-300 mb-4" />
             <p className="text-gray-500">Aucun témoignage trouvé</p>
           </div>
         ) : (
           <div className="divide-y divide-gray-200">
-            {testimonials.map((testimonial) => (
+            {visibleTestimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
                 className={`p-6 hover:bg-gray-50 ${!testimonial.isApproved ? 'bg-yellow-50' : ''}`}
@@ -170,15 +182,21 @@ export default function ManageTestimonials() {
                     <div className="flex items-center gap-4 mb-3">
                       <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
                         <span className="text-primary-600 font-semibold">
-                          {testimonial.user?.firstName?.[0]}{testimonial.user?.lastName?.[0]}
+                          {(testimonial.author || '')
+                            .split(' ')
+                            .filter(Boolean)
+                            .map((p) => p[0])
+                            .join('')
+                            .slice(0, 2)
+                            .toUpperCase()}
                         </span>
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">
-                          {testimonial.user?.firstName} {testimonial.user?.lastName}
+                          {testimonial.author}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {testimonial.course?.title || 'Cours non spécifié'}
+                          {testimonial.role || 'Role non specifie'}
                         </p>
                       </div>
                       {!testimonial.isApproved && (
@@ -301,20 +319,20 @@ export default function ManageTestimonials() {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
                   <span className="text-xl font-semibold text-primary-600">
-                    {selectedTestimonial.user?.firstName?.[0]}{selectedTestimonial.user?.lastName?.[0]}
+                    {(selectedTestimonial.author || '').split(' ').filter(Boolean).map((p) => p[0]).join('').slice(0, 2).toUpperCase()}
                   </span>
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">
-                    {selectedTestimonial.user?.firstName} {selectedTestimonial.user?.lastName}
+                    {selectedTestimonial.author}
                   </p>
-                  <p className="text-gray-500">{selectedTestimonial.user?.email}</p>
+                  <p className="text-gray-500">{selectedTestimonial.role || 'Role non specifie'}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Cours</label>
-                <p className="text-gray-900">{selectedTestimonial.course?.title || 'Non spécifié'}</p>
+                <label className="block text-sm font-medium text-gray-500 mb-1">Role</label>
+                <p className="text-gray-900">{selectedTestimonial.role || 'Non spécifié'}</p>
               </div>
 
               <div>
@@ -394,7 +412,7 @@ export default function ManageTestimonials() {
             <p className="text-gray-600 mb-6">
               Êtes-vous sûr de vouloir supprimer le témoignage de{' '}
               <strong>
-                {selectedTestimonial.user?.firstName} {selectedTestimonial.user?.lastName}
+                {selectedTestimonial.author}
               </strong> ?
             </p>
 
@@ -424,3 +442,8 @@ export default function ManageTestimonials() {
     </div>
   );
 }
+
+
+
+
+

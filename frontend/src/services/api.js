@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Créer une instance Axios
 const api = axios.create({
@@ -60,7 +60,11 @@ api.interceptors.response.use(
 
     // Extraire le message d'erreur
     const message = error.response?.data?.message || 'Une erreur est survenue';
-    return Promise.reject({ message, status: error.response?.status });
+    return Promise.reject({
+      message,
+      status: error.response?.status,
+      response: error.response,
+    });
   }
 );
 

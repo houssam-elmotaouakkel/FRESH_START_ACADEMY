@@ -28,7 +28,7 @@ function CourseDetail() {
   const fetchCourse = useCallback(async () => {
     try {
       const response = await courseService.getCourseById(id)
-      setCourse(response.data.course)
+      setCourse(response.data)
     } catch (error) {
       console.error('Error fetching course:', error)
       toast.error('Cours non trouvé')
@@ -41,8 +41,8 @@ function CourseDetail() {
   const checkEnrollment = useCallback(async () => {
     try {
       const response = await enrollmentService.getMyEnrollments()
-      const enrolled = response.data.enrollments?.some(e => e.courseId === parseInt(id))
-      setIsEnrolled(enrolled)
+      const enrolled = response.data?.some((e) => e.course?.id === id)
+      setIsEnrolled(Boolean(enrolled))
     } catch (error) {
       console.error('Error checking enrollment:', error)
     }
@@ -64,11 +64,11 @@ function CourseDetail() {
 
     setEnrolling(true)
     try {
-      await enrollmentService.enroll(parseInt(id))
+      await enrollmentService.enroll(id)
       toast.success('Inscription réussie !')
       setIsEnrolled(true)
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'inscription')
+      toast.error(error.message || 'Erreur lors de l\'inscription')
     } finally {
       setEnrolling(false)
     }

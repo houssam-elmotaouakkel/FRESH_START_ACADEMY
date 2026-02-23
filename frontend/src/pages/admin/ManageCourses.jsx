@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import {
@@ -30,6 +30,7 @@ export default function ManageCourses() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const searchRef = useRef(search);
 
   const {
     register,
@@ -39,28 +40,35 @@ export default function ManageCourses() {
   } = useForm();
 
   useEffect(() => {
-    fetchCourses();
-  }, [page, categoryFilter]);
+    searchRef.current = search;
+  }, [search]);
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
         page,
         limit: 10,
-        ...(search && { search }),
+        ...(searchRef.current && { search: searchRef.current }),
         ...(categoryFilter && { category: categoryFilter })
       };
-      const response = await courseService.getCourses(params);
-      setCourses(response.data.courses || []);
-      setPagination(response.data.pagination || { total: 0, totalPages: 1 });
+      const response = await courseService.getAllCourses(params);
+      setCourses(response.data || []);
+      setPagination({
+        total: response.pagination?.totalItems || 0,
+        totalPages: response.pagination?.totalPages || 1,
+      });
     } catch (error) {
       console.error('Error fetching courses:', error);
       toast.error('Erreur lors du chargement des cours');
     } finally {
       setLoading(false);
     }
-  };
+  }, [categoryFilter, page]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -75,7 +83,7 @@ export default function ManageCourses() {
       title: '',
       description: '',
       category: '',
-      level: 'beginner',
+      level: 'BEGINNER',
       price: '',
       duration: '',
       maxStudents: 20,
@@ -126,7 +134,7 @@ export default function ManageCourses() {
       fetchCourses();
       setShowModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement');
+      toast.error(error.message || 'Erreur lors de l\'enregistrement');
     } finally {
       setProcessing(false);
     }
@@ -142,7 +150,7 @@ export default function ManageCourses() {
       fetchCourses();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la suppression');
+      toast.error(error.message || 'Erreur lors de la suppression');
     } finally {
       setProcessing(false);
     }
@@ -151,10 +159,10 @@ export default function ManageCourses() {
   const toggleCourseStatus = async (course) => {
     try {
       await courseService.updateCourse(course.id, { isActive: !course.isActive });
-      toast.success(`Cours ${course.isActive ? 'désactivé' : 'activé'}`);
+      toast.success(`Cours ${course.isActive ? 'desactive' : 'active'}`);
       fetchCourses();
     } catch (error) {
-      toast.error('Erreur lors de la mise à jour du statut');
+      toast.error(error.message || 'Erreur lors de la mise a jour du statut');
     }
   };
 
@@ -509,3 +517,5 @@ export default function ManageCourses() {
     </div>
   );
 }
+
+

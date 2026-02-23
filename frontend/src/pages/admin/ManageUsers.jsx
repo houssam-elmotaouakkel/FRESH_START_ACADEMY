@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-toastify';
 import {
   FaSearch,
@@ -26,30 +26,38 @@ export default function ManageUsers() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const searchRef = useRef(search);
 
   useEffect(() => {
-    fetchUsers();
-  }, [page, roleFilter]);
+    searchRef.current = search;
+  }, [search]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
         page,
         limit: 10,
-        ...(search && { search }),
+        ...(searchRef.current && { search: searchRef.current }),
         ...(roleFilter && { role: roleFilter })
       };
-      const response = await userService.getUsers(params);
-      setUsers(response.data.users || []);
-      setPagination(response.data.pagination || { total: 0, totalPages: 1 });
+      const response = await userService.getAllUsers(params);
+      setUsers(response.data || []);
+      setPagination({
+        total: response.pagination?.totalItems || 0,
+        totalPages: response.pagination?.totalPages || 1,
+      });
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Erreur lors du chargement des utilisateurs');
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, roleFilter]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -77,7 +85,7 @@ export default function ManageUsers() {
       fetchUsers();
       setShowEditModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+      toast.error(error.message || 'Erreur lors de la mise à jour');
     } finally {
       setProcessing(false);
     }
@@ -93,7 +101,7 @@ export default function ManageUsers() {
       fetchUsers();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de la suppression');
+      toast.error(error.message || 'Erreur lors de la suppression');
     } finally {
       setProcessing(false);
     }
@@ -101,11 +109,12 @@ export default function ManageUsers() {
 
   const getRoleBadge = (role) => {
     const styles = {
-      admin: 'bg-red-100 text-red-700',
-      user: 'bg-blue-100 text-blue-700'
+      ADMIN: 'bg-red-100 text-red-700',
+      TEACHER: 'bg-purple-100 text-purple-700',
+      STUDENT: 'bg-blue-100 text-blue-700'
     };
     return (
-      <span className={`px-3 py-1 rounded-full text-sm font-medium ${styles[role] || styles.user}`}>
+      <span className={`px-3 py-1 rounded-full text-sm font-medium ${styles[role] || styles.STUDENT}`}>
         {ROLES[role] || role}
       </span>
     );
@@ -290,10 +299,10 @@ export default function ManageUsers() {
 
             <div className="space-y-3">
               <button
-                onClick={() => handleUpdateRole('user')}
-                disabled={processing || selectedUser.role === 'user'}
+                onClick={() => handleUpdateRole('STUDENT')}
+                disabled={processing || selectedUser.role === 'STUDENT'}
                 className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-colors ${
-                  selectedUser.role === 'user'
+                  selectedUser.role === 'STUDENT'
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-primary-300'
                 }`}
@@ -306,10 +315,26 @@ export default function ManageUsers() {
               </button>
 
               <button
-                onClick={() => handleUpdateRole('admin')}
-                disabled={processing || selectedUser.role === 'admin'}
+                onClick={() => handleUpdateRole('TEACHER')}
+                disabled={processing || selectedUser.role === 'TEACHER'}
                 className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-colors ${
-                  selectedUser.role === 'admin'
+                  selectedUser.role === 'TEACHER'
+                    ? 'border-primary-500 bg-primary-50'
+                    : 'border-gray-200 hover:border-primary-300'
+                }`}
+              >
+                <FaUser className="w-5 h-5 text-purple-600" />
+                <div className="text-left">
+                  <p className="font-medium text-gray-900">Enseignant</p>
+                  <p className="text-sm text-gray-500">Gestion pedagogique des cours</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleUpdateRole('ADMIN')}
+                disabled={processing || selectedUser.role === 'ADMIN'}
+                className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-colors ${
+                  selectedUser.role === 'ADMIN'
                     ? 'border-primary-500 bg-primary-50'
                     : 'border-gray-200 hover:border-primary-300'
                 }`}
@@ -373,3 +398,4 @@ export default function ManageUsers() {
     </div>
   );
 }
+

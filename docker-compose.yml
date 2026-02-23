@@ -1,0 +1,56 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: fresh_start_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: fresh_start_academy
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    image: node:20-alpine
+    container_name: fresh_start_backend
+    working_dir: /app/backend
+    command: sh -c "npm install && npm run dev"
+    environment:
+      NODE_ENV: development
+      PORT: 5000
+      DATABASE_URL: mysql://app:app@db:3306/fresh_start_academy
+      JWT_SECRET: change-me-in-production
+      JWT_REFRESH_SECRET: change-me-refresh-in-production
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: node:20-alpine
+    container_name: fresh_start_frontend
+    working_dir: /app/frontend
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

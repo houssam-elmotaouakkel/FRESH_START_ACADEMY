@@ -57,7 +57,7 @@ Le serveur démarre sur `http://localhost:5000`
 | `JWT_REFRESH_EXPIRES_IN` | Durée du refresh token | `7d` |
 | `PORT` | Port du serveur | `5000` |
 | `NODE_ENV` | Environnement | `development` |
-| `FRONTEND_URL` | URL frontend (CORS) | `http://localhost:5173` |
+| `CORS_ORIGIN` | URL frontend (CORS) | `http://localhost:5173` |
 
 ## 📁 Structure
 
@@ -128,7 +128,7 @@ backend/
 |---------|----------|-------------|------|
 | POST | `/register` | Inscription | ❌ |
 | POST | `/login` | Connexion | ❌ |
-| POST | `/refresh` | Rafraîchir le token | ❌ |
+| POST | `/refresh-token` | Rafraîchir le token | ❌ |
 | POST | `/logout` | Déconnexion | ✅ |
 | GET | `/me` | Utilisateur connecté | ✅ |
 
@@ -178,7 +178,7 @@ backend/
 |---------|----------|-------------|------|
 | GET | `/` | Liste approuvés | ❌ |
 | POST | `/` | Soumettre | ❌ |
-| GET | `/all` | Tous (admin) | Admin |
+| GET | `/admin` | Tous (admin) | Admin |
 | PUT | `/:id/approve` | Approuver | Admin |
 | DELETE | `/:id` | Supprimer | Admin |
 
@@ -209,3 +209,5 @@ npx prisma db seed     # Insérer les données de test
 | `npm run dev` | Démarrer en mode dev (nodemon) |
 | `npm start` | Démarrer en production |
 | `npm run lint` | Vérifier le code |
+| `npm test` | Lancer les tests |
+| `npm run test:smoke` | Lancer les tests smoke API |

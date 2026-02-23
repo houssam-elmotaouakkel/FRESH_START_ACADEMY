@@ -6,6 +6,9 @@ const courseService = {
     const response = await api.get('/courses', { params });
     return response;
   },
+  getCourses: async (params = {}) => {
+    return courseService.getAllCourses(params);
+  },
 
   // Détail d'un cours par ID
   getCourseById: async (id) => {

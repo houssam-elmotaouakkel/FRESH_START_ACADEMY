@@ -16,11 +16,17 @@ function Contact() {
   const onSubmit = async (data) => {
     setIsSubmitting(true)
     try {
-      await contactService.sendMessage(data)
+      const payload = {
+        name: `${data.firstName} ${data.lastName}`.trim(),
+        email: data.email,
+        subject: data.subject,
+        message: data.message,
+      }
+      await contactService.sendMessage(payload)
       toast.success('Votre message a été envoyé avec succès !')
       reset()
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'envoi du message')
+      toast.error(error.message || 'Erreur lors de l\'envoi du message')
     } finally {
       setIsSubmitting(false)
     }

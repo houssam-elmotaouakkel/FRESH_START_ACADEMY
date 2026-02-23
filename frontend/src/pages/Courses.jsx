@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { FaSearch, FaFilter, FaGraduationCap, FaChevronRight, FaTimes } from 'react-icons/fa';
 import courseService from '../services/courseService';
@@ -18,31 +18,37 @@ export default function Courses() {
   const [level, setLevel] = useState(searchParams.get('level') || '');
   const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
 
-  useEffect(() => {
-    fetchCourses();
-  }, [category, level, page]);
+  const searchRef = useRef(search);
 
-  const fetchCourses = async () => {
+  useEffect(() => {
+    searchRef.current = search;
+  }, [search]);
+
+  const fetchCourses = useCallback(async () => {
     setLoading(true);
     try {
       const params = {
         page,
         limit: 9,
         isActive: true,
-        ...(search && { search }),
+        ...(searchRef.current && { search: searchRef.current }),
         ...(category && { category }),
         ...(level && { level })
       };
 
-      const response = await courseService.getCourses(params);
-      setCourses(response.data.courses || []);
-      setTotalPages(response.data.pagination?.totalPages || 1);
+      const response = await courseService.getAllCourses(params);
+      setCourses(response.data || []);
+      setTotalPages(response.pagination?.totalPages || 1);
     } catch (error) {
       console.error('Error fetching courses:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [category, level, page]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [fetchCourses]);
 
   const handleSearch = (e) => {
     e.preventDefault();
