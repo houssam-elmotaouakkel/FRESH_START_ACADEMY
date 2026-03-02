@@ -39,4 +39,4 @@ temp/
 *.tmp
 
 # archives
-_archive/
+archive/
