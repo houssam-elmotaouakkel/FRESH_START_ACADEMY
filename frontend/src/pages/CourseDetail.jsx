@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
-import { toast } from 'react-toastify'
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import {
   FiClock,
   FiUsers,
@@ -8,240 +8,238 @@ import {
   FiCalendar,
   FiCheck,
   FiArrowLeft,
-  FiShoppingCart
-} from 'react-icons/fi'
-import courseService from '../services/courseService'
-import enrollmentService from '../services/enrollmentService'
-import useAuthStore from '../store/authStore'
-import { formatPrice } from '../utils/helpers'
-import { COURSE_LEVELS, COURSE_CATEGORIES } from '../utils/constants'
+  FiShoppingCart,
+} from 'react-icons/fi';
+import courseService from '../services/courseService';
+import enrollmentService from '../services/enrollmentService';
+import useAuthStore from '../store/authStore';
+import { formatPrice } from '../utils/helpers';
+import { COURSE_LEVELS, COURSE_CATEGORIES } from '../utils/constants';
 
 function CourseDetail() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const { isAuthenticated } = useAuthStore()
-  const [course, setCourse] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [enrolling, setEnrolling] = useState(false)
-  const [isEnrolled, setIsEnrolled] = useState(false)
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [enrolling, setEnrolling] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
 
   const fetchCourse = useCallback(async () => {
     try {
-      const response = await courseService.getCourseById(id)
-      setCourse(response.data)
+      const response = await courseService.getCourseById(id);
+      setCourse(response.data);
     } catch (error) {
-      console.error('Error fetching course:', error)
-      toast.error('Cours non trouvé')
-      navigate('/courses')
+      console.error('Error fetching course:', error);
+      toast.error('Cours non trouve');
+      navigate('/courses');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [id, navigate])
+  }, [id, navigate]);
 
   const checkEnrollment = useCallback(async () => {
     try {
-      const response = await enrollmentService.getMyEnrollments()
-      const enrolled = response.data?.some((e) => e.course?.id === id)
-      setIsEnrolled(Boolean(enrolled))
+      const response = await enrollmentService.getMyEnrollments();
+      const enrolled = response.data?.some((entry) => entry.course?.id === id);
+      setIsEnrolled(Boolean(enrolled));
     } catch (error) {
-      console.error('Error checking enrollment:', error)
+      console.error('Error checking enrollment:', error);
     }
-  }, [id])
+  }, [id]);
 
   useEffect(() => {
-    fetchCourse()
+    fetchCourse();
     if (isAuthenticated) {
-      checkEnrollment()
+      checkEnrollment();
     }
-  }, [fetchCourse, checkEnrollment, isAuthenticated])
+  }, [fetchCourse, checkEnrollment, isAuthenticated]);
 
   const handleEnroll = async () => {
     if (!isAuthenticated) {
-      toast.info('Veuillez vous connecter pour vous inscrire')
-      navigate('/login', { state: { from: `/courses/${id}` } })
-      return
+      toast.info('Veuillez vous connecter pour vous inscrire');
+      navigate('/login', { state: { from: `/courses/${id}` } });
+      return;
     }
 
-    setEnrolling(true)
+    setEnrolling(true);
     try {
-      await enrollmentService.enroll(id)
-      toast.success('Inscription réussie !')
-      setIsEnrolled(true)
+      await enrollmentService.enroll(id);
+      toast.success('Inscription reussie');
+      setIsEnrolled(true);
     } catch (error) {
-      toast.error(error.message || 'Erreur lors de l\'inscription')
+      toast.error(error.message || 'Erreur lors de l inscription');
     } finally {
-      setEnrolling(false)
+      setEnrolling(false);
     }
-  }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-secondary-50 flex items-center justify-center">
-        <div className="spinner"></div>
+        <div className="spinner" />
       </div>
-    )
+    );
   }
 
-  if (!course) {
-    return null
-  }
+  if (!course) return null;
 
-  const features = [
-    { icon: <FiClock />, label: 'Durée', value: `${course.duration || 0}h` },
-    { icon: <FiBarChart />, label: 'Niveau', value: COURSE_LEVELS[course.level] || course.level },
-    { icon: <FiUsers />, label: 'Places', value: course.maxStudents ? `${course.maxStudents} max` : 'Illimité' },
-    { icon: <FiCalendar />, label: 'Catégorie', value: COURSE_CATEGORIES[course.category] || course.category }
-  ]
+  const infoCards = [
+    {
+      icon: <FiCalendar />,
+      label: 'Prochaine session',
+      value: course.startDate ? new Date(course.startDate).toLocaleDateString('fr-FR') : 'A confirmer',
+    },
+    {
+      icon: <FiBarChart />,
+      label: 'Niveau',
+      value: COURSE_LEVELS[course.level] || course.level,
+    },
+    {
+      icon: <FiClock />,
+      label: 'Duree',
+      value: `${course.duration || 0} heures`,
+    },
+    {
+      icon: <FiUsers />,
+      label: 'Places',
+      value: course.maxStudents ? `${course.maxStudents} max` : 'Illimite',
+    },
+  ];
+
+  const mobileCtaVisible = !isEnrolled && course.isActive;
 
   return (
     <div className="min-h-screen bg-secondary-50">
-      {/* Header */}
-      <section className="gradient-primary text-white py-16">
-        <div className="container mx-auto px-4">
-          <Link
-            to="/courses"
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6"
-          >
+      <section className="gradient-primary text-white">
+        <div className="content-wrap px-4 py-14">
+          <Link to="/courses" className="inline-flex items-center gap-2 text-white/85 hover:text-white mb-5">
             <FiArrowLeft />
             Retour aux cours
           </Link>
           <div className="max-w-3xl">
             <div className="flex flex-wrap gap-2 mb-4">
-              <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+              <span className="chip bg-white/15 text-white border border-white/30">
                 {COURSE_CATEGORIES[course.category] || course.category}
               </span>
-              <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
+              <span className="chip bg-white/15 text-white border border-white/30">
                 {COURSE_LEVELS[course.level] || course.level}
               </span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-white">{course.title}</h1>
-            <p className="text-xl text-white/90">{course.description}</p>
+            <h1 className="section-title text-white mb-4">{course.title}</h1>
+            <p className="text-white/85 text-lg">{course.description}</p>
           </div>
         </div>
       </section>
 
-      {/* Content */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-8">
-              {/* Features */}
-              <div className="card p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-6">Informations du cours</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  {features.map((feature, index) => (
-                    <div key={index} className="text-center">
-                      <div className="w-12 h-12 bg-primary-100 text-primary-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                        {feature.icon}
-                      </div>
-                      <p className="text-sm text-secondary-600">{feature.label}</p>
-                      <p className="font-semibold text-gray-800">{feature.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Description */}
-              {course.content && (
-                <div className="card p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">Contenu du cours</h2>
-                  <div className="prose max-w-none text-secondary-700">
-                    {course.content}
+      <section className="content-wrap px-4 py-10 grid lg:grid-cols-3 gap-8 pb-24 lg:pb-10">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="card p-6">
+            <h2 className="text-2xl font-bold text-primary-900 mb-6">Apercu rapide</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              {infoCards.map((item) => (
+                <div key={item.label} className="rounded-2xl border border-secondary-200 bg-secondary-50 p-4">
+                  <div className="w-9 h-9 rounded-full gradient-primary text-white flex items-center justify-center mb-3">
+                    {item.icon}
                   </div>
+                  <p className="text-sm text-secondary-700">{item.label}</p>
+                  <p className="font-semibold text-primary-900">{item.value}</p>
                 </div>
-              )}
-
-              {/* What you'll learn */}
-              <div className="card p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Ce que vous apprendrez</h2>
-                <ul className="grid md:grid-cols-2 gap-3">
-                  {[
-                    'Communication orale et écrite',
-                    'Grammaire et vocabulaire',
-                    'Compréhension audio',
-                    'Expression fluide',
-                    'Culture et traditions',
-                    'Préparation aux examens'
-                  ].map((item, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <FiCheck className="w-5 h-5 text-success-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-secondary-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="card p-6 sticky top-24">
-                <div className="text-center mb-6">
-                  <p className="text-4xl font-bold text-primary-500 mb-2">
-                    {formatPrice(course.price)}
-                  </p>
-                  {course.duration && (
-                    <p className="text-secondary-600">{course.duration} heures de cours</p>
-                  )}
-                </div>
+          {course.content && (
+            <div className="card p-6">
+              <h2 className="text-2xl font-bold text-primary-900 mb-4">Contenu du programme</h2>
+              <p className="text-secondary-800 whitespace-pre-line">{course.content}</p>
+            </div>
+          )}
 
-                {isEnrolled ? (
-                  <div className="text-center">
-                    <div className="bg-success-500/10 text-success-600 p-4 rounded-xl mb-4">
-                      <FiCheck className="w-8 h-8 mx-auto mb-2" />
-                      <p className="font-semibold">Vous êtes inscrit à ce cours</p>
-                    </div>
-                    <Link to="/my-enrollments" className="btn-secondary w-full">
-                      Voir mes inscriptions
-                    </Link>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleEnroll}
-                    disabled={enrolling || !course.isActive}
-                    className="btn-primary w-full flex items-center justify-center gap-2"
-                  >
-                    {enrolling ? (
-                      'Inscription en cours...'
-                    ) : !course.isActive ? (
-                      'Cours indisponible'
-                    ) : (
-                      <>
-                        <FiShoppingCart />
-                        S'inscrire maintenant
-                      </>
-                    )}
-                  </button>
+          <div className="card p-6">
+            <h2 className="text-2xl font-bold text-primary-900 mb-4">Ce que vous allez maitriser</h2>
+            <ul className="grid md:grid-cols-2 gap-3">
+              {[
+                'Communication orale et ecrite',
+                'Grammaire utile et vocabulaire actif',
+                'Comprehension audio',
+                'Preparation examens et certifications',
+                'Simulations pratiques',
+                'Methode personnalisee',
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-secondary-800">
+                  <FiCheck className="text-success-500 mt-1 flex-shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <aside className="lg:col-span-1">
+          <div className="card p-6 sticky top-24">
+            <p className="text-sm text-secondary-700 mb-1">Tarif</p>
+            <p className="text-4xl font-bold text-primary-700 mb-4">{formatPrice(course.price)}</p>
+            <p className="text-sm text-secondary-700 mb-6">
+              {course.duration ? `${course.duration} heures de formation` : 'Format adaptable'}
+            </p>
+
+            {isEnrolled ? (
+              <div className="rounded-2xl bg-success-500/10 text-success-600 p-4 text-center">
+                <FiCheck className="mx-auto mb-2" />
+                <p className="font-semibold mb-3">Vous etes deja inscrit</p>
+                <Link to="/my-enrollments" className="btn-secondary w-full">
+                  Voir mes inscriptions
+                </Link>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleEnroll}
+                disabled={enrolling || !course.isActive}
+                className="btn-primary w-full"
+              >
+                {enrolling ? 'Inscription en cours...' : !course.isActive ? 'Cours indisponible' : (
+                  <>
+                    <FiShoppingCart />
+                    S inscrire maintenant
+                  </>
                 )}
+              </button>
+            )}
 
-                <div className="mt-6 pt-6 border-t border-secondary-200">
-                  <h3 className="font-semibold text-gray-800 mb-3">Ce cours inclut :</h3>
-                  <ul className="space-y-2 text-sm text-secondary-600">
-                    <li className="flex items-center gap-2">
-                      <FiCheck className="text-primary-500" />
-                      Accès à vie au contenu
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <FiCheck className="text-primary-500" />
-                      Support pédagogique
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <FiCheck className="text-primary-500" />
-                      Certificat de fin de formation
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <FiCheck className="text-primary-500" />
-                      Exercices pratiques
-                    </li>
-                  </ul>
-                </div>
-              </div>
+            <div className="mt-6 pt-5 border-t border-secondary-200">
+              <h3 className="font-semibold text-primary-900 mb-3">Inclus dans le cours</h3>
+              <ul className="space-y-2 text-sm text-secondary-700">
+                <li className="flex items-center gap-2"><FiCheck className="text-primary-700" /> Support pedagogique</li>
+                <li className="flex items-center gap-2"><FiCheck className="text-primary-700" /> Exercices pratiques</li>
+                <li className="flex items-center gap-2"><FiCheck className="text-primary-700" /> Suivi personnalise</li>
+                <li className="flex items-center gap-2"><FiCheck className="text-primary-700" /> Certificat final</li>
+              </ul>
             </div>
           </div>
-        </div>
+        </aside>
       </section>
+
+      {mobileCtaVisible && (
+        <div className="fixed bottom-0 left-0 right-0 lg:hidden border-t border-secondary-200 bg-white/95 backdrop-blur px-4 py-3 z-40">
+          <button
+            type="button"
+            onClick={handleEnroll}
+            disabled={enrolling}
+            className="btn-primary w-full"
+          >
+            {enrolling ? 'Inscription en cours...' : (
+              <>
+                <FiShoppingCart />
+                S inscrire maintenant - {formatPrice(course.price)}
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
-  )
+  );
 }
 
-export default CourseDetail
+export default CourseDetail;

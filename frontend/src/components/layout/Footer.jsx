@@ -1,136 +1,70 @@
-import { Link } from 'react-router-dom'
-import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin, FiMail, FiPhone, FiMapPin } from 'react-icons/fi'
+import { Link } from 'react-router-dom';
+import { FiMapPin, FiPhone, FiMail, FiArrowUpRight } from 'react-icons/fi';
+
+const mapUrl =
+  import.meta.env.VITE_CENTER_MAP_URL ||
+  'https://www.google.com/maps/search/?api=1&query=Rabat+Maroc';
+const centerAddress =
+  import.meta.env.VITE_CENTER_ADDRESS || 'Rabat, Maroc';
 
 function Footer() {
-  const currentYear = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="gradient-primary text-white">
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About */}
-          <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <span className="text-primary-300 font-bold text-lg">FS</span>
-              </div>
-              <span className="text-xl font-bold">Fresh Start Academy</span>
-            </div>
-            <p className="text-white/80 mb-4 leading-relaxed">
-              Votre partenaire pour l'apprentissage des langues. Nous vous accompagnons
-              vers la maîtrise du français, de l'anglais et de l'arabe.
+    <footer className="mt-16 bg-primary-900 text-secondary-100">
+      <div className="content-wrap px-4 py-14">
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-10">
+          <div className="lg:col-span-2">
+            <p className="text-xs uppercase tracking-[0.25em] text-secondary-300 mb-4">Fresh Start Academy</p>
+            <h3 className="text-3xl font-bold text-white mb-4">Votre centre de langues a Rabat</h3>
+            <p className="text-secondary-100/85 max-w-xl">
+              Formations en francais, anglais et arabe avec parcours personnalises,
+              classes en petits groupes et suivi pedagogique continu.
             </p>
-            <div className="flex space-x-3">
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary-300 transition-all"
-              >
-                <FiFacebook />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary-300 transition-all"
-              >
-                <FiTwitter />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary-300 transition-all"
-              >
-                <FiInstagram />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary-300 transition-all"
-              >
-                <FiLinkedin />
-              </a>
-            </div>
+            <Link to="/register" className="btn-secondary mt-6">
+              Commencer l&apos;inscription
+              <FiArrowUpRight />
+            </Link>
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-6">Liens Rapides</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/" className="text-white/80 hover:text-white transition-colors">
-                  Accueil
-                </Link>
-              </li>
-              <li>
-                <Link to="/courses" className="text-white/80 hover:text-white transition-colors">
-                  Nos Cours
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-white/80 hover:text-white transition-colors">
-                  À Propos
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-white/80 hover:text-white transition-colors">
-                  Contact
-                </Link>
-              </li>
+            <h4 className="text-lg font-semibold text-white mb-4">Navigation</h4>
+            <ul className="space-y-2 text-secondary-100/85">
+              <li><Link className="hover:text-white" to="/">Accueil</Link></li>
+              <li><Link className="hover:text-white" to="/courses">Cours</Link></li>
+              <li><Link className="hover:text-white" to="/about">A propos</Link></li>
+              <li><Link className="hover:text-white" to="/contact">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Courses */}
           <div>
-            <h4 className="text-lg font-semibold mb-6">Nos Cours</h4>
-            <ul className="space-y-3">
-              <li>
-                <Link to="/courses" className="text-white/80 hover:text-white transition-colors">
-                  Cours de Français
-                </Link>
-              </li>
-              <li>
-                <Link to="/courses" className="text-white/80 hover:text-white transition-colors">
-                  Cours d'Anglais
-                </Link>
-              </li>
-              <li>
-                <Link to="/courses" className="text-white/80 hover:text-white transition-colors">
-                  Cours d'Arabe
-                </Link>
-              </li>
-              <li>
-                <Link to="/courses" className="text-white/80 hover:text-white transition-colors">
-                  Cours Intensifs
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-lg font-semibold mb-6">Contact</h4>
-            <ul className="space-y-4">
-              <li className="flex items-start space-x-3">
+            <h4 className="text-lg font-semibold text-white mb-4">Contact</h4>
+            <ul className="space-y-3 text-secondary-100/85">
+              <li className="flex items-start gap-2">
                 <FiMapPin className="mt-1 flex-shrink-0" />
-                <span className="text-white/80">123 Rue de l'Éducation, Casablanca, Maroc</span>
+                <a href={mapUrl} target="_blank" rel="noreferrer" className="hover:text-white">
+                  {centerAddress}
+                </a>
               </li>
-              <li className="flex items-center space-x-3">
+              <li className="flex items-center gap-2">
                 <FiPhone className="flex-shrink-0" />
-                <span className="text-white/80">+212 5 22 00 00 00</span>
+                <span>+212 5 22 00 00 00</span>
               </li>
-              <li className="flex items-center space-x-3">
+              <li className="flex items-center gap-2">
                 <FiMail className="flex-shrink-0" />
-                <span className="text-white/80">contact@freshstart.ma</span>
+                <span>contact@freshstart.ma</span>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="border-t border-white/20 mt-12 pt-8 text-center">
-          <p className="text-white/70">
-            &copy; {currentYear} Fresh Start Academy. Tous droits réservés.
-          </p>
+        <div className="mt-10 pt-6 border-t border-primary-700/60 text-sm text-secondary-100/70 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <p>&copy; {currentYear} Fresh Start Academy. Tous droits reserves.</p>
+          <p>Design system Sapphire + Navy</p>
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

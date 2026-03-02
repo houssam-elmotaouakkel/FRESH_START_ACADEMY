@@ -1,24 +1,39 @@
 :root {
   --fsa-font-display: 'Poppins', 'Segoe UI', Tahoma, sans-serif;
-  --fsa-radius-sm: 10px;
-  --fsa-radius-md: 16px;
-  --fsa-radius-lg: 24px;
-  --fsa-shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.08);
-  --fsa-shadow-card: 0 12px 38px rgba(30, 50, 80, 0.12);
-  --fsa-content-max: 1200px;
-}
+  --fsa-font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --fsa-radius-sm: 8px;
+  --fsa-radius-md: 14px;
+  --fsa-radius-lg: 22px;
+  --fsa-radius-pill: 999px;
+  --fsa-shadow-soft: 0 14px 34px rgba(0, 9, 38, 0.12);
+  --fsa-shadow-card: 0 18px 46px rgba(15, 82, 186, 0.16);
+  --fsa-content-max: 1220px;
 
-.surface-card {
-  border-radius: var(--fsa-radius-lg);
-  box-shadow: var(--fsa-shadow-soft);
-}
-
-.surface-soft {
-  border-radius: var(--fsa-radius-md);
-  background: linear-gradient(160deg, rgba(129, 184, 248, 0.1), rgba(221, 228, 233, 0.4));
+  --fsa-primary-700: #0f52ba;
+  --fsa-primary-900: #000926;
+  --fsa-secondary-100: #d6e6f3;
+  --fsa-secondary-300: #a6c5d7;
+  --fsa-surface-light: #f4f8fc;
+  --fsa-text-main: #07142e;
+  --fsa-text-muted: #385273;
+  --fsa-border-soft: rgba(15, 82, 186, 0.2);
+  --fsa-gradient-main: linear-gradient(130deg, #000926 8%, #0f52ba 88%);
+  --fsa-gradient-soft: linear-gradient(140deg, #d6e6f3 0%, #a6c5d7 100%);
 }
 
 .content-wrap {
   margin-inline: auto;
   max-width: var(--fsa-content-max);
+}
+
+.surface-card {
+  border-radius: var(--fsa-radius-lg);
+  box-shadow: var(--fsa-shadow-soft);
+  border: 1px solid var(--fsa-border-soft);
+  background: #ffffff;
+}
+
+.surface-soft {
+  border-radius: var(--fsa-radius-md);
+  background: var(--fsa-gradient-soft);
 }

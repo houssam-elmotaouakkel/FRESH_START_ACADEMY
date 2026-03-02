@@ -1,40 +1,39 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { FiMenu, FiX, FiUser, FiLogOut } from 'react-icons/fi'
-import useAuthStore from '../../store/authStore'
+import { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { FiMenu, FiX, FiUser, FiLogOut, FiPhoneCall } from 'react-icons/fi';
+import useAuthStore from '../../store/authStore';
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { user, isAuthenticated, logout } = useAuthStore()
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuthStore();
 
   const handleLogout = () => {
-    logout()
-    setIsMenuOpen(false)
-  }
+    logout();
+    setIsMenuOpen(false);
+  };
 
   const navLinkClass = ({ isActive }) =>
-    `px-4 py-2 rounded-full transition-all duration-300 ${
+    `px-3 py-2 rounded-full text-sm font-medium transition-colors ${
       isActive
-        ? 'text-primary-300 font-semibold'
-        : 'text-gray-700 hover:text-primary-300'
-    }`
+        ? 'bg-primary-100 text-primary-900'
+        : 'text-secondary-800 hover:text-primary-700 hover:bg-secondary-100/70'
+    }`;
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-12 h-12 gradient-primary rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xl">FS</span>
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-secondary-200/80">
+      <div className="content-wrap px-4">
+        <div className="h-20 flex items-center justify-between gap-4">
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl gradient-primary flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold">FS</span>
             </div>
-            <span className="text-xl font-bold text-gray-800">
-              Fresh Start <span className="text-primary-300">Academy</span>
-            </span>
+            <div>
+              <p className="text-lg font-bold text-primary-900 leading-tight">Fresh Start Academy</p>
+              <p className="text-xs text-secondary-700">Centre de langues a Rabat</p>
+            </div>
           </Link>
 
-          {/* Navigation Desktop */}
-          <nav className="hidden md:flex items-center space-x-2">
+          <nav className="hidden lg:flex items-center gap-1">
             <NavLink to="/" className={navLinkClass}>
               Accueil
             </NavLink>
@@ -42,140 +41,101 @@ function Header() {
               Cours
             </NavLink>
             <NavLink to="/about" className={navLinkClass}>
-              À Propos
+              A propos
             </NavLink>
             <NavLink to="/contact" className={navLinkClass}>
               Contact
             </NavLink>
+          </nav>
+
+          <div className="hidden lg:flex items-center gap-3">
+            <Link to="/contact" className="btn-secondary text-sm">
+              <FiPhoneCall />
+              Nous contacter
+            </Link>
 
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3 ml-4">
+              <>
                 {user?.role === 'ADMIN' && (
-                  <NavLink
-                    to="/admin"
-                    className="px-4 py-2 text-primary-300 hover:text-primary-500 font-medium"
-                  >
+                  <NavLink to="/admin" className="btn-secondary text-sm">
                     Admin
                   </NavLink>
                 )}
-                <NavLink
-                  to="/dashboard"
-                  className="flex items-center space-x-1 px-4 py-2 text-gray-700 hover:text-primary-300"
-                >
+                <NavLink to="/dashboard" className="btn-secondary text-sm">
                   <FiUser />
-                  <span>{user?.firstName}</span>
+                  {user?.firstName || 'Mon compte'}
                 </NavLink>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center space-x-1 btn-secondary text-sm"
-                >
+                <button onClick={handleLogout} className="btn-primary text-sm">
                   <FiLogOut />
-                  <span>Déconnexion</span>
+                  Deconnexion
                 </button>
-              </div>
+              </>
             ) : (
-              <div className="flex items-center space-x-3 ml-4">
+              <>
                 <NavLink to="/login" className="btn-secondary text-sm">
                   Connexion
                 </NavLink>
                 <NavLink to="/register" className="btn-primary text-sm">
-                  S'inscrire
+                  Inscription
+                </NavLink>
+              </>
+            )}
+          </div>
+
+          <button
+            className="lg:hidden p-2 rounded-lg border border-secondary-300 text-primary-900"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-label="menu"
+          >
+            {isMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
+          </button>
+        </div>
+
+        {isMenuOpen && (
+          <nav className="lg:hidden border-t border-secondary-200 py-4 flex flex-col gap-2">
+            <NavLink to="/" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
+              Accueil
+            </NavLink>
+            <NavLink to="/courses" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
+              Cours
+            </NavLink>
+            <NavLink to="/about" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
+              A propos
+            </NavLink>
+            <NavLink to="/contact" className={navLinkClass} onClick={() => setIsMenuOpen(false)}>
+              Contact
+            </NavLink>
+
+            {isAuthenticated ? (
+              <div className="flex flex-col gap-2 pt-3">
+                {user?.role === 'ADMIN' && (
+                  <NavLink to="/admin" className="btn-secondary" onClick={() => setIsMenuOpen(false)}>
+                    Admin
+                  </NavLink>
+                )}
+                <NavLink to="/dashboard" className="btn-secondary" onClick={() => setIsMenuOpen(false)}>
+                  Mon compte
+                </NavLink>
+                <button onClick={handleLogout} className="btn-primary">
+                  <FiLogOut />
+                  Deconnexion
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 pt-3">
+                <NavLink to="/login" className="btn-secondary" onClick={() => setIsMenuOpen(false)}>
+                  Connexion
+                </NavLink>
+                <NavLink to="/register" className="btn-primary" onClick={() => setIsMenuOpen(false)}>
+                  Inscription
                 </NavLink>
               </div>
             )}
           </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-gray-700"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <nav className="md:hidden py-4 border-t">
-            <div className="flex flex-col space-y-2">
-              <NavLink
-                to="/"
-                className={navLinkClass}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Accueil
-              </NavLink>
-              <NavLink
-                to="/courses"
-                className={navLinkClass}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Cours
-              </NavLink>
-              <NavLink
-                to="/about"
-                className={navLinkClass}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                À Propos
-              </NavLink>
-              <NavLink
-                to="/contact"
-                className={navLinkClass}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contact
-              </NavLink>
-
-              {isAuthenticated ? (
-                <>
-                  {user?.role === 'ADMIN' && (
-                    <NavLink
-                      to="/admin"
-                      className="px-4 py-2 text-primary-300 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Admin
-                    </NavLink>
-                  )}
-                  <NavLink
-                    to="/dashboard"
-                    className="px-4 py-2 text-gray-700"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Mon compte
-                  </NavLink>
-                  <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 text-left text-red-500"
-                  >
-                    Déconnexion
-                  </button>
-                </>
-              ) : (
-                <div className="flex flex-col space-y-2 pt-4">
-                  <NavLink
-                    to="/login"
-                    className="btn-secondary text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Connexion
-                  </NavLink>
-                  <NavLink
-                    to="/register"
-                    className="btn-primary text-center"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    S'inscrire
-                  </NavLink>
-                </div>
-              )}
-            </div>
-          </nav>
         )}
       </div>
     </header>
-  )
+  );
 }
 
-export default Header
+export default Header;
