@@ -37,3 +37,6 @@ coverage/
 tmp/
 temp/
 *.tmp
+
+# archives
+_archive/
