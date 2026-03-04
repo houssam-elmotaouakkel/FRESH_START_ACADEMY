@@ -18,12 +18,18 @@ model User {
   role           Role?          @default(STUDENT)
   isActive       Boolean?       @default(true) @map("is_active")
   isVerified     Boolean?       @default(false) @map("is_verified")
+  totpSecret     String?        @map("totp_secret") @db.VarChar(255)
+  totpEnabled    Boolean?       @default(false) @map("totp_enabled")
   lastLogin      DateTime?      @map("last_login") @db.DateTime(0)
   createdAt      DateTime?      @default(now()) @map("created_at") @db.DateTime(0)
   updatedAt      DateTime?      @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
   teacherCourses Course[]       @relation("TeacherCourses")
   enrollments    Enrollment[]
   refreshTokens  RefreshToken[]
+  auditLogs      AuditLog[]
+  passwordResets PasswordReset[]
+  notifications  Notification[]
+  payments       Payment[]
 
   @@map("users")
 }
@@ -63,6 +69,9 @@ model Course {
   enrollments Enrollment[]
 
   @@index([teacherId], map: "teacher_id")
+  @@index([category], map: "idx_course_category")
+  @@index([level], map: "idx_course_level")
+  @@index([isActive], map: "idx_course_active")
   @@map("courses")
 }
 
@@ -94,6 +103,8 @@ model Testimonial {
   createdAt  DateTime? @default(now()) @map("created_at") @db.DateTime(0)
   updatedAt  DateTime? @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
 
+  @@index([isApproved], map: "idx_testimonial_approved")
+  @@index([isFeatured], map: "idx_testimonial_featured")
   @@map("testimonials")
 }
 
@@ -109,6 +120,7 @@ model Contact {
   createdAt DateTime?      @default(now()) @map("created_at") @db.DateTime(0)
   updatedAt DateTime?      @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
 
+  @@index([status], map: "idx_contact_status")
   @@map("contacts")
 }
 
@@ -121,6 +133,75 @@ model Setting {
   updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
 
   @@map("settings")
+}
+
+model AuditLog {
+  id         String    @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  userId     String?   @map("user_id") @db.VarChar(36)
+  action     String    @db.VarChar(100)
+  resource   String    @db.VarChar(100)
+  resourceId String?   @map("resource_id") @db.VarChar(36)
+  details    String?   @db.Text
+  ip         String?   @db.VarChar(45)
+  userAgent  String?   @map("user_agent") @db.VarChar(500)
+  createdAt  DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+  user       User?     @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_audit_user")
+  @@index([action], map: "idx_audit_action")
+  @@index([resource], map: "idx_audit_resource")
+  @@index([createdAt], map: "idx_audit_date")
+  @@map("audit_logs")
+}
+
+model PasswordReset {
+  id        String    @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  userId    String    @map("user_id") @db.VarChar(36)
+  token     String    @unique @db.VarChar(255)
+  expiresAt DateTime  @map("expires_at") @db.DateTime(0)
+  used      Boolean?  @default(false)
+  createdAt DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_reset_user")
+  @@index([expiresAt], map: "idx_reset_expiry")
+  @@map("password_resets")
+}
+
+model Notification {
+  id        String    @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  userId    String    @map("user_id") @db.VarChar(36)
+  type      String    @db.VarChar(50)
+  title     String    @db.VarChar(255)
+  message   String    @db.Text
+  data      String?   @db.Text
+  isRead    Boolean?  @default(false) @map("is_read")
+  createdAt DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_notif_user")
+  @@index([isRead], map: "idx_notif_read")
+  @@index([createdAt], map: "idx_notif_date")
+  @@map("notifications")
+}
+
+model Payment {
+  id            String         @id @default(dbgenerated("(uuid())")) @db.VarChar(36)
+  userId        String         @map("user_id") @db.VarChar(36)
+  courseId       String         @map("course_id") @db.VarChar(36)
+  amount        Decimal        @db.Decimal(10, 2)
+  currency      String         @default("MAD") @db.VarChar(10)
+  status        PaymentStatus? @default(PENDING)
+  method        String?        @db.VarChar(50)
+  transactionId String?        @unique @map("transaction_id") @db.VarChar(255)
+  paidAt        DateTime?      @map("paid_at") @db.DateTime(0)
+  createdAt     DateTime?      @default(now()) @map("created_at") @db.DateTime(0)
+  updatedAt     DateTime?      @default(now()) @updatedAt @map("updated_at") @db.DateTime(0)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([userId], map: "idx_payment_user")
+  @@index([status], map: "idx_payment_status")
+  @@map("payments")
 }
 
 enum Role {
@@ -154,4 +235,11 @@ enum ContactStatus {
   READ
   REPLIED
   ARCHIVED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
 }

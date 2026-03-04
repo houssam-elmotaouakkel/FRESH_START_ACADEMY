@@ -3,8 +3,10 @@ const router = express.Router();
 const publicController = require('../controllers/publicController');
 const { validate } = require('../middlewares');
 const { trackEventSchema, trackEventsBatchSchema } = require('../validators/publicValidator');
+const { cacheMiddleware } = require('../services/cacheService');
 
-router.get('/landing', publicController.getLandingContent);
+// Landing page — cached for 10 minutes (content changes rarely)
+router.get('/landing', cacheMiddleware('public:landing', 600), publicController.getLandingContent);
 
 router.post('/events', validate(trackEventSchema), publicController.trackEvent);
 

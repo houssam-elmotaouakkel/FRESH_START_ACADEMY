@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const contactController = require('../controllers/contactController');
-const { validate, authenticate, authorize, contactLimiter } = require('../middlewares');
+const { validate, authenticate, contactLimiter, PERMISSIONS, requirePermission, auditMiddleware } = require('../middlewares');
 const {
   createContactSchema,
   updateStatusSchema,
@@ -37,7 +37,7 @@ router.post(
 router.get(
   '/stats',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.CONTACTS_LIST),
   contactController.getContactStats
 );
 
@@ -49,7 +49,7 @@ router.get(
 router.get(
   '/',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.CONTACTS_LIST),
   validate(listContactsSchema),
   contactController.getAllContacts
 );
@@ -62,7 +62,7 @@ router.get(
 router.get(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.CONTACTS_LIST),
   validate(contactIdSchema),
   contactController.getContactById
 );
@@ -75,8 +75,9 @@ router.get(
 router.put(
   '/:id/status',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.CONTACTS_UPDATE),
   validate(updateStatusSchema),
+  auditMiddleware('UPDATE_STATUS', 'CONTACT'),
   contactController.updateContactStatus
 );
 
@@ -88,8 +89,9 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.CONTACTS_DELETE),
   validate(contactIdSchema),
+  auditMiddleware('DELETE', 'CONTACT'),
   contactController.deleteContact
 );
 

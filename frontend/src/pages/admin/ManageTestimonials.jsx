@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
   FaSearch,
@@ -14,6 +15,7 @@ import testimonialService from '../../services/testimonialService';
 import { formatDate } from '../../utils/helpers';
 
 export default function ManageTestimonials() {
+  const { t } = useTranslation();
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -43,7 +45,7 @@ export default function ManageTestimonials() {
       });
     } catch (error) {
       console.error('Error fetching testimonials:', error);
-      toast.error('Erreur lors du chargement des témoignages');
+      toast.error(t('admin.loadError'));
     } finally {
       setLoading(false);
     }
@@ -63,10 +65,10 @@ export default function ManageTestimonials() {
     setProcessing(testimonialId);
     try {
       await testimonialService.updateTestimonial(testimonialId, { isApproved: approve });
-      toast.success(approve ? 'Témoignage approuvé' : 'Témoignage rejeté');
+      toast.success(approve ? t('admin.testimonialApproved') : t('admin.testimonialRejected'));
       fetchTestimonials();
     } catch (error) {
-      toast.error(error.message || 'Erreur lors de la mise à jour');
+      toast.error(error.message || t('admin.updateError'));
     } finally {
       setProcessing(null);
     }
@@ -88,11 +90,11 @@ export default function ManageTestimonials() {
     setProcessing(selectedTestimonial.id);
     try {
       await testimonialService.deleteTestimonial(selectedTestimonial.id);
-      toast.success('Témoignage supprimé avec succès');
+      toast.success(t('admin.testimonialDeleted'));
       fetchTestimonials();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error(error.message || 'Erreur lors de la suppression');
+      toast.error(error.message || t('admin.deleteError'));
     } finally {
       setProcessing(null);
     }
@@ -121,12 +123,12 @@ export default function ManageTestimonials() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Gestion des témoignages</h1>
-        <p className="text-gray-600">Modérez et approuvez les témoignages des étudiants</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('admin.manageTestimonials')}</h1>
+        <p className="text-gray-600 dark:text-gray-400">{t('admin.manageTestimonialsDesc')}</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-md p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
         <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -134,8 +136,8 @@ export default function ManageTestimonials() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher par nom ou contenu..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder={t('admin.searchByNameContent')}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <select
@@ -144,38 +146,38 @@ export default function ManageTestimonials() {
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="">Tous les témoignages</option>
-            <option value="pending">En attente</option>
-            <option value="approved">Approuvés</option>
+            <option value="">{t('admin.allTestimonials')}</option>
+            <option value="pending">{t('admin.pending')}</option>
+            <option value="approved">{t('admin.approved')}</option>
           </select>
           <button
             type="submit"
             className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
-            Rechercher
+            {t('common.search')}
           </button>
         </form>
       </div>
 
       {/* Testimonials List */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
           </div>
         ) : visibleTestimonials.length === 0 ? (
           <div className="text-center py-12">
-            <FaStar className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-            <p className="text-gray-500">Aucun témoignage trouvé</p>
+            <FaStar className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600 mb-4" />
+            <p className="text-gray-500 dark:text-gray-400">{t('admin.noTestimonialsFound')}</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-200 dark:divide-gray-700">
             {visibleTestimonials.map((testimonial) => (
               <div
                 key={testimonial.id}
-                className={`p-6 hover:bg-gray-50 ${!testimonial.isApproved ? 'bg-yellow-50' : ''}`}
+                className={`p-6 hover:bg-gray-50 dark:hover:bg-gray-700 ${!testimonial.isApproved ? 'bg-yellow-50 dark:bg-yellow-900/10' : ''}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
@@ -192,21 +194,21 @@ export default function ManageTestimonials() {
                         </span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {testimonial.author}
                         </p>
-                        <p className="text-sm text-gray-500">
-                          {testimonial.role || 'Role non specifie'}
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {testimonial.role || t('admin.roleNotSpecified')}
                         </p>
                       </div>
                       {!testimonial.isApproved && (
                         <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
-                          En attente
+                          {t('admin.pending')}
                         </span>
                       )}
                       {testimonial.isApproved && (
                         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                          Approuvé
+                          {t('admin.approved')}
                         </span>
                       )}
                     </div>
@@ -216,8 +218,8 @@ export default function ManageTestimonials() {
                     </div>
 
                     <div className="relative pl-6">
-                      <FaQuoteLeft className="absolute left-0 top-0 w-4 h-4 text-gray-300" />
-                      <p className="text-gray-700 italic line-clamp-3">
+                      <FaQuoteLeft className="absolute left-0 top-0 w-4 h-4 text-gray-300 dark:text-gray-600" />
+                      <p className="text-gray-700 dark:text-gray-300 italic line-clamp-3">
                         {testimonial.content}
                       </p>
                     </div>
@@ -230,8 +232,8 @@ export default function ManageTestimonials() {
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <button
                       onClick={() => openDetailModal(testimonial)}
-                      className="p-2 text-gray-400 hover:text-gray-600"
-                      title="Voir"
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      title={t('admin.viewDetails')}
                     >
                       <FaEye className="w-4 h-4" />
                     </button>
@@ -241,7 +243,7 @@ export default function ManageTestimonials() {
                         onClick={() => handleApprove(testimonial.id, true)}
                         disabled={processing === testimonial.id}
                         className="p-2 text-green-600 hover:text-green-700 disabled:opacity-50"
-                        title="Approuver"
+                        title={t('admin.approve')}
                       >
                         {processing === testimonial.id ? (
                           <FaSpinner className="w-4 h-4 animate-spin" />
@@ -256,7 +258,7 @@ export default function ManageTestimonials() {
                         onClick={() => handleApprove(testimonial.id, false)}
                         disabled={processing === testimonial.id}
                         className="p-2 text-orange-600 hover:text-orange-700 disabled:opacity-50"
-                        title="Retirer l'approbation"
+                        title={t('admin.removeApproval')}
                       >
                         <FaTimes className="w-4 h-4" />
                       </button>
@@ -265,7 +267,7 @@ export default function ManageTestimonials() {
                     <button
                       onClick={() => handleDeleteClick(testimonial)}
                       className="p-2 text-red-600 hover:text-red-700"
-                      title="Supprimer"
+                      title={t('common.delete')}
                     >
                       <FaTrash className="w-4 h-4" />
                     </button>
@@ -278,23 +280,23 @@ export default function ManageTestimonials() {
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <p className="text-sm text-gray-500">Total: {pagination.total} témoignages</p>
+          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.total')}: {pagination.total} {t('admin.testimonials').toLowerCase()}</p>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
               >
-                Précédent
+                {t('common.previous')}
               </button>
-              <span className="px-3 py-1">Page {page} / {pagination.totalPages}</span>
+              <span className="px-3 py-1 dark:text-gray-300">{t('admin.page')} {page} / {pagination.totalPages}</span>
               <button
                 onClick={() => setPage(Math.min(pagination.totalPages, page + 1))}
                 disabled={page === pagination.totalPages}
-                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
               >
-                Suivant
+                {t('common.next')}
               </button>
             </div>
           </div>
@@ -304,12 +306,12 @@ export default function ManageTestimonials() {
       {/* Detail Modal */}
       {showDetailModal && selectedTestimonial && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-lg w-full p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Détails du témoignage</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('admin.testimonialDetails')}</h3>
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <FaTimes />
               </button>
@@ -323,39 +325,39 @@ export default function ManageTestimonials() {
                   </span>
                 </div>
                 <div>
-                  <p className="font-semibold text-gray-900">
+                  <p className="font-semibold text-gray-900 dark:text-white">
                     {selectedTestimonial.author}
                   </p>
-                  <p className="text-gray-500">{selectedTestimonial.role || 'Role non specifie'}</p>
+                  <p className="text-gray-500 dark:text-gray-400">{selectedTestimonial.role || t('admin.roleNotSpecified')}</p>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Role</label>
-                <p className="text-gray-900">{selectedTestimonial.role || 'Non spécifié'}</p>
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{t('admin.role')}</label>
+                <p className="text-gray-900 dark:text-white">{selectedTestimonial.role || t('admin.notSpecified')}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Note</label>
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{t('admin.rating')}</label>
                 <div className="flex items-center gap-1">
                   {renderStars(selectedTestimonial.rating || 5)}
-                  <span className="ml-2 text-gray-600">
+                  <span className="ml-2 text-gray-600 dark:text-gray-400">
                     ({selectedTestimonial.rating || 5}/5)
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Témoignage</label>
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <p className="text-gray-700 italic">"{selectedTestimonial.content}"</p>
+                <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{t('admin.testimonial')}</label>
+                <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <p className="text-gray-700 dark:text-gray-300 italic">"{selectedTestimonial.content}"</p>
                 </div>
               </div>
 
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>Soumis le {formatDate(selectedTestimonial.createdAt)}</span>
+              <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+                <span>{t('admin.submittedOn')} {formatDate(selectedTestimonial.createdAt)}</span>
                 <span className={selectedTestimonial.isApproved ? 'text-green-600' : 'text-yellow-600'}>
-                  {selectedTestimonial.isApproved ? 'Approuvé' : 'En attente'}
+                  {selectedTestimonial.isApproved ? t('admin.approved') : t('admin.pending')}
                 </span>
               </div>
             </div>
@@ -370,7 +372,7 @@ export default function ManageTestimonials() {
                   className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
                 >
                   <FaCheck />
-                  Approuver
+                  {t('admin.approve')}
                 </button>
               ) : (
                 <button
@@ -381,14 +383,14 @@ export default function ManageTestimonials() {
                   className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center justify-center gap-2"
                 >
                   <FaTimes />
-                  Retirer l'approbation
+                  {t('admin.removeApproval')}
                 </button>
               )}
               <button
                 onClick={() => setShowDetailModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Fermer
+                {t('common.close')}
               </button>
             </div>
           </div>
@@ -398,20 +400,20 @@ export default function ManageTestimonials() {
       {/* Delete Modal */}
       {showDeleteModal && selectedTestimonial && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                 <FaTrash className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Supprimer le témoignage</h3>
-                <p className="text-gray-500 text-sm">Cette action est irréversible</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('admin.deleteTestimonial')}</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">{t('admin.deleteIrreversible')}</p>
               </div>
             </div>
 
-            <p className="text-gray-600 mb-6">
-              Êtes-vous sûr de vouloir supprimer le témoignage de{' '}
-              <strong>
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              {t('admin.deleteTestimonialConfirm')}{' '}
+              <strong className="dark:text-white">
                 {selectedTestimonial.author}
               </strong> ?
             </p>
@@ -419,9 +421,9 @@ export default function ManageTestimonials() {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Annuler
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleDelete}
@@ -433,7 +435,7 @@ export default function ManageTestimonials() {
                 ) : (
                   <FaTrash />
                 )}
-                Supprimer
+                {t('common.delete')}
               </button>
             </div>
           </div>

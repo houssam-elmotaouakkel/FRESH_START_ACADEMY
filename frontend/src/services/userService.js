@@ -12,10 +12,6 @@ const userService = {
     const response = await api.put('/users/profile', data);
     return response;
   },
-  changePassword: async (data) => {
-    const response = await api.post('/auth/change-password', data);
-    return response;
-  },
 
   // === ADMIN ===
 

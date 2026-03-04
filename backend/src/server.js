@@ -2,11 +2,15 @@ const app = require('./app');
 const config = require('./config');
 const { connectDatabase, disconnectDatabase } = require('./config/database');
 const logger = require('./utils/logger');
+const { startTokenCleanup, stopTokenCleanup } = require('./cron/tokenCleanup');
 
 const startServer = async () => {
   try {
     // Connexion à la base de données
     await connectDatabase();
+
+    // Start periodic token cleanup
+    startTokenCleanup();
 
     // Démarrer le serveur
     app.listen(config.port, () => {
@@ -27,12 +31,14 @@ startServer();
 
 process.on('SIGINT', async () => {
   logger.info('\n👋 Shutting down gracefully...');
+  stopTokenCleanup();
   await disconnectDatabase();
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
   logger.info('\n👋 Shutting down gracefully...');
+  stopTokenCleanup();
   await disconnectDatabase();
   process.exit(0);
 });

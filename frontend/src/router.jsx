@@ -1,35 +1,49 @@
 import { createBrowserRouter } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 
-// Layouts
+// Layouts (not lazy — they wrap everything)
 import Layout from './components/layout/Layout';
 import AdminLayout from './components/layout/AdminLayout';
 
-// Pages Publiques
-import Home from './pages/Home';
-import About from './pages/About';
-import Courses from './pages/Courses';
-import CourseDetail from './pages/CourseDetail';
-import Contact from './pages/Contact';
-import Login from './pages/Login';
-import Register from './pages/Register';
-
-// Pages User
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import MyEnrollments from './pages/MyEnrollments';
-
-// Pages Admin
-import AdminDashboard from './pages/admin/AdminDashboard';
-import ManageUsers from './pages/admin/ManageUsers';
-import ManageCourses from './pages/admin/ManageCourses';
-import ManageEnrollments from './pages/admin/ManageEnrollments';
-import ManageContacts from './pages/admin/ManageContacts';
-import ManageTestimonials from './pages/admin/ManageTestimonials';
-
-// Components
+// Auth guards (tiny, always needed)
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
-import NotFound from './pages/NotFound';
+
+// Lazy-loaded Pages — code splitting per route
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Courses = lazy(() => import('./pages/Courses'));
+const CourseDetail = lazy(() => import('./pages/CourseDetail'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Profile = lazy(() => import('./pages/Profile'));
+const MyEnrollments = lazy(() => import('./pages/MyEnrollments'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const Terms = lazy(() => import('./pages/Terms'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+
+// Admin pages — separate chunk
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const ManageUsers = lazy(() => import('./pages/admin/ManageUsers'));
+const ManageCourses = lazy(() => import('./pages/admin/ManageCourses'));
+const ManageEnrollments = lazy(() => import('./pages/admin/ManageEnrollments'));
+const ManageContacts = lazy(() => import('./pages/admin/ManageContacts'));
+const ManageTestimonials = lazy(() => import('./pages/admin/ManageTestimonials'));
+
+// Suspense fallback
+const PageLoader = () => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="spinner" />
+  </div>
+);
+
+const withSuspense = (Component) => (
+  <Suspense fallback={<PageLoader />}>
+    <Component />
+  </Suspense>
+);
 
 const router = createBrowserRouter([
   {
@@ -37,20 +51,22 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       // Pages Publiques
-      { index: true, element: <Home /> },
-      { path: 'about', element: <About /> },
-      { path: 'courses', element: <Courses /> },
-      { path: 'courses/:id', element: <CourseDetail /> },
-      { path: 'contact', element: <Contact /> },
-      { path: 'login', element: <Login /> },
-      { path: 'register', element: <Register /> },
+      { index: true, element: withSuspense(Home) },
+      { path: 'about', element: withSuspense(About) },
+      { path: 'courses', element: withSuspense(Courses) },
+      { path: 'courses/:id', element: withSuspense(CourseDetail) },
+      { path: 'contact', element: withSuspense(Contact) },
+      { path: 'login', element: withSuspense(Login) },
+      { path: 'register', element: withSuspense(Register) },
+      { path: 'forgot-password', element: withSuspense(ForgotPassword) },
+      { path: 'terms', element: withSuspense(Terms) },
 
       // Pages User (protégées)
       {
         path: 'dashboard',
         element: (
           <ProtectedRoute>
-            <Dashboard />
+            {withSuspense(Dashboard)}
           </ProtectedRoute>
         ),
       },
@@ -58,7 +74,7 @@ const router = createBrowserRouter([
         path: 'profile',
         element: (
           <ProtectedRoute>
-            <Profile />
+            {withSuspense(Profile)}
           </ProtectedRoute>
         ),
       },
@@ -66,13 +82,13 @@ const router = createBrowserRouter([
         path: 'my-enrollments',
         element: (
           <ProtectedRoute>
-            <MyEnrollments />
+            {withSuspense(MyEnrollments)}
           </ProtectedRoute>
         ),
       },
 
       // 404
-      { path: '*', element: <NotFound /> },
+      { path: '*', element: withSuspense(NotFound) },
     ],
   },
 
@@ -85,12 +101,12 @@ const router = createBrowserRouter([
       </AdminRoute>
     ),
     children: [
-      { index: true, element: <AdminDashboard /> },
-      { path: 'users', element: <ManageUsers /> },
-      { path: 'courses', element: <ManageCourses /> },
-      { path: 'enrollments', element: <ManageEnrollments /> },
-      { path: 'contacts', element: <ManageContacts /> },
-      { path: 'testimonials', element: <ManageTestimonials /> },
+      { index: true, element: withSuspense(AdminDashboard) },
+      { path: 'users', element: withSuspense(ManageUsers) },
+      { path: 'courses', element: withSuspense(ManageCourses) },
+      { path: 'enrollments', element: withSuspense(ManageEnrollments) },
+      { path: 'contacts', element: withSuspense(ManageContacts) },
+      { path: 'testimonials', element: withSuspense(ManageTestimonials) },
     ],
   },
 ]);

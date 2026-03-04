@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const courseController = require('../controllers/courseController');
-const { validate, authenticate, authorize, optionalAuth } = require('../middlewares');
+const { validate, authenticate, optionalAuth, PERMISSIONS, requirePermission, auditMiddleware } = require('../middlewares');
 const {
   createCourseSchema,
   updateCourseSchema,
@@ -9,6 +9,19 @@ const {
   courseSlugSchema,
   listCoursesSchema,
 } = require('../validators/courseValidator');
+const { cacheMiddleware, invalidatePattern } = require('../services/cacheService');
+
+// Cache invalidation middleware for course writes
+const invalidateCourseCache = async (req, res, next) => {
+  // After the response is sent, invalidate cache
+  res.on('finish', () => {
+    if (res.statusCode >= 200 && res.statusCode < 300) {
+      invalidatePattern('courses:*');
+      invalidatePattern('public:landing:*');
+    }
+  });
+  next();
+};
 
 // ============================================
 // Routes Publiques
@@ -21,6 +34,7 @@ const {
  */
 router.get(
   '/',
+  cacheMiddleware('courses:list', 300),
   validate(listCoursesSchema),
   courseController.getAllCourses
 );
@@ -30,7 +44,7 @@ router.get(
  * @desc    Liste des catégories avec comptage
  * @access  Public
  */
-router.get('/categories', courseController.getCategories);
+router.get('/categories', cacheMiddleware('courses:categories', 600), courseController.getCategories);
 
 /**
  * @route   GET /api/courses/slug/:slug
@@ -66,8 +80,10 @@ router.get(
 router.post(
   '/',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.COURSES_CREATE),
   validate(createCourseSchema),
+  invalidateCourseCache,
+  auditMiddleware('CREATE', 'COURSE'),
   courseController.createCourse
 );
 
@@ -79,8 +95,10 @@ router.post(
 router.put(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.COURSES_UPDATE),
   validate(updateCourseSchema),
+  invalidateCourseCache,
+  auditMiddleware('UPDATE', 'COURSE'),
   courseController.updateCourse
 );
 
@@ -92,8 +110,10 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.COURSES_DELETE),
   validate(courseIdSchema),
+  invalidateCourseCache,
+  auditMiddleware('DELETE', 'COURSE'),
   courseController.deleteCourse
 );
 

@@ -40,31 +40,31 @@ const getAllUsers = async (options = {}) => {
     where.isActive = isActive;
   }
 
-  // Compter le total
-  const total = await prisma.user.count({ where });
-
-  // Récupérer les utilisateurs
-  const users = await prisma.user.findMany({
-    where,
-    skip,
-    take,
-    orderBy: { [sortBy]: sortOrder },
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      phone: true,
-      role: true,
-      isActive: true,
-      lastLogin: true,
-      createdAt: true,
-      updatedAt: true,
-      _count: {
-        select: { enrollments: true },
+  // Parallel queries for performance
+  const [total, users] = await Promise.all([
+    prisma.user.count({ where }),
+    prisma.user.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { [sortBy]: sortOrder },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        role: true,
+        isActive: true,
+        lastLogin: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: { enrollments: true },
+        },
       },
-    },
-  });
+    }),
+  ]);
 
   return {
     users,
@@ -148,9 +148,18 @@ const updateUser = async (id, data) => {
     }
   }
 
+  // Whitelist allowed fields to prevent mass-assignment
+  const allowedFields = ['email', 'firstName', 'lastName', 'phone', 'role', 'isActive'];
+  const filteredData = {};
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      filteredData[field] = data[field];
+    }
+  }
+
   const updatedUser = await prisma.user.update({
     where: { id },
-    data,
+    data: filteredData,
     select: {
       id: true,
       email: true,

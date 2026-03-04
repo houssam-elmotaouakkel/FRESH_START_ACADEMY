@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://localhost:5173/</loc>
+    <loc>https://freshstartacademy.ma/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>http://localhost:5173/courses</loc>
+    <loc>https://freshstartacademy.ma/courses</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>http://localhost:5173/about</loc>
+    <loc>https://freshstartacademy.ma/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>http://localhost:5173/contact</loc>
+    <loc>https://freshstartacademy.ma/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://localhost:5173/login</loc>
+    <loc>https://freshstartacademy.ma/login</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>http://localhost:5173/register</loc>
+    <loc>https://freshstartacademy.ma/register</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

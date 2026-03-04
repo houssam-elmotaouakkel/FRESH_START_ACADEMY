@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import { FiHome, FiArrowLeft } from 'react-icons/fi'
+import { useTranslation } from 'react-i18next'
 
 function NotFound() {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-screen bg-secondary-50 flex items-center justify-center px-4">
       <div className="text-center">
@@ -9,22 +12,22 @@ function NotFound() {
           404
         </div>
         <h1 className="text-4xl font-bold text-gray-800 mb-4">
-          Page non trouvée
+          {t('notFound.title')}
         </h1>
         <p className="text-xl text-secondary-600 mb-8 max-w-md mx-auto">
-          Oups ! La page que vous recherchez semble avoir disparu ou n'existe pas.
+          {t('notFound.message')}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link to="/" className="btn-primary flex items-center justify-center gap-2">
             <FiHome />
-            Retour à l'accueil
+            {t('notFound.backHome')}
           </Link>
           <button
             onClick={() => window.history.back()}
             className="btn-secondary flex items-center justify-center gap-2"
           >
             <FiArrowLeft />
-            Page précédente
+            {t('common.back')}
           </button>
         </div>
       </div>

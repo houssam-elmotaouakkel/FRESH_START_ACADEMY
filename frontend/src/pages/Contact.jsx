@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { FiMail, FiPhone, FiClock, FiSend, FiMapPin } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 import contactService from '../services/contactService';
 import LocationMap from '../components/branding/LocationMap';
 
 function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -25,56 +27,56 @@ function Contact() {
       };
 
       await contactService.sendMessage(payload);
-      toast.success('Votre message a ete envoye avec succes.');
+      toast.success(t('contact.success'));
       reset();
     } catch (error) {
-      toast.error(error.message || 'Erreur lors de l envoi du message');
+      toast.error(error.message || t('contact.error'));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const infos = [
-    { icon: <FiMapPin />, title: 'Adresse', value: import.meta.env.VITE_CENTER_ADDRESS || 'Rabat, Maroc' },
-    { icon: <FiPhone />, title: 'Telephone', value: '+212 5 22 00 00 00' },
-    { icon: <FiMail />, title: 'Email', value: 'contact@freshstart.ma' },
-    { icon: <FiClock />, title: 'Horaires', value: 'Lundi - Samedi, 9h00 - 19h00' },
+    { icon: <FiMapPin />, title: t('footer.address'), value: import.meta.env.VITE_CENTER_ADDRESS || 'Rabat, Maroc' },
+    { icon: <FiPhone />, title: t('contact.phone'), value: '+212 5 22 00 00 00' },
+    { icon: <FiMail />, title: t('contact.email'), value: 'contact@freshstart.ma' },
+    { icon: <FiClock />, title: t('common.date'), value: 'Lundi - Samedi, 9h00 - 19h00' },
   ];
 
   return (
     <div className="min-h-screen">
       <section className="gradient-primary text-white">
         <div className="content-wrap px-4 py-14">
-          <p className="text-xs uppercase tracking-[0.24em] text-secondary-100/85 mb-2">Contact</p>
-          <h1 className="section-title text-white mb-4">Parlons de votre objectif linguistique</h1>
+          <p className="text-xs uppercase tracking-[0.24em] text-secondary-100/85 mb-2">{t('common.contact')}</p>
+          <h1 className="section-title text-white mb-4">{t('contact.title')}</h1>
           <p className="text-white/85 max-w-2xl">
-            Decrivez votre besoin et nous revenons vers vous rapidement avec le programme adapte.
+            {t('contact.subtitle')}
           </p>
         </div>
       </section>
 
       <section className="content-wrap px-4 py-12 grid lg:grid-cols-2 gap-8">
         <div className="card p-7">
-          <h2 className="text-2xl font-bold text-primary-900 mb-6">Envoyer un message</h2>
+          <h2 className="text-2xl font-bold text-primary-900 mb-6">{t('contact.send')}</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-secondary-800 font-medium mb-1.5">Prenom *</label>
+                <label className="block text-sm text-secondary-800 font-medium mb-1.5">{t('auth.firstName')} *</label>
                 <input
                   type="text"
-                  placeholder="Votre prenom"
-                  {...register('firstName', { required: 'Le prenom est requis' })}
+                  placeholder={t('auth.firstName')}
+                  {...register('firstName', { required: t('errors.required') })}
                   className={errors.firstName ? 'border-error-500' : ''}
                 />
                 {errors.firstName && <p className="text-error-500 text-sm mt-1">{errors.firstName.message}</p>}
               </div>
               <div>
-                <label className="block text-sm text-secondary-800 font-medium mb-1.5">Nom *</label>
+                <label className="block text-sm text-secondary-800 font-medium mb-1.5">{t('auth.lastName')} *</label>
                 <input
                   type="text"
-                  placeholder="Votre nom"
-                  {...register('lastName', { required: 'Le nom est requis' })}
+                  placeholder={t('auth.lastName')}
+                  {...register('lastName', { required: t('errors.required') })}
                   className={errors.lastName ? 'border-error-500' : ''}
                 />
                 {errors.lastName && <p className="text-error-500 text-sm mt-1">{errors.lastName.message}</p>}
@@ -82,15 +84,15 @@ function Contact() {
             </div>
 
             <div>
-              <label className="block text-sm text-secondary-800 font-medium mb-1.5">Email *</label>
+              <label className="block text-sm text-secondary-800 font-medium mb-1.5">{t('contact.email')} *</label>
               <input
                 type="email"
-                placeholder="vous@email.com"
+                placeholder={t('contact.email')}
                 {...register('email', {
-                  required: 'L email est requis',
+                  required: t('errors.required'),
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Adresse email invalide',
+                    message: t('errors.invalidEmail'),
                   },
                 })}
                 className={errors.email ? 'border-error-500' : ''}
@@ -99,9 +101,9 @@ function Contact() {
             </div>
 
             <div>
-              <label className="block text-sm text-secondary-800 font-medium mb-1.5">Sujet *</label>
+              <label className="block text-sm text-secondary-800 font-medium mb-1.5">{t('contact.subject')} *</label>
               <select
-                {...register('subject', { required: 'Le sujet est requis' })}
+                {...register('subject', { required: t('errors.required') })}
                 className={errors.subject ? 'border-error-500' : ''}
               >
                 <option value="">Choisissez un sujet</option>
@@ -114,12 +116,12 @@ function Contact() {
             </div>
 
             <div>
-              <label className="block text-sm text-secondary-800 font-medium mb-1.5">Message *</label>
+              <label className="block text-sm text-secondary-800 font-medium mb-1.5">{t('contact.message')} *</label>
               <textarea
                 rows={5}
-                placeholder="Votre message..."
+                placeholder={t('contact.message')}
                 {...register('message', {
-                  required: 'Le message est requis',
+                  required: t('errors.required'),
                   minLength: { value: 10, message: 'Minimum 10 caracteres' },
                 })}
                 className={errors.message ? 'border-error-500' : ''}
@@ -128,10 +130,10 @@ function Contact() {
             </div>
 
             <button type="submit" disabled={isSubmitting} className="btn-primary w-full">
-              {isSubmitting ? 'Envoi en cours...' : (
+              {isSubmitting ? t('common.loading') : (
                 <>
                   <FiSend />
-                  Envoyer le message
+                  {t('contact.send')}
                 </>
               )}
             </button>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   FaUsers,
   FaGraduationCap,
@@ -15,6 +16,7 @@ import contactService from '../../services/contactService';
 import testimonialService from '../../services/testimonialService';
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState({
     users: 0,
     courses: 0,
@@ -60,35 +62,35 @@ export default function AdminDashboard() {
   const statCards = [
     {
       icon: FaUsers,
-      label: 'Utilisateurs',
+      label: t('admin.users'),
       value: stats.users,
       link: '/admin/users',
       trend: '+12%',
     },
     {
       icon: FaGraduationCap,
-      label: 'Cours',
+      label: t('admin.courses'),
       value: stats.courses,
       link: '/admin/courses',
       trend: '+5%',
     },
     {
       icon: FaClipboardList,
-      label: 'Inscriptions',
+      label: t('admin.enrollments'),
       value: stats.enrollments,
       link: '/admin/enrollments',
       trend: '+18%',
     },
     {
       icon: FaEnvelope,
-      label: 'Messages',
+      label: t('admin.contacts'),
       value: stats.contacts,
       link: '/admin/contacts',
       trend: '+8%',
     },
     {
       icon: FaStar,
-      label: 'Temoignages',
+      label: t('admin.testimonials'),
       value: stats.testimonials,
       link: '/admin/testimonials',
       trend: '+3%',
@@ -106,14 +108,14 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs uppercase tracking-[0.24em] text-primary-700 mb-2">Administration</p>
-        <h1 className="text-3xl font-bold text-primary-900">Dashboard</h1>
-        <p className="text-secondary-700">Vue globale de Fresh Start Academy</p>
+        <p className="text-xs uppercase tracking-[0.24em] text-primary-700 dark:text-primary-400 mb-2">{t('admin.administration')}</p>
+        <h1 className="text-3xl font-bold text-primary-900 dark:text-white">{t('admin.dashboard')}</h1>
+        <p className="text-secondary-700 dark:text-gray-400">{t('admin.overview')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
         {statCards.map((stat) => (
-          <Link key={stat.label} to={stat.link} className="card p-5 hover:-translate-y-1">
+          <Link key={stat.label} to={stat.link} className="card dark:bg-gray-800 dark:border-gray-700 p-5 hover:-translate-y-1">
             <div className="flex items-center justify-between mb-4">
               <div className="w-11 h-11 rounded-xl gradient-primary text-white flex items-center justify-center">
                 <stat.icon className="w-5 h-5" />
@@ -123,32 +125,32 @@ export default function AdminDashboard() {
                 {stat.trend}
               </span>
             </div>
-            <p className="text-3xl font-bold text-primary-900">{stat.value}</p>
-            <p className="text-sm text-secondary-700">{stat.label}</p>
+            <p className="text-3xl font-bold text-primary-900 dark:text-white">{stat.value}</p>
+            <p className="text-sm text-secondary-700 dark:text-gray-400">{stat.label}</p>
           </Link>
         ))}
       </div>
 
       <div className="grid xl:grid-cols-2 gap-6">
-        <div className="card">
-          <div className="p-5 border-b border-secondary-200/70 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-primary-900">Inscriptions recentes</h2>
-            <Link to="/admin/enrollments" className="text-sm font-medium text-primary-700 hover:text-primary-800">
-              Voir tout
+        <div className="card dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-5 border-b border-secondary-200/70 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-primary-900 dark:text-white">{t('admin.recentEnrollments')}</h2>
+            <Link to="/admin/enrollments" className="text-sm font-medium text-primary-700 dark:text-primary-400 hover:text-primary-800">
+              {t('admin.viewAll')}
             </Link>
           </div>
           <div className="p-5">
             {recentEnrollments.length === 0 ? (
-              <p className="text-secondary-700 text-center py-6">Aucune inscription recente</p>
+              <p className="text-secondary-700 dark:text-gray-400 text-center py-6">{t('admin.noRecentEnrollments')}</p>
             ) : (
               <div className="space-y-3">
                 {recentEnrollments.map((enrollment) => (
-                  <div key={enrollment.id} className="p-3 rounded-xl bg-secondary-50 border border-secondary-200/70 flex items-center justify-between gap-4">
+                  <div key={enrollment.id} className="p-3 rounded-xl bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 dark:border-gray-600 flex items-center justify-between gap-4">
                     <div>
-                      <p className="font-medium text-primary-900">
+                      <p className="font-medium text-primary-900 dark:text-white">
                         {enrollment.user?.firstName} {enrollment.user?.lastName}
                       </p>
-                      <p className="text-sm text-secondary-700">{enrollment.course?.title}</p>
+                      <p className="text-sm text-secondary-700 dark:text-gray-400">{enrollment.course?.title}</p>
                     </div>
                     <span
                       className={`badge ${
@@ -168,24 +170,24 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="card">
-          <div className="p-5 border-b border-secondary-200/70 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-primary-900">Messages recents</h2>
-            <Link to="/admin/contacts" className="text-sm font-medium text-primary-700 hover:text-primary-800">
-              Voir tout
+        <div className="card dark:bg-gray-800 dark:border-gray-700">
+          <div className="p-5 border-b border-secondary-200/70 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-primary-900 dark:text-white">{t('admin.recentMessages')}</h2>
+            <Link to="/admin/contacts" className="text-sm font-medium text-primary-700 dark:text-primary-400 hover:text-primary-800">
+              {t('admin.viewAll')}
             </Link>
           </div>
           <div className="p-5">
             {recentContacts.length === 0 ? (
-              <p className="text-secondary-700 text-center py-6">Aucun message recent</p>
+              <p className="text-secondary-700 dark:text-gray-400 text-center py-6">{t('admin.noRecentMessages')}</p>
             ) : (
               <div className="space-y-3">
                 {recentContacts.map((contact) => (
-                  <div key={contact.id} className="p-3 rounded-xl bg-secondary-50 border border-secondary-200/70 flex items-start justify-between gap-4">
+                  <div key={contact.id} className="p-3 rounded-xl bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 dark:border-gray-600 flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="font-medium text-primary-900">{contact.name}</p>
-                      <p className="text-sm text-secondary-700 truncate">{contact.subject}</p>
-                      <p className="text-xs text-secondary-600">{contact.email}</p>
+                      <p className="font-medium text-primary-900 dark:text-white">{contact.name}</p>
+                      <p className="text-sm text-secondary-700 dark:text-gray-400 truncate">{contact.subject}</p>
+                      <p className="text-xs text-secondary-600 dark:text-gray-500">{contact.email}</p>
                     </div>
                     {contact.status === 'UNREAD' && (
                       <span className="w-2.5 h-2.5 bg-primary-700 rounded-full mt-2 flex-shrink-0" />
@@ -198,24 +200,24 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="card p-5">
-        <h2 className="text-lg font-semibold text-primary-900 mb-4">Actions rapides</h2>
+      <div className="card dark:bg-gray-800 dark:border-gray-700 p-5">
+        <h2 className="text-lg font-semibold text-primary-900 dark:text-white mb-4">{t('admin.quickActions')}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Link to="/admin/courses" className="p-4 rounded-xl bg-secondary-50 border border-secondary-200/70 hover:border-primary-300 transition-colors text-center">
-            <FaGraduationCap className="w-7 h-7 text-primary-700 mx-auto mb-2" />
-            <span className="text-sm font-medium text-primary-900">Ajouter cours</span>
+          <Link to="/admin/courses" className="p-4 rounded-xl bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 transition-colors text-center">
+            <FaGraduationCap className="w-7 h-7 text-primary-700 dark:text-primary-400 mx-auto mb-2" />
+            <span className="text-sm font-medium text-primary-900 dark:text-white">{t('admin.addCourse')}</span>
           </Link>
-          <Link to="/admin/users" className="p-4 rounded-xl bg-secondary-50 border border-secondary-200/70 hover:border-primary-300 transition-colors text-center">
-            <FaUsers className="w-7 h-7 text-primary-700 mx-auto mb-2" />
-            <span className="text-sm font-medium text-primary-900">Utilisateurs</span>
+          <Link to="/admin/users" className="p-4 rounded-xl bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 transition-colors text-center">
+            <FaUsers className="w-7 h-7 text-primary-700 dark:text-primary-400 mx-auto mb-2" />
+            <span className="text-sm font-medium text-primary-900 dark:text-white">{t('admin.users')}</span>
           </Link>
-          <Link to="/admin/testimonials" className="p-4 rounded-xl bg-secondary-50 border border-secondary-200/70 hover:border-primary-300 transition-colors text-center">
-            <FaStar className="w-7 h-7 text-primary-700 mx-auto mb-2" />
-            <span className="text-sm font-medium text-primary-900">Temoignages</span>
+          <Link to="/admin/testimonials" className="p-4 rounded-xl bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 transition-colors text-center">
+            <FaStar className="w-7 h-7 text-primary-700 dark:text-primary-400 mx-auto mb-2" />
+            <span className="text-sm font-medium text-primary-900 dark:text-white">{t('admin.testimonials')}</span>
           </Link>
-          <Link to="/admin/contacts" className="p-4 rounded-xl bg-secondary-50 border border-secondary-200/70 hover:border-primary-300 transition-colors text-center">
-            <FaEnvelope className="w-7 h-7 text-primary-700 mx-auto mb-2" />
-            <span className="text-sm font-medium text-primary-900">Messages</span>
+          <Link to="/admin/contacts" className="p-4 rounded-xl bg-secondary-50 dark:bg-gray-700 border border-secondary-200/70 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-500 transition-colors text-center">
+            <FaEnvelope className="w-7 h-7 text-primary-700 dark:text-primary-400 mx-auto mb-2" />
+            <span className="text-sm font-medium text-primary-900 dark:text-white">{t('admin.contacts')}</span>
           </Link>
         </div>
       </div>

@@ -58,43 +58,43 @@ const getAllCourses = async (options = {}) => {
     if (maxPrice !== undefined) where.price.lte = maxPrice;
   }
 
-  // Compter le total
-  const total = await prisma.course.count({ where });
-
-  // Récupérer les cours
-  const courses = await prisma.course.findMany({
-    where,
-    skip,
-    take,
-    orderBy: { [sortBy]: sortOrder },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      description: true,
-      category: true,
-      level: true,
-      price: true,
-      duration: true,
-      maxStudents: true,
-      image: true,
-      isOnline: true,
-      isActive: true,
-      startDate: true,
-      endDate: true,
-      createdAt: true,
-      teacher: {
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
+  // Parallel queries for performance
+  const [total, courses] = await Promise.all([
+    prisma.course.count({ where }),
+    prisma.course.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { [sortBy]: sortOrder },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        category: true,
+        level: true,
+        price: true,
+        duration: true,
+        maxStudents: true,
+        image: true,
+        isOnline: true,
+        isActive: true,
+        startDate: true,
+        endDate: true,
+        createdAt: true,
+        teacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        _count: {
+          select: { enrollments: true },
         },
       },
-      _count: {
-        select: { enrollments: true },
-      },
-    },
-  });
+    }),
+  ]);
 
   return {
     courses,
@@ -214,9 +214,18 @@ const createCourse = async (data) => {
     slug = `${slug}-${Date.now()}`;
   }
 
+  // Whitelist allowed fields to prevent mass-assignment
+  const allowedFields = ['title', 'description', 'content', 'category', 'level', 'price', 'duration', 'maxStudents', 'image', 'isOnline', 'isActive', 'teacherId'];
+  const filteredData = {};
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      filteredData[field] = data[field];
+    }
+  }
+
   const course = await prisma.course.create({
     data: {
-      ...data,
+      ...filteredData,
       slug,
       startDate: data.startDate ? new Date(data.startDate) : null,
       endDate: data.endDate ? new Date(data.endDate) : null,
@@ -257,8 +266,16 @@ const updateCourse = async (id, data) => {
     throw new ApiError(404, 'Cours non trouvé');
   }
 
+  // Whitelist allowed fields
+  const allowedFields = ['title', 'description', 'content', 'category', 'level', 'price', 'duration', 'maxStudents', 'image', 'isOnline', 'isActive', 'startDate', 'endDate', 'teacherId'];
+  let updateData = {};
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      updateData[field] = data[field];
+    }
+  }
+
   // Si le titre change, régénérer le slug
-  let updateData = { ...data };
 
   if (data.title && data.title !== existingCourse.title) {
     let newSlug = generateSlug(data.title);

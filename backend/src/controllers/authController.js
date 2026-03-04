@@ -23,8 +23,13 @@ const register = async (req, res, next) => {
 // Connexion d'un utilisateur: POST /api/auth/login
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
-    const result = await authService.login(email, password);
+    const { email, password, totpCode } = req.body;
+    const result = await authService.login(email, password, totpCode);
+
+    // If 2FA is required, return early
+    if (result.requires2FA) {
+      return successResponse(res, { requires2FA: true }, 'Code 2FA requis');
+    }
 
     successResponse(res, {
       user: result.user,
@@ -45,6 +50,7 @@ const refreshToken = async (req, res, next) => {
 
     successResponse(res, {
       accessToken: result.accessToken,
+      refreshToken: result.refreshToken,
     }, 'Token rafraîchi');
   } catch (error) {
     next(error);

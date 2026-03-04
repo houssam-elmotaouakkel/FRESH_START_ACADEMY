@@ -4,6 +4,7 @@ const config = require('../config');
 const { getDbClient } = require('../config/database');
 const { ApiError } = require('../middlewares/errorHandler');
 const logger = require('../utils/logger');
+const { verifyTotp } = require('./totpService');
 
 const prisma = getDbClient();
 
@@ -26,8 +27,14 @@ const generateRefreshToken = (userId) => {
 
 //Calculer la date d'expiration du refresh token
 const getRefreshTokenExpiry = () => {
-  const days = parseInt(config.jwt.refreshExpiresIn) || 7;
-  return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+  const expiresIn = config.jwt.refreshExpiresIn || '7d';
+  const match = expiresIn.match(/^(\d+)(s|m|h|d)$/);
+  if (!match) return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+  const value = parseInt(match[1]);
+  const unit = match[2];
+  const multipliers = { s: 1000, m: 60 * 1000, h: 60 * 60 * 1000, d: 24 * 60 * 60 * 1000 };
+  return new Date(Date.now() + value * multipliers[unit]);
 };
 
 
@@ -47,50 +54,50 @@ const register = async (userData) => {
   // Hasher le mot de passe
   const hashedPassword = await bcrypt.hash(password, 12);
 
-  // Créer l'utilisateur
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      phone,
-    },
-    select: {
-      id: true,
-      email: true,
-      firstName: true,
-      lastName: true,
-      role: true,
-      createdAt: true,
-    },
-  });
+  // Générer les tokens avant la transaction
+  // (on aura l'ID après la création)
+  // Créer l'utilisateur ET le refresh token dans une transaction atomique
+  const result = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        phone,
+      },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        role: true,
+        createdAt: true,
+      },
+    });
 
-  // Générer les tokens
-  const accessToken = generateAccessToken(user.id);
-  const refreshToken = generateRefreshToken(user.id);
+    const accessToken = generateAccessToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
 
-  // Sauvegarder le refresh token en BDD
-  await prisma.refreshToken.create({
-    data: {
-      token: refreshToken,
-      userId: user.id,
-      expiresAt: getRefreshTokenExpiry(),
-    },
+    await tx.refreshToken.create({
+      data: {
+        token: refreshToken,
+        userId: user.id,
+        expiresAt: getRefreshTokenExpiry(),
+      },
+    });
+
+    return { user, accessToken, refreshToken };
   });
 
   logger.info(`New user registered: ${email}`);
 
-  return {
-    user,
-    accessToken,
-    refreshToken,
-  };
+  return result;
 };
 
 
 //Connexion d'un utilisateur
-const login = async (email, password) => {
+const login = async (email, password, totpCode) => {
   // Trouver l'utilisateur
   const user = await prisma.user.findUnique({
     where: { email },
@@ -110,6 +117,17 @@ const login = async (email, password) => {
 
   if (!isPasswordValid) {
     throw new ApiError(401, 'Email ou mot de passe incorrect');
+  }
+
+  // 2FA check: if enabled, require TOTP code
+  if (user.totpEnabled) {
+    if (!totpCode) {
+      return { requires2FA: true, userId: user.id };
+    }
+    const isValidTotp = verifyTotp(user.totpSecret, totpCode);
+    if (!isValidTotp) {
+      throw new ApiError(401, 'Code 2FA invalide');
+    }
   }
 
   // Générer les tokens
@@ -147,7 +165,7 @@ const login = async (email, password) => {
 };
 
 
-//Rafraîchir le token d'accès
+//Rafraîchir le token d'accès — with token rotation (OWASP best practice)
 const refreshAccessToken = async (refreshToken) => {
   // Vérifier si le refresh token existe en BDD
   const storedToken = await prisma.refreshToken.findUnique({
@@ -178,10 +196,23 @@ const refreshAccessToken = async (refreshToken) => {
     throw new ApiError(401, 'Refresh token invalide');
   }
 
-  // Générer un nouveau access token
-  const accessToken = generateAccessToken(storedToken.userId);
+  // Token rotation: delete old + issue new refresh token
+  await prisma.refreshToken.delete({
+    where: { id: storedToken.id },
+  });
 
-  return { accessToken };
+  const accessToken = generateAccessToken(storedToken.userId);
+  const newRefreshToken = generateRefreshToken(storedToken.userId);
+
+  await prisma.refreshToken.create({
+    data: {
+      token: newRefreshToken,
+      userId: storedToken.userId,
+      expiresAt: getRefreshTokenExpiry(),
+    },
+  });
+
+  return { accessToken, refreshToken: newRefreshToken };
 };
 
 
@@ -225,16 +256,16 @@ const changePassword = async (userId, currentPassword, newPassword) => {
   // Hasher le nouveau mot de passe
   const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-  // Mettre à jour le mot de passe
-  await prisma.user.update({
-    where: { id: userId },
-    data: { password: hashedPassword },
-  });
-
-  // Supprimer tous les refresh tokens (déconnexion de tous les appareils)
-  await prisma.refreshToken.deleteMany({
-    where: { userId },
-  });
+  // Mettre à jour le mot de passe ET supprimer tous les tokens atomiquement
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    }),
+    prisma.refreshToken.deleteMany({
+      where: { userId },
+    }),
+  ]);
 
   logger.info(`Password changed for user ${userId}`);
 };

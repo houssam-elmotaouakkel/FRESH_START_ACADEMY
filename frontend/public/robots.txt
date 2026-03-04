@@ -7,4 +7,4 @@ Disallow: /dashboard
 Disallow: /profile
 Disallow: /my-enrollments
 
-Sitemap: http://localhost:5173/sitemap.xml
+Sitemap: https://freshstartacademy.ma/sitemap.xml

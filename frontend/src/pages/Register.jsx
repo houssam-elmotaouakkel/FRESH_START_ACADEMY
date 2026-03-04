@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaPhone, FaSpinner } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/authStore';
 
 export default function Register() {
@@ -10,6 +11,7 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const { register: registerUser, isAuthenticated, isLoading, error, clearError } = useAuthStore();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -48,15 +50,15 @@ export default function Register() {
 
     const result = await registerUser(userData);
     if (result.success) {
-      toast.success('Inscription reussie');
+      toast.success(t('auth.registerSuccess'));
       return;
     }
-    toast.error(result.error || 'Erreur lors de l inscription');
+    toast.error(result.error || t('errors.serverError'));
   };
 
   return (
     <div className="min-h-screen gradient-soft flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl grid lg:grid-cols-2 rounded-[28px] overflow-hidden shadow-[0_20px_52px_rgba(0,9,38,0.2)] border border-primary-700/15 bg-white">
+      <div className="w-full max-w-5xl grid lg:grid-cols-2 rounded-[28px] overflow-hidden shadow-[0_20px_52px_rgba(0,9,38,0.2)] border border-primary-700/15 bg-white dark:bg-gray-900">
         <aside className="hidden lg:flex flex-col justify-between gradient-primary text-white p-10">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-secondary-100/80 mb-3">Fresh Start Academy</p>
@@ -70,12 +72,12 @@ export default function Register() {
 
         <main className="p-7 sm:p-10">
           <div className="mb-6">
-            <Link to="/" className="text-primary-700 font-semibold text-sm">Retour accueil</Link>
-            <h2 className="text-3xl font-bold text-primary-900 mt-3">Inscription</h2>
-            <p className="text-secondary-700 mt-1">
-              Deja inscrit ?{' '}
-              <Link to="/login" className="text-primary-700 font-semibold hover:text-primary-800">
-                Connectez-vous
+            <Link to="/" className="text-primary-700 dark:text-primary-300 font-semibold text-sm">{t('common.returnToSite')}</Link>
+            <h2 className="text-3xl font-bold text-primary-900 dark:text-white mt-3">{t('auth.registerTitle')}</h2>
+            <p className="text-secondary-700 dark:text-secondary-300 mt-1">
+              {t('auth.hasAccount')}{' '}
+              <Link to="/login" className="text-primary-700 dark:text-primary-300 font-semibold hover:text-primary-800">
+                {t('common.login')}
               </Link>
             </p>
           </div>
@@ -89,34 +91,34 @@ export default function Register() {
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-secondary-800 mb-1">Prenom</label>
+                <label className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1">{t('auth.firstName')}</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600"><FaUser /></span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"><FaUser /></span>
                   <input
                     {...register('firstName', {
-                      required: 'Le prenom est requis',
-                      minLength: { value: 2, message: 'Minimum 2 caracteres' },
+                      required: t('errors.required'),
+                      minLength: { value: 2, message: t('errors.required') },
                     })}
                     type="text"
                     className={`pl-10 ${errors.firstName ? 'border-error-500' : ''}`}
-                    placeholder="Prenom"
+                    placeholder={t('auth.firstName')}
                   />
                 </div>
                 {errors.firstName && <p className="text-sm text-error-600 mt-1">{errors.firstName.message}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-secondary-800 mb-1">Nom</label>
+                <label className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1">{t('auth.lastName')}</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600"><FaUser /></span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"><FaUser /></span>
                   <input
                     {...register('lastName', {
-                      required: 'Le nom est requis',
-                      minLength: { value: 2, message: 'Minimum 2 caracteres' },
+                      required: t('errors.required'),
+                      minLength: { value: 2, message: t('errors.required') },
                     })}
                     type="text"
                     className={`pl-10 ${errors.lastName ? 'border-error-500' : ''}`}
-                    placeholder="Nom"
+                    placeholder={t('auth.lastName')}
                   />
                 </div>
                 {errors.lastName && <p className="text-sm text-error-600 mt-1">{errors.lastName.message}</p>}
@@ -124,15 +126,15 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-800 mb-1">Email</label>
+              <label className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1">{t('auth.email')}</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600"><FaEnvelope /></span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"><FaEnvelope /></span>
                 <input
                   {...register('email', {
-                    required: 'L email est requis',
+                    required: t('errors.required'),
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Adresse email invalide',
+                      message: t('errors.invalidEmail'),
                     },
                   })}
                   type="email"
@@ -144,14 +146,14 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-800 mb-1">Telephone (optionnel)</label>
+              <label className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1">{t('auth.phone')}</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600"><FaPhone /></span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"><FaPhone /></span>
                 <input
                   {...register('phone', {
                     pattern: {
                       value: /^[0-9+\s-]{10,}$/,
-                      message: 'Numero invalide',
+                      message: t('errors.required'),
                     },
                   })}
                   type="tel"
@@ -163,13 +165,13 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-800 mb-1">Mot de passe</label>
+              <label className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1">{t('auth.password')}</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600"><FaLock /></span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"><FaLock /></span>
                 <input
                   {...register('password', {
-                    required: 'Le mot de passe est requis',
-                    minLength: { value: 8, message: 'Minimum 8 caracteres' },
+                    required: t('errors.required'),
+                    minLength: { value: 8, message: t('errors.passwordMin') },
                     pattern: {
                       value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
                       message: 'Une majuscule, une minuscule et un chiffre requis',
@@ -181,7 +183,7 @@ export default function Register() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -191,13 +193,13 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-800 mb-1">Confirmer le mot de passe</label>
+              <label className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1">{t('auth.confirmPassword')}</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600"><FaLock /></span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"><FaLock /></span>
                 <input
                   {...register('confirmPassword', {
-                    required: 'Confirmation requise',
-                    validate: (value) => value === getValues('password') || 'Les mots de passe ne correspondent pas',
+                    required: t('errors.required'),
+                    validate: (value) => value === getValues('password') || t('errors.passwordMatch'),
                   })}
                   type={showConfirmPassword ? 'text' : 'password'}
                   className={`pl-10 pr-10 ${errors.confirmPassword ? 'border-error-500' : ''}`}
@@ -205,7 +207,7 @@ export default function Register() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"
                   onClick={() => setShowConfirmPassword((prev) => !prev)}
                 >
                   {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
@@ -216,14 +218,12 @@ export default function Register() {
 
             <div className="flex items-start gap-2 pt-1">
               <input
-                {...register('terms', { required: 'Vous devez accepter les conditions' })}
+                {...register('terms', { required: t('errors.required') })}
                 type="checkbox"
                 className="h-4 w-4 mt-1"
               />
-              <label className="text-sm text-secondary-700">
-                J accepte les{' '}
-                <Link to="/terms" className="text-primary-700 font-medium">conditions</Link> et la{' '}
-                <Link to="/privacy" className="text-primary-700 font-medium">politique de confidentialite</Link>.
+              <label className="text-sm text-secondary-700 dark:text-secondary-300">
+                {t('auth.termsAgree')}
               </label>
             </div>
             {errors.terms && <p className="text-sm text-error-600">{errors.terms.message}</p>}
@@ -232,10 +232,10 @@ export default function Register() {
               {isLoading ? (
                 <>
                   <FaSpinner className="animate-spin" />
-                  Inscription en cours...
+                  {t('common.loading')}
                 </>
               ) : (
-                'Creer mon compte'
+                t('auth.registerTitle')
               )}
             </button>
           </form>

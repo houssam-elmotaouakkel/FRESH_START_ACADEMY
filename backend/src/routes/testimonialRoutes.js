@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const testimonialController = require('../controllers/testimonialController');
-const { validate, authenticate, authorize } = require('../middlewares');
+const { validate, authenticate, PERMISSIONS, requirePermission, auditMiddleware } = require('../middlewares');
 const {
   createTestimonialSchema,
   updateTestimonialSchema,
@@ -50,7 +50,7 @@ router.post(
 router.get(
   '/admin',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.TESTIMONIALS_MANAGE),
   validate(listTestimonialsSchema),
   testimonialController.getAllTestimonials
 );
@@ -63,7 +63,7 @@ router.get(
 router.get(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.TESTIMONIALS_MANAGE),
   validate(testimonialIdSchema),
   testimonialController.getTestimonialById
 );
@@ -76,8 +76,9 @@ router.get(
 router.put(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.TESTIMONIALS_MANAGE),
   validate(updateTestimonialSchema),
+  auditMiddleware('UPDATE', 'TESTIMONIAL'),
   testimonialController.updateTestimonial
 );
 
@@ -89,8 +90,9 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.TESTIMONIALS_MANAGE),
   validate(testimonialIdSchema),
+  auditMiddleware('DELETE', 'TESTIMONIAL'),
   testimonialController.deleteTestimonial
 );
 
@@ -102,8 +104,9 @@ router.delete(
 router.put(
   '/:id/approve',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.TESTIMONIALS_APPROVE),
   validate(testimonialIdSchema),
+  auditMiddleware('APPROVE', 'TESTIMONIAL'),
   testimonialController.toggleApproval
 );
 
@@ -115,8 +118,9 @@ router.put(
 router.put(
   '/:id/feature',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.TESTIMONIALS_MANAGE),
   validate(testimonialIdSchema),
+  auditMiddleware('FEATURE', 'TESTIMONIAL'),
   testimonialController.toggleFeatured
 );
 

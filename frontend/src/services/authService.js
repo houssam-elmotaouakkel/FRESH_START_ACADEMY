@@ -45,6 +45,18 @@ const authService = {
     });
     return response;
   },
+
+  // Demander la réinitialisation du mot de passe
+  requestPasswordReset: async (email) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response;
+  },
+
+  // Réinitialiser le mot de passe avec un token
+  resetPassword: async (token, newPassword) => {
+    const response = await api.post('/auth/reset-password', { token, newPassword });
+    return response;
+  },
 };
 
 export default authService;

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { validate, authenticate, authorize } = require('../middlewares');
+const { validate, authenticate, PERMISSIONS, requirePermission, auditMiddleware } = require('../middlewares');
 const {
   updateUserSchema,
   updateProfileSchema,
@@ -44,7 +44,7 @@ router.put(
 router.get(
   '/',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.USERS_LIST),
   validate(listUsersSchema),
   userController.getAllUsers
 );
@@ -57,7 +57,7 @@ router.get(
 router.get(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.USERS_READ),
   validate(userIdSchema),
   userController.getUserById
 );
@@ -70,8 +70,9 @@ router.get(
 router.put(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.USERS_UPDATE),
   validate(updateUserSchema),
+  auditMiddleware('UPDATE', 'USER'),
   userController.updateUser
 );
 
@@ -83,8 +84,9 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.USERS_DELETE),
   validate(userIdSchema),
+  auditMiddleware('DELETE', 'USER'),
   userController.deleteUser
 );
 

@@ -19,9 +19,7 @@ const useAuthStore = create(
           const response = await authService.register(userData);
           const { user, accessToken, refreshToken } = response.data;
 
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-
+          // Single source of truth: Zustand persist writes to localStorage
           set({
             user,
             accessToken,
@@ -43,9 +41,6 @@ const useAuthStore = create(
         try {
           const response = await authService.login(email, password);
           const { user, accessToken, refreshToken } = response.data;
-
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
 
           set({
             user,
@@ -72,8 +67,6 @@ const useAuthStore = create(
         } catch (error) {
           console.error('Logout error:', error);
         } finally {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
           set({
             user: null,
             accessToken: null,
@@ -85,8 +78,8 @@ const useAuthStore = create(
 
       // Récupérer le profil
       fetchUser: async () => {
-        const token = localStorage.getItem('accessToken');
-        if (!token) return;
+        const { accessToken } = get();
+        if (!accessToken) return;
 
         set({ isLoading: true });
         try {
@@ -113,5 +106,12 @@ const useAuthStore = create(
     }
   )
 );
+
+// Listen for auth:logout events from api.js interceptor
+if (typeof window !== 'undefined') {
+  window.addEventListener('auth:logout', () => {
+    useAuthStore.getState().logout();
+  });
+}
 
 export default useAuthStore;

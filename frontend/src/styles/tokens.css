@@ -19,6 +19,29 @@
   --fsa-border-soft: rgba(15, 82, 186, 0.2);
   --fsa-gradient-main: linear-gradient(130deg, #000926 8%, #0f52ba 88%);
   --fsa-gradient-soft: linear-gradient(140deg, #d6e6f3 0%, #a6c5d7 100%);
+
+  --fsa-bg: #ffffff;
+  --fsa-bg-alt: #f4f8fc;
+  --fsa-card-bg: #ffffff;
+}
+
+.dark {
+  --fsa-primary-700: #4f86dc;
+  --fsa-primary-900: #c5d8ff;
+  --fsa-secondary-100: #1e293b;
+  --fsa-secondary-300: #334155;
+  --fsa-surface-light: #1e293b;
+  --fsa-text-main: #e2e8f0;
+  --fsa-text-muted: #94a3b8;
+  --fsa-border-soft: rgba(100, 160, 255, 0.18);
+  --fsa-gradient-main: linear-gradient(130deg, #0f172a 8%, #1e40af 88%);
+  --fsa-gradient-soft: linear-gradient(140deg, #1e293b 0%, #334155 100%);
+  --fsa-shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.3);
+  --fsa-shadow-card: 0 18px 46px rgba(0, 0, 0, 0.4);
+
+  --fsa-bg: #0f172a;
+  --fsa-bg-alt: #1e293b;
+  --fsa-card-bg: #1e293b;
 }
 
 .content-wrap {
@@ -30,7 +53,7 @@
   border-radius: var(--fsa-radius-lg);
   box-shadow: var(--fsa-shadow-soft);
   border: 1px solid var(--fsa-border-soft);
-  background: #ffffff;
+  background: var(--fsa-card-bg);
 }
 
 .surface-soft {

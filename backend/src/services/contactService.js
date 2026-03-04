@@ -63,32 +63,28 @@ const getAllContacts = async (options = {}) => {
     ];
   }
 
-  // Compter le total
-  const total = await prisma.contact.count({ where });
-
-  // Compter les non lus
-  const unreadCount = await prisma.contact.count({
-    where: { status: 'UNREAD' },
-  });
-
-  // Récupérer les messages
-  const contacts = await prisma.contact.findMany({
-    where,
-    skip,
-    take,
-    orderBy: { [sortBy]: sortOrder },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      phone: true,
-      subject: true,
-      message: true,
-      status: true,
-      repliedAt: true,
-      createdAt: true,
-    },
-  });
+  // Parallel queries for performance
+  const [total, unreadCount, contacts] = await Promise.all([
+    prisma.contact.count({ where }),
+    prisma.contact.count({ where: { status: 'UNREAD' } }),
+    prisma.contact.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { [sortBy]: sortOrder },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        subject: true,
+        message: true,
+        status: true,
+        repliedAt: true,
+        createdAt: true,
+      },
+    }),
+  ]);
 
   return {
     contacts,

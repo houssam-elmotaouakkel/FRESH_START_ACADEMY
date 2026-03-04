@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 import useAuthStore from '../store/authStore';
 
 export default function Login() {
@@ -10,6 +11,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isAuthenticated, isLoading, error, clearError } = useAuthStore();
+  const { t } = useTranslation();
 
   const from = location.state?.from?.pathname || '/dashboard';
 
@@ -37,15 +39,15 @@ export default function Login() {
   const onSubmit = async (data) => {
     const result = await login(data.email, data.password);
     if (result.success) {
-      toast.success('Connexion reussie');
+      toast.success(t('auth.loginSuccess'));
       return;
     }
-    toast.error(result.error || 'Erreur de connexion');
+    toast.error(result.error || t('errors.serverError'));
   };
 
   return (
     <div className="min-h-screen gradient-soft flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-5xl grid lg:grid-cols-2 rounded-[28px] overflow-hidden shadow-[0_20px_52px_rgba(0,9,38,0.2)] border border-primary-700/15 bg-white">
+      <div className="w-full max-w-5xl grid lg:grid-cols-2 rounded-[28px] overflow-hidden shadow-[0_20px_52px_rgba(0,9,38,0.2)] border border-primary-700/15 bg-white dark:bg-gray-900">
         <aside className="hidden lg:flex flex-col justify-between gradient-primary text-white p-10">
           <div>
             <p className="text-xs uppercase tracking-[0.22em] text-secondary-100/80 mb-3">Fresh Start Academy</p>
@@ -59,12 +61,12 @@ export default function Login() {
 
         <main className="p-7 sm:p-10">
           <div className="mb-7">
-            <Link to="/" className="text-primary-700 font-semibold text-sm">Retour accueil</Link>
-            <h2 className="text-3xl font-bold text-primary-900 mt-3">Connexion</h2>
-            <p className="text-secondary-700 mt-1">
-              Pas encore de compte ?{' '}
-              <Link to="/register" className="text-primary-700 font-semibold hover:text-primary-800">
-                Creer un compte
+            <Link to="/" className="text-primary-700 dark:text-primary-300 font-semibold text-sm">{t('common.returnToSite')}</Link>
+            <h2 className="text-3xl font-bold text-primary-900 dark:text-white mt-3">{t('auth.loginTitle')}</h2>
+            <p className="text-secondary-700 dark:text-secondary-300 mt-1">
+              {t('auth.noAccount')}{' '}
+              <Link to="/register" className="text-primary-700 dark:text-primary-300 font-semibold hover:text-primary-800">
+                {t('common.register')}
               </Link>
             </p>
           </div>
@@ -77,19 +79,19 @@ export default function Login() {
 
           <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-secondary-800 mb-1.5">
-                Adresse email
+              <label htmlFor="email" className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1.5">
+                {t('auth.email')}
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300">
                   <FaEnvelope />
                 </span>
                 <input
                   {...register('email', {
-                    required: 'L email est requis',
+                    required: t('errors.required'),
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Adresse email invalide',
+                      message: t('errors.invalidEmail'),
                     },
                   })}
                   type="email"
@@ -102,19 +104,19 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-secondary-800 mb-1.5">
-                Mot de passe
+              <label htmlFor="password" className="block text-sm font-medium text-secondary-800 dark:text-secondary-100 mb-1.5">
+                {t('auth.password')}
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300">
                   <FaLock />
                 </span>
                 <input
                   {...register('password', {
-                    required: 'Le mot de passe est requis',
+                    required: t('errors.required'),
                     minLength: {
                       value: 6,
-                      message: 'Le mot de passe doit contenir au moins 6 caracteres',
+                      message: t('errors.passwordMin'),
                     },
                   })}
                   type={showPassword ? 'text' : 'password'}
@@ -124,7 +126,7 @@ export default function Login() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-secondary-600 dark:text-secondary-300"
                   onClick={() => setShowPassword((prev) => !prev)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -141,10 +143,10 @@ export default function Login() {
               {isLoading ? (
                 <>
                   <FaSpinner className="animate-spin" />
-                  Connexion en cours...
+                  {t('common.loading')}
                 </>
               ) : (
-                'Se connecter'
+                t('auth.loginTitle')
               )}
             </button>
           </form>

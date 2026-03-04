@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const enrollmentController = require('../controllers/enrollmentController');
-const { validate, authenticate, authorize } = require('../middlewares');
+const { validate, authenticate, PERMISSIONS, requirePermission, auditMiddleware } = require('../middlewares');
 const {
   createEnrollmentSchema,
   updateStatusSchema,
@@ -68,7 +68,7 @@ router.get(
 router.get(
   '/',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.ENROLLMENTS_LIST_ALL),
   validate(listEnrollmentsSchema),
   enrollmentController.getAllEnrollments
 );
@@ -81,8 +81,9 @@ router.get(
 router.put(
   '/:id/status',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.ENROLLMENTS_UPDATE_STATUS),
   validate(updateStatusSchema),
+  auditMiddleware('UPDATE_STATUS', 'ENROLLMENT'),
   enrollmentController.updateEnrollmentStatus
 );
 
@@ -94,8 +95,9 @@ router.put(
 router.delete(
   '/:id',
   authenticate,
-  authorize('ADMIN'),
+  requirePermission(PERMISSIONS.ENROLLMENTS_DELETE),
   validate(enrollmentIdSchema),
+  auditMiddleware('DELETE', 'ENROLLMENT'),
   enrollmentController.deleteEnrollment
 );
 

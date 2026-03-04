@@ -3,14 +3,22 @@ require('dotenv').config();
 const env = process.env.NODE_ENV || 'development';
 const isProduction = env === 'production';
 
-const jwtSecret = process.env.JWT_SECRET || (!isProduction ? 'dev-secret-change-me' : '');
-const jwtRefreshSecret =
-  process.env.JWT_REFRESH_SECRET || (!isProduction ? 'dev-refresh-secret-change-me' : '');
+// Strict secrets — no fallback in production OR staging
+const requireSecret = env === 'production' || env === 'staging';
 
-if (isProduction && (!jwtSecret || !jwtRefreshSecret)) {
+const jwtSecret = process.env.JWT_SECRET || (!requireSecret ? 'dev-secret-change-me' : '');
+const jwtRefreshSecret =
+  process.env.JWT_REFRESH_SECRET || (!requireSecret ? 'dev-refresh-secret-change-me' : '');
+
+if (requireSecret && (!jwtSecret || !jwtRefreshSecret)) {
   throw new Error(
-    'JWT_SECRET and JWT_REFRESH_SECRET must be set in production environment'
+    'JWT_SECRET and JWT_REFRESH_SECRET must be set in production/staging environment'
   );
+}
+
+// Validate critical env vars on startup
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is required');
 }
 
 const config = {

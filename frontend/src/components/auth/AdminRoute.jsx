@@ -1,5 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
+import { ROLES } from '../../utils/constants';
 
 const AdminRoute = ({ children }) => {
   const { user, isAuthenticated, isLoading } = useAuthStore();
@@ -16,7 +17,7 @@ const AdminRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user?.role !== 'ADMIN') {
+  if (user?.role !== Object.keys(ROLES).find(k => k === 'ADMIN')) {
     return <Navigate to="/dashboard" replace />;
   }
 

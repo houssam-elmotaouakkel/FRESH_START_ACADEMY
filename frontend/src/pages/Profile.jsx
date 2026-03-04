@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import { FiUser, FiMail, FiPhone, FiLock, FiSave } from 'react-icons/fi'
 import useAuthStore from '../store/authStore'
 import userService from '../services/userService'
+import authService from '../services/authService'
 
 function Profile() {
   const { user, setUser } = useAuthStore()
@@ -63,10 +64,10 @@ function Profile() {
   const onPasswordSubmit = async (data) => {
     setLoading(true)
     try {
-      await userService.changePassword({
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword
-      })
+      await authService.changePassword(
+        data.currentPassword,
+        data.newPassword
+      )
       toast.success('Mot de passe modifié avec succès')
       setIsChangingPassword(false)
       resetPassword()

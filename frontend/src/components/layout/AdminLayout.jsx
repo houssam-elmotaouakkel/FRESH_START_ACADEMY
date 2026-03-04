@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   HiHome,
   HiUsers,
@@ -16,6 +17,7 @@ import useUiStore from '../../store/uiStore';
 const DESKTOP_MEDIA_QUERY = '(min-width: 768px)';
 
 const AdminLayout = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuthStore();
   const mobileSidebarOpen = useUiStore((state) => state.mobileSidebarOpen);
   const desktopSidebarPinned = useUiStore((state) => state.desktopSidebarPinned);
@@ -90,12 +92,12 @@ const AdminLayout = () => {
   };
 
   const menuItems = [
-    { to: '/admin', icon: HiHome, label: 'Dashboard', end: true },
-    { to: '/admin/users', icon: HiUsers, label: 'Utilisateurs' },
-    { to: '/admin/courses', icon: HiAcademicCap, label: 'Cours' },
-    { to: '/admin/enrollments', icon: HiClipboardList, label: 'Inscriptions' },
-    { to: '/admin/contacts', icon: HiMail, label: 'Messages' },
-    { to: '/admin/testimonials', icon: HiStar, label: 'Temoignages' },
+    { to: '/admin', icon: HiHome, label: t('admin.dashboard'), end: true },
+    { to: '/admin/users', icon: HiUsers, label: t('admin.users') },
+    { to: '/admin/courses', icon: HiAcademicCap, label: t('admin.courses') },
+    { to: '/admin/enrollments', icon: HiClipboardList, label: t('admin.enrollments') },
+    { to: '/admin/contacts', icon: HiMail, label: t('admin.contacts') },
+    { to: '/admin/testimonials', icon: HiStar, label: t('admin.testimonials') },
   ];
 
   const getLinkClass = ({ isActive }) =>
@@ -108,11 +110,11 @@ const AdminLayout = () => {
     }`;
 
   return (
-    <div className="min-h-screen bg-secondary-50">
+    <div className="min-h-screen bg-secondary-50 dark:bg-gray-900">
       {mobileSidebarOpen && (
         <button
           type="button"
-          aria-label="Fermer le menu admin"
+          aria-label={t('admin.closeAdminMenu')}
           onClick={closeMobileSidebar}
           className="fixed inset-0 z-30 bg-primary-900/45 md:hidden"
         />
@@ -121,12 +123,12 @@ const AdminLayout = () => {
       <aside
         onMouseEnter={handleSidebarMouseEnter}
         onMouseLeave={handleSidebarMouseLeave}
-        className={`fixed top-0 left-0 z-40 h-screen w-72 bg-primary-900 text-white shadow-2xl transition-[transform,width] duration-200 ease-in-out ${
+        className={`fixed top-0 left-0 z-40 h-screen w-72 bg-primary-900 dark:bg-gray-800 text-white shadow-2xl transition-[transform,width] duration-200 ease-in-out ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0 ${isDesktopExpanded ? 'md:w-72' : 'md:w-20'}`}
       >
         <div
-          className={`h-20 border-b border-primary-700/50 flex items-center ${
+          className={`h-20 border-b border-primary-700/50 dark:border-gray-700/50 flex items-center ${
             isDesktopExpanded ? 'px-5 justify-between' : 'px-2 justify-center'
           }`}
         >
@@ -166,7 +168,7 @@ const AdminLayout = () => {
           ))}
         </nav>
 
-        <div className={`absolute bottom-0 left-0 right-0 border-t border-primary-700/50 bg-primary-900 ${
+        <div className={`absolute bottom-0 left-0 right-0 border-t border-primary-700/50 dark:border-gray-700/50 bg-primary-900 dark:bg-gray-800 ${
           isDesktopExpanded ? 'p-4' : 'p-3'
         }`}>
           <div className={`flex items-center ${isDesktopExpanded ? 'space-x-3 mb-4' : 'justify-center mb-3'}`}>
@@ -188,11 +190,11 @@ const AdminLayout = () => {
           <button
             onClick={handleLogout}
             className={`${isDesktopExpanded ? 'w-full btn-secondary text-sm' : 'w-full flex items-center justify-center rounded-xl border border-secondary-200/50 p-2 text-secondary-100 hover:bg-white/10 transition-colors'}`}
-            aria-label="Deconnexion"
-            title="Deconnexion"
+            aria-label={t('admin.disconnection')}
+            title={t('admin.disconnection')}
           >
             <HiLogout className="h-5 w-5" />
-            {isDesktopExpanded && <span>Deconnexion</span>}
+            {isDesktopExpanded && <span>{t('admin.disconnection')}</span>}
           </button>
         </div>
       </aside>
@@ -202,11 +204,11 @@ const AdminLayout = () => {
           isDesktopExpanded ? 'md:ml-72' : 'md:ml-20'
         }`}
       >
-        <header className="h-16 bg-white border-b border-secondary-200/70 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+        <header className="h-16 bg-white dark:bg-gray-800 border-b border-secondary-200/70 dark:border-gray-700 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
           <button
             onClick={toggleMobileSidebar}
-            className="md:hidden p-2 rounded-lg border border-secondary-300 text-primary-900"
-            aria-label="Ouvrir le menu admin"
+            className="md:hidden p-2 rounded-lg border border-secondary-300 dark:border-gray-600 text-primary-900 dark:text-white"
+            aria-label={t('admin.openAdminMenu')}
           >
             <HiMenuAlt2 className="h-6 w-6" />
           </button>
@@ -215,14 +217,14 @@ const AdminLayout = () => {
             <button
               type="button"
               onClick={toggleDesktopSidebarPinned}
-              className="hidden md:inline-flex px-3 py-2 rounded-lg border border-secondary-300 text-sm font-medium text-primary-700 hover:bg-secondary-50"
-              title={desktopSidebarPinned ? 'Reduire la sidebar' : 'Epingler la sidebar'}
-              aria-label={desktopSidebarPinned ? 'Reduire la sidebar' : 'Epingler la sidebar'}
+              className="hidden md:inline-flex px-3 py-2 rounded-lg border border-secondary-300 dark:border-gray-600 text-sm font-medium text-primary-700 dark:text-gray-300 hover:bg-secondary-50 dark:hover:bg-gray-700"
+              title={desktopSidebarPinned ? t('admin.reduceSidebar') : t('admin.pinSidebar')}
+              aria-label={desktopSidebarPinned ? t('admin.reduceSidebar') : t('admin.pinSidebar')}
             >
-              {desktopSidebarPinned ? 'Reduire sidebar' : 'Epingler sidebar'}
+              {desktopSidebarPinned ? t('admin.reduceSidebar') : t('admin.pinSidebar')}
             </button>
-            <NavLink to="/" className="text-sm font-medium text-primary-700 hover:text-primary-800">
-              Retour au site
+            <NavLink to="/" className="text-sm font-medium text-primary-700 dark:text-gray-300 hover:text-primary-800 dark:hover:text-white">
+              {t('admin.backToSite')}
             </NavLink>
           </div>
         </header>

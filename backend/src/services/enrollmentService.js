@@ -7,74 +7,79 @@ const prisma = getDbClient();
 
 /**
  * Créer une inscription (User s'inscrit à un cours)
+ * Uses interactive transaction to prevent race-condition over-enrollment
  */
 const createEnrollment = async (userId, data) => {
   const { courseId, notes } = data;
 
-  // Vérifier si le cours existe et est actif
-  const course = await prisma.course.findUnique({
-    where: { id: courseId },
-    select: {
-      id: true,
-      title: true,
-      isActive: true,
-      maxStudents: true,
-      _count: {
-        select: { enrollments: true },
-      },
-    },
-  });
-
-  if (!course) {
-    throw new ApiError(404, 'Cours non trouvé');
-  }
-
-  if (!course.isActive) {
-    throw new ApiError(400, 'Ce cours n\'est plus disponible');
-  }
-
-  // Vérifier si l'utilisateur est déjà inscrit
-  const existingEnrollment = await prisma.enrollment.findUnique({
-    where: {
-      userId_courseId: {
-        userId,
-        courseId,
-      },
-    },
-  });
-
-  if (existingEnrollment) {
-    throw new ApiError(409, 'Vous êtes déjà inscrit à ce cours');
-  }
-
-  // Vérifier si le cours n'est pas complet
-  if (course.maxStudents && course._count.enrollments >= course.maxStudents) {
-    throw new ApiError(400, 'Ce cours est complet');
-  }
-
-  // Créer l'inscription
-  const enrollment = await prisma.enrollment.create({
-    data: {
-      userId,
-      courseId,
-      notes,
-      status: 'PENDING',
-    },
-    select: {
-      id: true,
-      status: true,
-      notes: true,
-      enrolledAt: true,
-      course: {
-        select: {
-          id: true,
-          title: true,
-          category: true,
-          level: true,
-          price: true,
+  const enrollment = await prisma.$transaction(async (tx) => {
+    // Vérifier si le cours existe et est actif
+    const course = await tx.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        title: true,
+        isActive: true,
+        maxStudents: true,
+        _count: {
+          select: { enrollments: { where: { status: { not: 'CANCELLED' } } } },
         },
       },
-    },
+    });
+
+    if (!course) {
+      throw new ApiError(404, 'Cours non trouvé');
+    }
+
+    if (!course.isActive) {
+      throw new ApiError(400, 'Ce cours n\'est plus disponible');
+    }
+
+    // Vérifier si l'utilisateur est déjà inscrit
+    const existingEnrollment = await tx.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+    });
+
+    if (existingEnrollment) {
+      throw new ApiError(409, 'Vous êtes déjà inscrit à ce cours');
+    }
+
+    // Vérifier si le cours n'est pas complet
+    if (course.maxStudents && course._count.enrollments >= course.maxStudents) {
+      throw new ApiError(400, 'Ce cours est complet');
+    }
+
+    // Créer l'inscription dans la même transaction
+    return tx.enrollment.create({
+      data: {
+        userId,
+        courseId,
+        notes,
+        status: 'PENDING',
+      },
+      select: {
+        id: true,
+        status: true,
+        notes: true,
+        enrolledAt: true,
+        course: {
+          select: {
+            id: true,
+            title: true,
+            category: true,
+            level: true,
+            price: true,
+          },
+        },
+      },
+    });
+  }, {
+    isolationLevel: 'Serializable',
   });
 
   logger.info(`User ${userId} enrolled in course ${courseId}`);
@@ -83,12 +88,22 @@ const createEnrollment = async (userId, data) => {
 };
 
 /**
- * Récupérer les inscriptions de l'utilisateur connecté
+ * Récupérer les inscriptions de l'utilisateur connecté (avec pagination)
  */
-const getMyEnrollments = async (userId) => {
-  const enrollments = await prisma.enrollment.findMany({
-    where: { userId },
-    orderBy: { enrolledAt: 'desc' },
+const getMyEnrollments = async (userId, options = {}) => {
+  const { page = 1, limit = 20, status } = options;
+  const { skip, take } = getPagination(page, limit);
+
+  const where = { userId };
+  if (status) where.status = status;
+
+  const [total, enrollments] = await Promise.all([
+    prisma.enrollment.count({ where }),
+    prisma.enrollment.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { enrolledAt: 'desc' },
     select: {
       id: true,
       status: true,
@@ -116,9 +131,18 @@ const getMyEnrollments = async (userId) => {
         },
       },
     },
-  });
+  }),
+  ]);
 
-  return enrollments;
+  return {
+    enrollments,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / take),
+    },
+  };
 };
 
 /**
@@ -247,37 +271,37 @@ const getAllEnrollments = async (options = {}) => {
     where.userId = userId;
   }
 
-  // Compter le total
-  const total = await prisma.enrollment.count({ where });
-
-  // Récupérer les inscriptions
-  const enrollments = await prisma.enrollment.findMany({
-    where,
-    skip,
-    take,
-    orderBy: { [sortBy]: sortOrder },
-    select: {
-      id: true,
-      status: true,
-      enrolledAt: true,
-      completedAt: true,
-      user: {
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
+  // Parallel queries for performance
+  const [total, enrollments] = await Promise.all([
+    prisma.enrollment.count({ where }),
+    prisma.enrollment.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { [sortBy]: sortOrder },
+      select: {
+        id: true,
+        status: true,
+        enrolledAt: true,
+        completedAt: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        course: {
+          select: {
+            id: true,
+            title: true,
+            category: true,
+          },
         },
       },
-      course: {
-        select: {
-          id: true,
-          title: true,
-          category: true,
-        },
-      },
-    },
-  });
+    }),
+  ]);
 
   return {
     enrollments,

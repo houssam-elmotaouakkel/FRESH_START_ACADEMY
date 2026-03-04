@@ -106,21 +106,17 @@ const getAllTestimonials = async (options = {}) => {
     where.isFeatured = isFeatured;
   }
 
-  // Compter le total
-  const total = await prisma.testimonial.count({ where });
-
-  // Compter les en attente
-  const pendingCount = await prisma.testimonial.count({
-    where: { isApproved: false },
-  });
-
-  // Récupérer les témoignages
-  const testimonials = await prisma.testimonial.findMany({
-    where,
-    skip,
-    take,
-    orderBy: { [sortBy]: sortOrder },
-  });
+  // Parallel queries for performance
+  const [total, pendingCount, testimonials] = await Promise.all([
+    prisma.testimonial.count({ where }),
+    prisma.testimonial.count({ where: { isApproved: false } }),
+    prisma.testimonial.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { [sortBy]: sortOrder },
+    }),
+  ]);
 
   return {
     testimonials,
@@ -161,9 +157,18 @@ const updateTestimonial = async (id, data) => {
     throw new ApiError(404, 'Témoignage non trouvé');
   }
 
+  // Whitelist allowed fields to prevent mass-assignment
+  const allowedFields = ['author', 'role', 'content', 'rating', 'avatar', 'isApproved', 'isFeatured'];
+  const filteredData = {};
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      filteredData[field] = data[field];
+    }
+  }
+
   const updated = await prisma.testimonial.update({
     where: { id },
-    data,
+    data: filteredData,
   });
 
   logger.info(`Testimonial ${id} updated`);

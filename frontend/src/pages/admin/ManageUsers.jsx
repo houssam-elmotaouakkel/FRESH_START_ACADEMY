@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import {
   FaSearch,
@@ -14,6 +15,7 @@ import { formatDate } from '../../utils/helpers';
 import { ROLES } from '../../utils/constants';
 
 export default function ManageUsers() {
+  const { t } = useTranslation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -49,7 +51,7 @@ export default function ManageUsers() {
       });
     } catch (error) {
       console.error('Error fetching users:', error);
-      toast.error('Erreur lors du chargement des utilisateurs');
+      toast.error(t('admin.loadError'));
     } finally {
       setLoading(false);
     }
@@ -81,11 +83,11 @@ export default function ManageUsers() {
     setProcessing(true);
     try {
       await userService.updateUser(selectedUser.id, { role: newRole });
-      toast.success('Rôle mis à jour avec succès');
+      toast.success(t('admin.roleUpdated'));
       fetchUsers();
       setShowEditModal(false);
     } catch (error) {
-      toast.error(error.message || 'Erreur lors de la mise à jour');
+      toast.error(error.message || t('admin.updateError'));
     } finally {
       setProcessing(false);
     }
@@ -97,11 +99,11 @@ export default function ManageUsers() {
     setProcessing(true);
     try {
       await userService.deleteUser(selectedUser.id);
-      toast.success('Utilisateur supprimé avec succès');
+      toast.success(t('admin.userDeleted'));
       fetchUsers();
       setShowDeleteModal(false);
     } catch (error) {
-      toast.error(error.message || 'Erreur lors de la suppression');
+      toast.error(error.message || t('admin.deleteError'));
     } finally {
       setProcessing(false);
     }
@@ -125,13 +127,13 @@ export default function ManageUsers() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestion des utilisateurs</h1>
-          <p className="text-gray-600">Gérez les comptes et les rôles des utilisateurs</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('admin.manageUsers')}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t('admin.manageUsersDesc')}</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-xl shadow-md p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
         <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -139,8 +141,8 @@ export default function ManageUsers() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher par nom ou email..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              placeholder={t('admin.searchByNameEmail')}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
           <select
@@ -149,9 +151,9 @@ export default function ManageUsers() {
               setRoleFilter(e.target.value);
               setPage(1);
             }}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
-            <option value="">Tous les rôles</option>
+            <option value="">{t('admin.allRoles')}</option>
             {Object.entries(ROLES).map(([key, value]) => (
               <option key={key} value={key}>{value}</option>
             ))}
@@ -160,47 +162,47 @@ export default function ManageUsers() {
             type="submit"
             className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
-            Rechercher
+            {t('common.search')}
           </button>
         </form>
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
           </div>
         ) : users.length === 0 ? (
           <div className="text-center py-12">
-            <FaUser className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-            <p className="text-gray-500">Aucun utilisateur trouvé</p>
+            <FaUser className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-600 mb-4" />
+            <p className="text-gray-500 dark:text-gray-400">{t('admin.noUsersFound')}</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-900">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Utilisateur
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {t('admin.user')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {t('auth.email')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Rôle
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {t('admin.role')}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Inscrit le
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {t('admin.registeredAt')}
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                    {t('common.actions')}
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
@@ -209,36 +211,36 @@ export default function ManageUsers() {
                           </span>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {user.firstName} {user.lastName}
                           </div>
-                          <div className="text-sm text-gray-500">
-                            {user.phone || 'Pas de téléphone'}
+                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                            {user.phone || t('admin.noPhone')}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">
                       {user.email}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getRoleBadge(user.role)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {formatDate(user.createdAt)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
                         onClick={() => handleEditClick(user)}
                         className="text-primary-600 hover:text-primary-900 mr-4"
-                        title="Modifier le rôle"
+                        title={t('admin.editRole')}
                       >
                         <FaEdit className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeleteClick(user)}
                         className="text-red-600 hover:text-red-900"
-                        title="Supprimer"
+                        title={t('common.delete')}
                       >
                         <FaTrash className="w-4 h-4" />
                       </button>
@@ -252,27 +254,27 @@ export default function ManageUsers() {
 
         {/* Pagination */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <p className="text-sm text-gray-500">
-              Total: {pagination.total} utilisateurs
+          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {t('admin.total')}: {pagination.total} {t('admin.users').toLowerCase()}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
               >
-                Précédent
+                {t('common.previous')}
               </button>
-              <span className="px-3 py-1">
-                Page {page} / {pagination.totalPages}
+              <span className="px-3 py-1 dark:text-gray-300">
+                {t('admin.page')} {page} / {pagination.totalPages}
               </span>
               <button
                 onClick={() => setPage(Math.min(pagination.totalPages, page + 1))}
                 disabled={page === pagination.totalPages}
-                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
+                className="px-3 py-1 border border-gray-300 dark:border-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
               >
-                Suivant
+                {t('common.next')}
               </button>
             </div>
           </div>
@@ -282,19 +284,19 @@ export default function ManageUsers() {
       {/* Edit Role Modal */}
       {showEditModal && selectedUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Modifier le rôle</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('admin.editRole')}</h3>
               <button
                 onClick={() => setShowEditModal(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
                 <FaTimes />
               </button>
             </div>
 
-            <p className="text-gray-600 mb-4">
-              Utilisateur: <strong>{selectedUser.firstName} {selectedUser.lastName}</strong>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              {t('admin.user')}: <strong className="dark:text-white">{selectedUser.firstName} {selectedUser.lastName}</strong>
             </p>
 
             <div className="space-y-3">
@@ -303,14 +305,14 @@ export default function ManageUsers() {
                 disabled={processing || selectedUser.role === 'STUDENT'}
                 className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-colors ${
                   selectedUser.role === 'STUDENT'
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 hover:border-primary-300'
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                    : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'
                 }`}
               >
                 <FaUser className="w-5 h-5 text-blue-600" />
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Utilisateur</p>
-                  <p className="text-sm text-gray-500">Accès standard à la plateforme</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{t('admin.user')}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.standardAccess')}</p>
                 </div>
               </button>
 
@@ -319,14 +321,14 @@ export default function ManageUsers() {
                 disabled={processing || selectedUser.role === 'TEACHER'}
                 className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-colors ${
                   selectedUser.role === 'TEACHER'
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 hover:border-primary-300'
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                    : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'
                 }`}
               >
                 <FaUser className="w-5 h-5 text-purple-600" />
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Enseignant</p>
-                  <p className="text-sm text-gray-500">Gestion pedagogique des cours</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{t('admin.roles.TEACHER')}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.teacherAccess')}</p>
                 </div>
               </button>
 
@@ -335,14 +337,14 @@ export default function ManageUsers() {
                 disabled={processing || selectedUser.role === 'ADMIN'}
                 className={`w-full flex items-center gap-3 p-4 border-2 rounded-lg transition-colors ${
                   selectedUser.role === 'ADMIN'
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-200 hover:border-primary-300'
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30'
+                    : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'
                 }`}
               >
                 <FaUserShield className="w-5 h-5 text-red-600" />
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Administrateur</p>
-                  <p className="text-sm text-gray-500">Accès complet à l'administration</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{t('admin.roles.ADMIN')}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.adminAccess')}</p>
                 </div>
               </button>
             </div>
@@ -350,7 +352,7 @@ export default function ManageUsers() {
             {processing && (
               <div className="flex items-center justify-center mt-4 text-primary-600">
                 <FaSpinner className="animate-spin mr-2" />
-                Mise à jour en cours...
+                {t('admin.updating')}
               </div>
             )}
           </div>
@@ -360,28 +362,28 @@ export default function ManageUsers() {
       {/* Delete Modal */}
       {showDeleteModal && selectedUser && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                 <FaTrash className="w-6 h-6 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Supprimer l'utilisateur</h3>
-                <p className="text-gray-500 text-sm">Cette action est irréversible</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('admin.deleteUser')}</h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">{t('admin.deleteIrreversible')}</p>
               </div>
             </div>
 
-            <p className="text-gray-600 mb-6">
-              Êtes-vous sûr de vouloir supprimer l'utilisateur{' '}
-              <strong>{selectedUser.firstName} {selectedUser.lastName}</strong> ?
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
+              {t('admin.deleteUserConfirm')}{' '}
+              <strong className="dark:text-white">{selectedUser.firstName} {selectedUser.lastName}</strong> ?
             </p>
 
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
               >
-                Annuler
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleDelete}
@@ -389,7 +391,7 @@ export default function ManageUsers() {
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
               >
                 {processing ? <FaSpinner className="animate-spin" /> : <FaTrash />}
-                Supprimer
+                {t('common.delete')}
               </button>
             </div>
           </div>

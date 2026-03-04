@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiMapPin } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const placeholderImages = [
   'https://images.unsplash.com/photo-1497486751825-1233686d5d80?auto=format&fit=crop&w=900&q=80',
@@ -8,6 +9,8 @@ const placeholderImages = [
 ];
 
 function HeroSplit() {
+  const { t } = useTranslation();
+
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 gradient-primary opacity-95" />
@@ -18,23 +21,21 @@ function HeroSplit() {
         <div className="text-white">
           <p className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.24em] text-secondary-100/90 mb-4">
             <FiMapPin />
-            Centre de langues a Rabat
+            {t('header.subtitle')}
           </p>
           <h1 className="section-title text-white mb-5">
             Fresh Start Academy
           </h1>
           <p className="text-white/85 text-lg leading-relaxed max-w-xl mb-8">
-            Un centre moderne pour apprendre le francais, l&apos;anglais et l&apos;arabe
-            avec des formateurs qualifies, un accompagnement personnalise et des
-            classes adaptees a chaque niveau.
+            {t('hero.subtitle')}
           </p>
           <div className="flex flex-wrap gap-3">
             <Link to="/courses" className="btn-secondary">
-              Voir les cours
+              {t('hero.cta')}
               <FiArrowRight />
             </Link>
             <Link to="/register" className="btn-primary border-white/20">
-              Commencer maintenant
+              {t('common.register')}
             </Link>
           </div>
           <div className="mt-7 flex flex-wrap gap-5 text-sm text-white/85">
