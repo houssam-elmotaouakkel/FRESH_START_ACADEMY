@@ -1,52 +1,17 @@
 require('dotenv').config();
 
-const env = process.env.NODE_ENV || 'development';
-const isProduction = env === 'production';
-
-// Strict secrets — no fallback in production OR staging
-const requireSecret = env === 'production' || env === 'staging';
-
-const jwtSecret = process.env.JWT_SECRET || (!requireSecret ? 'dev-secret-change-me' : '');
-const jwtRefreshSecret =
-  process.env.JWT_REFRESH_SECRET || (!requireSecret ? 'dev-refresh-secret-change-me' : '');
-
-if (requireSecret && (!jwtSecret || !jwtRefreshSecret)) {
-  throw new Error(
-    'JWT_SECRET and JWT_REFRESH_SECRET must be set in production/staging environment'
-  );
-}
-
-// Validate critical env vars on startup
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL environment variable is required');
-}
-
 const config = {
-  // Application
-  env,
-  port: parseInt(process.env.PORT || '3000', 10),
-  apiPrefix: process.env.API_PREFIX || '/api',
+  env: process.env.NODE_ENV || 'development',
+  port: parseInt(process.env.PORT || '5000', 10),
 
-  // Database
-  databaseUrl: process.env.DATABASE_URL,
-
-  // JWT
-  jwt: {
-    secret: jwtSecret,
-    expiresIn: process.env.JWT_EXPIRES_IN || '15m',
-    refreshSecret: jwtRefreshSecret,
-    refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
-  },
-
-  // Email
+  // Email (Nodemailer)
   email: {
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
-    from:
-      process.env.EMAIL_FROM ||
-      'Fresh Start Academy <noreply@freshstartacademy.com>',
+    from: process.env.EMAIL_FROM || 'Fresh Start Academy <noreply@freshstartacademy.com>',
+    to: process.env.CONTACT_EMAIL || process.env.SMTP_USER || '',
   },
 
   // CORS
@@ -56,14 +21,8 @@ const config = {
 
   // Rate Limiting
   rateLimit: {
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
     maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),
-  },
-
-  // File Upload
-  upload: {
-    maxSize: parseInt(process.env.UPLOAD_MAX_SIZE || '5242880', 10), // 5MB
-    path: process.env.UPLOAD_PATH || './uploads',
   },
 };
 

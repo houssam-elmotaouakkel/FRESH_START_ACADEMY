@@ -33,8 +33,16 @@ const sanitizeObject = (obj) => {
  */
 const sanitizeMiddleware = (req, res, next) => {
   if (req.body) req.body = sanitizeObject(req.body);
-  if (req.query) req.query = sanitizeObject(req.query);
-  if (req.params) req.params = sanitizeObject(req.params);
+  if (req.query) {
+    const sanitizedQuery = sanitizeObject(req.query);
+    for (const key of Object.keys(req.query)) delete req.query[key];
+    Object.assign(req.query, sanitizedQuery);
+  }
+  if (req.params) {
+    const sanitizedParams = sanitizeObject(req.params);
+    for (const key of Object.keys(req.params)) delete req.params[key];
+    Object.assign(req.params, sanitizedParams);
+  }
   next();
 };
 

@@ -27,6 +27,7 @@ jest.mock('../src/services/cacheService', () => ({
   del: jest.fn(),
   invalidatePattern: jest.fn(),
   isConnected: () => false,
+  cacheMiddleware: () => (req, res, next) => next(),
 }));
 
 jest.mock('../src/services/totpService', () => ({

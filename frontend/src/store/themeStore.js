@@ -1,5 +1,24 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
+
+// Safe storage wrapper — falls back to in-memory when localStorage is blocked (e.g. Brave Shields)
+const safeStorage = () => {
+  try {
+    // Test if localStorage is accessible
+    const testKey = '__zs_test__';
+    localStorage.setItem(testKey, '1');
+    localStorage.removeItem(testKey);
+    return createJSONStorage(() => localStorage);
+  } catch {
+    // Fallback: in-memory storage (theme won't persist across reloads but app won't crash)
+    const mem = new Map();
+    return createJSONStorage(() => ({
+      getItem: (k) => mem.get(k) ?? null,
+      setItem: (k, v) => mem.set(k, v),
+      removeItem: (k) => mem.delete(k),
+    }));
+  }
+};
 
 const useThemeStore = create(
   persist(
@@ -24,6 +43,7 @@ const useThemeStore = create(
     }),
     {
       name: 'theme-storage',
+      storage: safeStorage(),
     }
   )
 );

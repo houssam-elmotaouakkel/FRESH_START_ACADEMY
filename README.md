@@ -1,6 +1,6 @@
-# 🎓 Fresh Start Academy
+# Fresh Start Academy
 
-> Site web d'un centre de langues et communication - Français, Anglais, Arabe, Espagnol, Allemand...
+> Site vitrine d'un centre de langues et communication — Français, Anglais, Arabe, Espagnol, Allemand...
 
 [![Node.js](https://img.shields.io/badge/Node.js-20.x-green?logo=node.js)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19.x-blue?logo=react)](https://react.dev/)
@@ -9,34 +9,40 @@
 
 ---
 
-## 📖 À propos
+## À propos
 
-**Fresh Start Academy** est un site web complet pour un centre de langues. Il permet aux étudiants de découvrir et s'inscrire aux cours, et aux administrateurs de gérer l'ensemble de la plateforme.
+**Fresh Start Academy** est un site vitrine pour un centre de langues basé à Rabat. La plateforme présente les offres du centre, permet aux visiteurs de contacter l'équipe, et dispose d'une architecture backend prête à évoluer vers des fonctionnalités complètes (inscriptions, espace utilisateur, panel admin).
 
-## ✨ Fonctionnalités
+## Fonctionnalités actuelles
 
-- 🔐 Authentification sécurisée (JWT)
-- 📚 Catalogue de cours avec filtres
-- 👤 Espace utilisateur (profil, inscriptions)
-- 👨‍💼 Panel d'administration complet
-- 📞 Formulaire de contact
-- ⭐ Témoignages d'étudiants
+- Page d'accueil avec sections marketing (hero, cours, témoignages, tarifs, CTA)
+- Formulaire de contact fonctionnel (avec envoi d'email via Nodemailer)
+- Page Mentions légales / CGU
+- Internationalisation (FR / EN / AR) avec i18next
+- Mode sombre / clair (Zustand + localStorage)
+- SEO optimisé (react-helmet-async, JSON-LD, sitemap)
+- Animations fluides (Framer Motion)
+- Design responsive Tailwind CSS 4
 
-## 🛠 Stack Technique
+## Stack Technique
 
 | Frontend | Backend | Base de données |
 |----------|---------|-----------------|
 | React 19 | Node.js 20 | MySQL 8 |
-| Vite 7 | Express 5 | Prisma ORM |
-| Tailwind CSS 4 | JWT | |
-| Zustand | Zod | |
+| Vite 7 (rolldown) | Express 5 | Prisma ORM |
+| Tailwind CSS 4 | Nodemailer | Redis (ioredis) |
+| Zustand 5 | Zod 4 | |
+| Framer Motion | JWT / bcrypt | |
+| i18next | Winston | |
+| react-helmet-async | | |
 
-## 🚀 Démarrage rapide
+## Démarrage rapide
 
 ### Prérequis
 
 - Node.js 20+
 - MySQL 8+
+- Redis (optionnel pour le cache)
 - npm
 
 ### Installation
@@ -51,7 +57,9 @@ cd backend && npm install
 cd ../frontend && npm install
 
 # Configurer les variables d'environnement
-# Copier .env.example vers .env dans backend/ et frontend/
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+# Éditer les fichiers .env avec vos paramètres
 
 # Initialiser la base de données
 cd backend
@@ -72,8 +80,9 @@ cd frontend && npm run dev
 |---------|-----|
 | Frontend | http://localhost:5173 |
 | Backend API | http://localhost:5000/api |
+| Health check | http://localhost:5000/api/health |
 
-## 📁 Structure
+## Structure du projet
 
 ```
 FRESH_START_ACADEMY/
@@ -83,15 +92,15 @@ FRESH_START_ACADEMY/
 └── README.md
 ```
 
-## 📖 Documentation détaillée
+## Documentation détaillée
 
 - [Frontend README](frontend/README.md)
 - [Backend README](backend/README.md)
 
-## 👨‍💻 Auteur
+## Auteur
 
-**Houssam El Motaouakkel** - [@houssam-elmotaouakkel](https://github.com/houssam-elmotaouakkel)
+**Houssam El Motaouakkel** — [@houssam-elmotaouakkel](https://github.com/houssam-elmotaouakkel)
 
-## 📝 License
+## License
 
-MIT License - voir [LICENSE](LICENSE) pour plus de détails.
+MIT License — voir [LICENSE](LICENSE) pour plus de détails.

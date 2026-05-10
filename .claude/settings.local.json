@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\('./src/app.js'\\); console.log\\('Backend OK'\\);\")",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

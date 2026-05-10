@@ -3,22 +3,19 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import router from './router';
 import { useEffect } from 'react';
-import useAuthStore from './store/authStore';
 import useThemeStore from './store/themeStore';
 import ErrorBoundary from './components/common/ErrorBoundary';
-import { initAnalytics, shutdownAnalytics } from './lib/analytics';
+import { initAnalytics, shutdownAnalytics } from './lib/tracker';
 
 function App() {
-  const fetchUser = useAuthStore((state) => state.fetchUser);
   const initTheme = useThemeStore((state) => state.initTheme);
 
   useEffect(() => {
-    fetchUser();
     initTheme();
-    initAnalytics();
+    try { initAnalytics(); } catch { /* analytics blocked */ }
 
-    return () => shutdownAnalytics();
-  }, [fetchUser, initTheme]);
+    return () => { try { shutdownAnalytics(); } catch { /* noop */ } };
+  }, [initTheme]);
 
   return (
     <ErrorBoundary>

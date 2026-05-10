@@ -1,7 +1,6 @@
 import { Outlet, ScrollRestoration } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
-import RamadanBanner from '../branding/RamadanBanner';
 import SeoManager from '../common/SeoManager';
 import ErrorBoundary from '../common/ErrorBoundary';
 import { OrganizationJsonLd } from '../common/JsonLd';
@@ -12,7 +11,7 @@ const Layout = () => {
   usePageTracking();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div>
       {/* Skip to content - accessibility */}
       <a
         href="#main-content"
@@ -23,9 +22,8 @@ const Layout = () => {
       <SeoManager />
       <OrganizationJsonLd />
       <ScrollRestoration />
-      <RamadanBanner />
       <Header />
-      <main id="main-content" className="flex-grow" role="main">
+      <main id="main-content" role="main" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
         <ErrorBoundary>
           <Outlet />
         </ErrorBoundary>

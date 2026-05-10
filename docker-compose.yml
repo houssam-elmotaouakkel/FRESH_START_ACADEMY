@@ -3,17 +3,18 @@ services:
     image: mysql:8.0
     container_name: fresh_start_db
     restart: unless-stopped
+    env_file: .env.docker
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: fresh_start_academy
-      MYSQL_USER: app
-      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -37,14 +38,15 @@ services:
     container_name: fresh_start_backend
     working_dir: /app/backend
     command: sh -c "npm install && npm run dev"
+    env_file: .env.docker
     environment:
-      NODE_ENV: development
-      PORT: 5000
-      DATABASE_URL: mysql://app:app@db:3306/fresh_start_academy
-      REDIS_URL: redis://redis:6379
-      JWT_SECRET: change-me-in-production
-      JWT_REFRESH_SECRET: change-me-refresh-in-production
-      CORS_ORIGIN: http://localhost:5173
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
+      DATABASE_URL: ${DATABASE_URL}
+      REDIS_URL: ${REDIS_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      CORS_ORIGIN: ${CORS_ORIGIN}
     ports:
       - "5000:5000"
     volumes:
@@ -60,8 +62,9 @@ services:
     container_name: fresh_start_frontend
     working_dir: /app/frontend
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    env_file: .env.docker
     environment:
-      VITE_API_URL: http://localhost:5000/api
+      VITE_API_URL: ${VITE_API_URL}
     ports:
       - "5173:5173"
     volumes:

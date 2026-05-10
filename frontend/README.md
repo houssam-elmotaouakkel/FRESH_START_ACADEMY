@@ -1,10 +1,10 @@
-# 🎨 Fresh Start Academy - Frontend
+# Fresh Start Academy - Frontend
 
 > Interface utilisateur React pour la plateforme Fresh Start Academy
 
 ---
 
-## 🛠 Technologies
+## Technologies
 
 - **Framework:** React 19.x
 - **Build Tool:** Vite 7.x (rolldown)
@@ -12,11 +12,16 @@
 - **Routing:** React Router 7.x
 - **State:** Zustand 5.x
 - **HTTP:** Axios
+- **Animations:** Framer Motion 12.x
+- **i18n:** i18next + react-i18next (FR / EN / AR)
+- **SEO:** react-helmet-async
 - **Forms:** React Hook Form
 - **Notifications:** React Toastify
 - **Icons:** React Icons
+- **Charts:** Recharts (prêt pour dashboard)
+- **Tests:** Vitest + Testing Library
 
-## 📦 Installation
+## Installation
 
 ```bash
 # Installer les dépendances
@@ -30,123 +35,128 @@ cp .env.example .env
 npm run dev
 ```
 
-## 🚀 Démarrage
+## Démarrage
 
 ```bash
-# Mode développement
-npm run dev
-
-# Build production
-npm run build
-
-# Prévisualiser le build
-npm run preview
+npm run dev        # Mode développement → http://localhost:5173
+npm run build      # Build production
+npm run preview    # Prévisualiser le build
+npm run lint       # Vérifier le code
+npm test           # Lancer les tests (Vitest)
 ```
 
-L'application démarre sur `http://localhost:5173`
-
-## ⚙️ Variables d'environnement
+## Variables d'environnement
 
 | Variable | Description | Exemple |
 |----------|-------------|---------|
 | `VITE_API_URL` | URL de l'API backend | `http://localhost:5000/api` |
 
-## 📁 Structure
+## Structure
 
 ```
 frontend/
-├── public/               # Fichiers statiques
+├── public/                    # Fichiers statiques
 ├── src/
-│   ├── assets/           # Images, fonts, icons
+│   ├── assets/                # Images, fonts, icons
 │   ├── components/
-│   │   ├── layout/       # Header, Footer, Layout, AdminLayout
-│   │   └── auth/         # ProtectedRoute, AdminRoute
+│   │   ├── branding/          # Logo, identité visuelle
+│   │   ├── common/
+│   │   │   ├── DarkModeToggle.jsx
+│   │   │   ├── ErrorBoundary.jsx
+│   │   │   ├── JsonLd.jsx         # Données structurées SEO
+│   │   │   ├── LanguageSwitcher.jsx
+│   │   │   ├── PageTransition.jsx
+│   │   │   ├── SEO.jsx
+│   │   │   └── SeoManager.jsx
+│   │   ├── layout/
+│   │   │   ├── Header.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   └── Layout.jsx
+│   │   └── ui/
+│   │       ├── FormField.jsx
+│   │       ├── Modal.jsx
+│   │       ├── Pagination.jsx
+│   │       ├── PricingCard.jsx
+│   │       ├── PrimaryButton.jsx
+│   │       ├── SecondaryButton.jsx
+│   │       ├── SectionHeader.jsx
+│   │       └── TrustBadge.jsx
+│   ├── hooks/
+│   │   ├── usePageTracking.js     # Tracking de navigation
+│   │   └── useSeo.js              # Hook SEO
+│   ├── i18n/
+│   │   ├── index.js               # Configuration i18next
+│   │   └── locales/
+│   │       ├── fr.json            # Français
+│   │       ├── en.json            # English
+│   │       └── ar.json            # العربية
+│   ├── lib/                       # Bibliothèques internes
 │   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── About.jsx
-│   │   ├── Contact.jsx
-│   │   ├── Courses.jsx
-│   │   ├── CourseDetail.jsx
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   ├── Dashboard.jsx
-│   │   ├── Profile.jsx
-│   │   ├── MyEnrollments.jsx
-│   │   ├── NotFound.jsx
-│   │   └── admin/
-│   │       ├── AdminDashboard.jsx
-│   │       ├── ManageUsers.jsx
-│   │       ├── ManageCourses.jsx
-│   │       ├── ManageEnrollments.jsx
-│   │       ├── ManageContacts.jsx
-│   │       └── ManageTestimonials.jsx
-│   ├── services/         # Appels API (Axios)
-│   │   ├── api.js
-│   │   ├── authService.js
-│   │   ├── userService.js
-│   │   ├── courseService.js
-│   │   ├── enrollmentService.js
-│   │   ├── contactService.js
-│   │   └── testimonialService.js
-│   ├── store/            # State management (Zustand)
-│   │   ├── authStore.js
-│   │   └── uiStore.js
+│   │   ├── Home.jsx               # Page d'accueil
+│   │   ├── Terms.jsx              # Mentions légales / CGU
+│   │   ├── NotFound.jsx           # Page 404
+│   │   └── index.js
+│   ├── services/
+│   │   ├── api.js                 # Instance Axios + interceptors
+│   │   └── contactService.js      # Appels API formulaire de contact
+│   ├── store/
+│   │   ├── themeStore.js          # Mode sombre/clair (Zustand)
+│   │   └── uiStore.js             # État UI global
+│   ├── styles/                    # Styles globaux
+│   ├── test/                      # Configuration des tests
 │   ├── utils/
 │   │   ├── constants.js
+│   │   ├── featureFlags.js        # Feature flags
 │   │   ├── helpers.js
+│   │   ├── helpers.test.js
+│   │   ├── seo.js                 # Utilitaires SEO
 │   │   └── validators.js
 │   ├── App.jsx
-│   ├── router.jsx
+│   ├── App.css
+│   ├── router.jsx                 # Définition des routes
 │   ├── main.jsx
-│   └── index.css         # Styles Tailwind
+│   └── index.css                  # Styles Tailwind
 ├── .env.example
 ├── vite.config.js
 ├── postcss.config.js
 └── package.json
 ```
 
-## 🗺 Routes
+## Routes
 
 ### Pages publiques
 
 | Route | Page | Description |
 |-------|------|-------------|
 | `/` | Home | Page d'accueil |
-| `/about` | About | À propos |
-| `/courses` | Courses | Catalogue des cours |
-| `/courses/:id` | CourseDetail | Détail d'un cours |
-| `/contact` | Contact | Formulaire de contact |
-| `/login` | Login | Connexion |
-| `/register` | Register | Inscription |
+| `/terms` | Terms | Mentions légales / CGU |
+| `*` | NotFound | Page 404 |
 
-### Pages protégées (authentifié)
+## Fonctionnalités
 
-| Route | Page | Description |
-|-------|------|-------------|
-| `/dashboard` | Dashboard | Tableau de bord utilisateur |
-| `/profile` | Profile | Mon profil |
-| `/my-enrollments` | MyEnrollments | Mes inscriptions |
+### Internationalisation
+3 langues supportées : Français (défaut), English, العربية. Détection automatique de la langue du navigateur. RTL automatique pour l'arabe.
 
-### Pages admin
+### Mode sombre
+Bascule Dark/Light persistée dans `localStorage` via Zustand.
 
-| Route | Page | Description |
-|-------|------|-------------|
-| `/admin` | AdminDashboard | Dashboard admin |
-| `/admin/users` | ManageUsers | Gestion utilisateurs |
-| `/admin/courses` | ManageCourses | Gestion cours |
-| `/admin/enrollments` | ManageEnrollments | Gestion inscriptions |
-| `/admin/contacts` | ManageContacts | Gestion messages |
-| `/admin/testimonials` | ManageTestimonials | Gestion témoignages |
+### SEO
+- `react-helmet-async` pour les balises `<head>` par page
+- `JsonLd.jsx` pour les données structurées (Schema.org)
+- Sitemap et robots.txt dans `/public`
 
-## 🎨 Design
+### Feature Flags
+Fichier `utils/featureFlags.js` pour activer/désactiver des fonctionnalités sans redéploiement.
+
+## Design
 
 ### Couleurs (Tailwind)
 
-| Couleur | Hex | Usage |
-|---------|-----|-------|
-| Primary | `#81B8F8` | Couleur principale (bleu) |
-| Secondary | `#dde4e9` | Couleur secondaire (gris) |
-| Accent | `#8799d6` | Accent (violet/bleu) |
+| Couleur | Usage |
+|---------|-------|
+| `#81B8F8` | Couleur principale (bleu) |
+| `#dde4e9` | Couleur secondaire (gris clair) |
+| `#8799d6` | Accent (violet/bleu) |
 
 ### Classes personnalisées
 
@@ -155,13 +165,15 @@ frontend/
 .btn-primary         /* Bouton principal */
 .btn-secondary       /* Bouton secondaire */
 .card                /* Carte avec ombre */
+.spinner             /* Loader de chargement */
 ```
 
-## 📜 Scripts
+## Scripts
 
 | Script | Description |
 |--------|-------------|
 | `npm run dev` | Démarrer en mode dev |
 | `npm run build` | Build production |
 | `npm run preview` | Prévisualiser le build |
-| `npm run lint` | Vérifier le code |
+| `npm run lint` | Vérifier le code (ESLint) |
+| `npm test` | Lancer les tests (Vitest) |

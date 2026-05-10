@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
+@import "./styles/design.css";
 
 @theme {
   --color-primary-50: #f2f6ff;
@@ -48,8 +49,18 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-html:not(.dark) body {
-  background: radial-gradient(circle at 20% 20%, #f8fbff 0%, #edf4fb 45%, #e6f0f9 100%);
+html {
+  background: var(--b9) !important;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background: #ffffff;
 }
 
 h1, h2, h3, h4, h5, h6 {
