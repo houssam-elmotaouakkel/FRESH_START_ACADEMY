@@ -1,0 +1,32 @@
+# Render Blueprint — backend API (Express, formulaire de contact via SMTP)
+# Déploiement : https://dashboard.render.com → New → Blueprint → connecter ce repo.
+# Les variables marquées "sync: false" sont des secrets : à saisir manuellement
+# dans le dashboard Render (jamais commitées). Voir DEPLOYMENT.md.
+services:
+  - type: web
+    name: fresh-start-academy-api
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # URL EXACTE du frontend Vercel (ex. https://fresh-start-academy.vercel.app)
+      - key: CORS_ORIGIN
+        sync: false
+      # SMTP (Gmail : créer un "App Password", PAS le mot de passe du compte)
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: CONTACT_EMAIL
+        sync: false
