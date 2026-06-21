@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const config = require('../config');
 const logger = require('../utils/logger');
+const { escapeHtml } = require('../utils/sanitize');
 
 const createTransporter = () =>
   nodemailer.createTransport({
@@ -24,6 +25,15 @@ const sendContact = async ({ name, email, phone, subject, message }) => {
 
   const transporter = createTransporter();
 
+  // Contextual output encoding for the HTML email body (checklist 2.3 / 2.4).
+  // Every untrusted field is HTML-entity-encoded; newlines are converted to
+  // <br/> only AFTER encoding so the injected tags cannot themselves be forged.
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safePhone = phone ? escapeHtml(phone) : '';
+  const safeSubject = subject ? escapeHtml(subject) : '';
+  const safeMessage = escapeHtml(message).replace(/\n/g, '<br/>');
+
   await transporter.sendMail({
     from: config.email.from,
     to: config.email.to,
@@ -31,12 +41,12 @@ const sendContact = async ({ name, email, phone, subject, message }) => {
     subject: `[Fresh Start Academy] ${subject || 'New contact message'}`,
     html: `
       <h2>New contact message</h2>
-      <p><strong>Name:</strong> ${name}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      ${phone ? `<p><strong>Phone:</strong> ${phone}</p>` : ''}
-      ${subject ? `<p><strong>Subject:</strong> ${subject}</p>` : ''}
+      <p><strong>Name:</strong> ${safeName}</p>
+      <p><strong>Email:</strong> ${safeEmail}</p>
+      ${safePhone ? `<p><strong>Phone:</strong> ${safePhone}</p>` : ''}
+      ${safeSubject ? `<p><strong>Subject:</strong> ${safeSubject}</p>` : ''}
       <hr/>
-      <p>${message.replace(/\n/g, '<br/>')}</p>
+      <p>${safeMessage}</p>
     `,
   });
 

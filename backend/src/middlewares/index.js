@@ -1,6 +1,6 @@
 const { ApiError, notFound, errorHandler } = require('./errorHandler');
 const { validate } = require('./validate');
-const { apiLimiter, contactLimiter } = require('./rateLimiter');
+const { apiLimiter, authLimiter, contactLimiter } = require('./rateLimiter');
 
 module.exports = {
   ApiError,
@@ -8,5 +8,6 @@ module.exports = {
   errorHandler,
   validate,
   apiLimiter,
+  authLimiter,
   contactLimiter,
 };

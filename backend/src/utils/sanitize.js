@@ -11,6 +11,37 @@ const sanitizeString = (str) => {
 };
 
 /**
+ * Map of characters to their HTML entity equivalents (canonical OWASP set).
+ * '&' must be replaced first, which is guaranteed by the single-pass regex.
+ */
+const HTML_ENTITIES = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#x27;',
+  '/': '&#x2F;',
+};
+
+/**
+ * Contextually encode a string as HTML entities for safe inclusion in an
+ * HTML output context (e.g. an outbound email body).
+ *
+ * This is distinct from sanitizeString(): the global XSS filter is tuned for
+ * a browser/DOM context, whereas outbound emails are a different interpreter.
+ * Per the secure-coding checklist (2.3 / 2.4) each output context must use its
+ * own encoding routine rather than relying on a single upstream filter, and
+ * all hazardous characters must be encoded unless known to be safe.
+ *
+ * @param {string} str - Input string
+ * @returns {string} - HTML-entity-encoded string ('' for non-strings)
+ */
+const escapeHtml = (str) => {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[&<>"'/]/g, (char) => HTML_ENTITIES[char]);
+};
+
+/**
  * Deep-sanitize all string values in an object
  * @param {object} obj - Input object
  * @returns {object} - Sanitized copy
@@ -48,6 +79,7 @@ const sanitizeMiddleware = (req, res, next) => {
 
 module.exports = {
   sanitizeString,
+  escapeHtml,
   sanitizeObject,
   sanitizeMiddleware,
 };
