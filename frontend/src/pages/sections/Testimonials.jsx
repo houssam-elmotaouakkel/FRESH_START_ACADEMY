@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Stars from '../../components/ui/Stars';
 
 // Avis Google authentiques — conservés dans leur langue d'origine (français).
 const REVIEWS = [
@@ -25,7 +26,7 @@ function Testimonials() {
       <div className="s-inner">
         <div className="center reveal">
           <div className="s-tag" style={{ justifyContent: 'center' }}>
-            ⭐ <span>{t('landing.testimonials.tag')}</span>
+            <Stars count={1} size={13} /> <span>{t('landing.testimonials.tag')}</span>
           </div>
           <h2 className="s-title">
             {t('landing.testimonials.titlePre')}<em>{t('landing.testimonials.titleEm')}</em>{t('landing.testimonials.titlePost')}
@@ -39,7 +40,7 @@ function Testimonials() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
             <div className="rating-big">5.0</div>
             <div className="r-details">
-              <div className="r-stars">⭐⭐⭐⭐⭐</div>
+              <div className="r-stars"><Stars size={18} /></div>
               <div className="r-count">{t('landing.testimonials.ratingCount')}</div>
             </div>
           </div>
@@ -65,7 +66,7 @@ function Testimonials() {
                     <div className="t-time">{r.time}</div>
                   </div>
                 </div>
-                <div className="t-stars">⭐⭐⭐⭐⭐</div>
+                <div className="t-stars"><Stars size={14} /></div>
                 <p className="t-txt">"{r.text}"</p>
                 {r.reply && (
                   <div className="o-reply">

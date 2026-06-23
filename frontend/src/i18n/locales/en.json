@@ -54,9 +54,9 @@
       "cta": "Get started",
       "footnote": "* Indicative prices. Contact us for a custom quote.",
       "plans": [
-        { "lang": "🌍 English / French", "name": "Essential", "price": "400", "period": "/ month · 8 sessions", "features": ["2 sessions / week", "Group (max 8 students)", "Materials included", "Monthly follow-up"] },
-        { "badge": "Best choice", "lang": "🇩🇪 German A1–B2", "name": "Intensive", "price": "600", "period": "/ month · 12 sessions", "features": ["3 sessions / week", "Small group (max 6)", "Materials included", "Goethe preparation", "Level certificate"] },
-        { "lang": "📚 Academic Support", "name": "Private", "price": "150", "period": "/ individual session", "features": ["1-on-1 lessons", "Flexible schedule", "Tailored program", "All subjects"] }
+        { "lang": "English / French", "name": "Essential", "price": "400", "period": "/ month · 8 sessions", "features": ["2 sessions / week", "Group (max 8 students)", "Materials included", "Monthly follow-up"] },
+        { "badge": "Best choice", "lang": "German A1–B2", "name": "Intensive", "price": "600", "period": "/ month · 12 sessions", "features": ["3 sessions / week", "Small group (max 6)", "Materials included", "Goethe preparation", "Level certificate"] },
+        { "lang": "Academic Support", "name": "Private", "price": "150", "period": "/ individual session", "features": ["1-on-1 lessons", "Flexible schedule", "Tailored program", "All subjects"] }
       ]
     },
     "about": {

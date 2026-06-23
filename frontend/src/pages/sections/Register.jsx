@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FiCheckCircle } from 'react-icons/fi';
 import contactService from '../../services/contactService';
 
 const INITIAL = { firstName: '', lastName: '', email: '', phone: '', course: '', level: '', message: '' };
@@ -72,7 +73,7 @@ function Register() {
           {status === 'success' ? (
             <div className="reg-form">
               <div className="form-ok" style={{ display: 'block' }}>
-                <div className="ok-icon">🎉</div>
+                <div className="ok-icon"><FiCheckCircle style={{ color: '#16a34a' }} /></div>
                 <h3>{t('landing.register.successTitle')}</h3>
                 <p>{t('landing.register.successBody')}</p>
               </div>

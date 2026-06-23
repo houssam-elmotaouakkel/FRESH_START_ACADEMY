@@ -1,4 +1,7 @@
 import { useTranslation } from 'react-i18next';
+import { FiGlobe, FiFlag, FiBookOpen } from 'react-icons/fi';
+
+const PLAN_ICONS = [FiGlobe, FiFlag, FiBookOpen];
 
 const CheckIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -31,32 +34,38 @@ function Pricing() {
         </div>
 
         <div className="price-grid">
-          {plans.map((p, i) => (
-            <div key={i} className={`price-card reveal d${i + 1}${p.badge ? ' feat' : ''}`}>
-              {p.badge && <div className="p-badge">{p.badge}</div>}
-              <div className="p-lang">{p.lang}</div>
-              <div className="p-name">{p.name}</div>
-              <div className="p-price">
-                {p.price}{' '}
-                <span style={{ fontSize: '19px', fontWeight: 500, color: p.badge ? 'rgba(255,255,255,.6)' : 'var(--ts)' }}>
-                  {t('landing.pricing.currency')}
-                </span>
+          {plans.map((p, i) => {
+            const Icon = PLAN_ICONS[i] || FiGlobe;
+            return (
+              <div key={i} className={`price-card reveal d${i + 1}${p.badge ? ' feat' : ''}`}>
+                {p.badge && <div className="p-badge">{p.badge}</div>}
+                <div className="p-lang" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Icon size={15} aria-hidden="true" />
+                  {p.lang}
+                </div>
+                <div className="p-name">{p.name}</div>
+                <div className="p-price">
+                  {p.price}{' '}
+                  <span style={{ fontSize: '19px', fontWeight: 500, color: p.badge ? 'rgba(255,255,255,.6)' : 'var(--ts)' }}>
+                    {t('landing.pricing.currency')}
+                  </span>
+                </div>
+                <div className="p-period">{p.period}</div>
+                <div className="p-div" />
+                <ul className="p-feats">
+                  {p.features.map((f, j) => (
+                    <li key={j}>
+                      <div className="p-check"><CheckIcon /></div>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button onClick={() => scrollTo('register')} className="btn-price">
+                  {t('landing.pricing.cta')}
+                </button>
               </div>
-              <div className="p-period">{p.period}</div>
-              <div className="p-div" />
-              <ul className="p-feats">
-                {p.features.map((f, j) => (
-                  <li key={j}>
-                    <div className="p-check"><CheckIcon /></div>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <button onClick={() => scrollTo('register')} className="btn-price">
-                {t('landing.pricing.cta')}
-              </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '13px', color: 'var(--ts)' }}>

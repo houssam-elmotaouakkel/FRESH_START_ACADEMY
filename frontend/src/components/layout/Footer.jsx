@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next';
+import { FiPhone, FiMapPin, FiMail } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const goTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+
+const contactLinkStyle = { display: 'inline-flex', alignItems: 'center', gap: '8px' };
 
 function Footer() {
   const { t } = useTranslation();
@@ -70,11 +74,11 @@ function Footer() {
           <div className="foot-col">
             <h5>{t('landing.footer.contactTitle')}</h5>
             <ul>
-              <li><a href="tel:0714260453">📞 07 14 26 04 53 {t('landing.footer.callsLabel')}</a></li>
-              <li><a href="tel:0715811651">📞 07 15 81 16 51 {t('landing.footer.callsLabel')}</a></li>
-              <li><a href="https://wa.me/212715811651" target="_blank" rel="noopener noreferrer">💬 07 15 81 16 51 {t('landing.footer.whatsappLabel')}</a></li>
-              <li><a href="https://maps.app.goo.gl/bxcavUfVyUPEpcDt7" target="_blank" rel="noopener noreferrer">📍 {t('landing.footer.addressShort')}</a></li>
-              <li><a href="mailto:Freshstartacademy12@gmail.com">✉ {t('landing.contact.email')}</a></li>
+              <li><a href="tel:0714260453" style={contactLinkStyle}><FiPhone size={15} /> 07 14 26 04 53 {t('landing.footer.callsLabel')}</a></li>
+              <li><a href="tel:0715811651" style={contactLinkStyle}><FiPhone size={15} /> 07 15 81 16 51 {t('landing.footer.callsLabel')}</a></li>
+              <li><a href="https://wa.me/212715811651" target="_blank" rel="noopener noreferrer" style={contactLinkStyle}><FaWhatsapp size={16} /> 07 15 81 16 51 {t('landing.footer.whatsappLabel')}</a></li>
+              <li><a href="https://maps.app.goo.gl/bxcavUfVyUPEpcDt7" target="_blank" rel="noopener noreferrer" style={contactLinkStyle}><FiMapPin size={15} /> {t('landing.footer.addressShort')}</a></li>
+              <li><a href="mailto:Freshstartacademy12@gmail.com" style={contactLinkStyle}><FiMail size={15} /> {t('landing.contact.email')}</a></li>
             </ul>
           </div>
         </div>

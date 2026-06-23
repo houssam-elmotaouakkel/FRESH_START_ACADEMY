@@ -54,9 +54,9 @@
       "cta": "Commencer",
       "footnote": "* Tarifs indicatifs. Contactez-nous pour un devis personnalisé.",
       "plans": [
-        { "lang": "🌍 Anglais / Français", "name": "Essentiel", "price": "400", "period": "/ mois · 8 séances", "features": ["2 séances / semaine", "Groupe (max 8 élèves)", "Matériel inclus", "Suivi mensuel"] },
-        { "badge": "Meilleur choix", "lang": "🇩🇪 Allemand A1–B2", "name": "Intensif", "price": "600", "period": "/ mois · 12 séances", "features": ["3 séances / semaine", "Groupe réduit (max 6)", "Matériel inclus", "Préparation Goethe", "Certificat de niveau"] },
-        { "lang": "📚 Soutien Scolaire", "name": "Privé", "price": "150", "period": "/ séance individuelle", "features": ["Cours 1-sur-1", "Horaires flexibles", "Programme sur mesure", "Toutes matières"] }
+        { "lang": "Anglais / Français", "name": "Essentiel", "price": "400", "period": "/ mois · 8 séances", "features": ["2 séances / semaine", "Groupe (max 8 élèves)", "Matériel inclus", "Suivi mensuel"] },
+        { "badge": "Meilleur choix", "lang": "Allemand A1–B2", "name": "Intensif", "price": "600", "period": "/ mois · 12 séances", "features": ["3 séances / semaine", "Groupe réduit (max 6)", "Matériel inclus", "Préparation Goethe", "Certificat de niveau"] },
+        { "lang": "Soutien Scolaire", "name": "Privé", "price": "150", "period": "/ séance individuelle", "features": ["Cours 1-sur-1", "Horaires flexibles", "Programme sur mesure", "Toutes matières"] }
       ]
     },
     "about": {

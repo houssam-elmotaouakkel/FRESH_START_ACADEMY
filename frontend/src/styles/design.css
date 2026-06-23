@@ -117,6 +117,9 @@ button:focus-visible,
   font-family: inherit;
 }
 .lang-btn.active { background: var(--b6); color: white; }
+.lang-toggle .lang-btn:hover { background: var(--b0); color: var(--b6); }
+.lang-toggle .lang-btn.active,
+.lang-toggle .lang-btn.active:hover { background: var(--b6); color: #fff; }
 .btn-nav {
   background: linear-gradient(135deg, var(--b7), var(--b6));
   color: white;

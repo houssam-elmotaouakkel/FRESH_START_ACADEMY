@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import Stars from '../../components/ui/Stars';
 
 function Hero() {
   const { t } = useTranslation();
@@ -30,7 +31,7 @@ function Hero() {
             </a>
           </div>
           <div className="hero-rating">
-            ⭐⭐⭐⭐⭐ &nbsp;{t('landing.hero.rating')}
+            <Stars size={15} />{t('landing.hero.rating')}
           </div>
         </div>
 
