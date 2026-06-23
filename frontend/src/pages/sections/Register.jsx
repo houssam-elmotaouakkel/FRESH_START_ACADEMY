@@ -1,25 +1,24 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import contactService from '../../services/contactService';
-
-const POINTS = [
-  'Réponse garantie en moins de 24h',
-  'Test de niveau gratuit inclus',
-  'Cours essai sans engagement',
-  'Paiement mensuel flexible',
-];
 
 const INITIAL = { firstName: '', lastName: '', email: '', phone: '', course: '', level: '', message: '' };
 
 function Register() {
+  const { t } = useTranslation();
   const [form, setForm] = useState(INITIAL);
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const [error, setError] = useState('');
 
   const set = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
+  const points = t('landing.register.points', { returnObjects: true });
+  const courseOptions = t('landing.register.courseOptions', { returnObjects: true });
+  const levelOptions = t('landing.register.levelOptions', { returnObjects: true });
+
   const handleSubmit = async () => {
     if (!form.firstName || !form.phone || !form.course) {
-      setError('Veuillez remplir au moins le prénom, le téléphone et le cours souhaité.');
+      setError(t('landing.register.errorRequired'));
       return;
     }
     setStatus('loading');
@@ -29,13 +28,18 @@ function Register() {
         name: `${form.firstName} ${form.lastName}`.trim(),
         email: form.email.trim() || 'inscription@freshstartacademy.ma',
         phone: form.phone,
-        subject: `Inscription - ${form.course}${form.level ? ` (${form.level})` : ''}`,
-        message: form.message || `Demande d'inscription : ${form.course}. Niveau : ${form.level || 'non précisé'}.`,
+        subject: `${t('landing.register.subjectPrefix')}${form.course}${form.level ? ` (${form.level})` : ''}`,
+        message:
+          form.message ||
+          t('landing.register.messageFallback', {
+            course: form.course,
+            level: form.level || t('landing.register.levelUnset'),
+          }),
       });
       setStatus('success');
     } catch (err) {
       setStatus('error');
-      setError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+      setError(err.message || t('landing.register.errorGeneric'));
     }
   };
 
@@ -48,15 +52,14 @@ function Register() {
               <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
               <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
-            <span>Inscription</span>
+            <span>{t('landing.register.tag')}</span>
           </div>
-          <h2>Commencez votre <em>Fresh Start</em> aujourd'hui</h2>
-          <p>
-            Remplissez le formulaire et notre équipe vous contactera dans les 24 heures pour confirmer
-            votre inscription et répondre à vos questions.
-          </p>
+          <h2>
+            {t('landing.register.titlePre')}<em>{t('landing.register.titleEm')}</em>{t('landing.register.titlePost')}
+          </h2>
+          <p>{t('landing.register.body')}</p>
           <div className="info-pts">
-            {POINTS.map((p, i) => (
+            {points.map((p, i) => (
               <div key={i} className="info-pt">
                 <div className="i-dot" />
                 <span>{p}</span>
@@ -70,56 +73,52 @@ function Register() {
             <div className="reg-form">
               <div className="form-ok" style={{ display: 'block' }}>
                 <div className="ok-icon">🎉</div>
-                <h3>Demande envoyée !</h3>
-                <p>Merci ! Notre équipe vous contactera dans les 24 heures. À très bientôt chez Fresh Start Academy !</p>
+                <h3>{t('landing.register.successTitle')}</h3>
+                <p>{t('landing.register.successBody')}</p>
               </div>
             </div>
           ) : (
             <div className="reg-form">
               <div className="form-row">
                 <div className="form-g">
-                  <label>Prénom</label>
-                  <input type="text" placeholder="Votre prénom" value={form.firstName} onChange={set('firstName')} />
+                  <label>{t('landing.register.firstName')}</label>
+                  <input type="text" placeholder={t('landing.register.firstNamePlaceholder')} value={form.firstName} onChange={set('firstName')} />
                 </div>
                 <div className="form-g">
-                  <label>Nom</label>
-                  <input type="text" placeholder="Votre nom" value={form.lastName} onChange={set('lastName')} />
+                  <label>{t('landing.register.lastName')}</label>
+                  <input type="text" placeholder={t('landing.register.lastNamePlaceholder')} value={form.lastName} onChange={set('lastName')} />
                 </div>
               </div>
               <div className="form-g">
-                <label>Téléphone</label>
-                <input type="tel" placeholder="06 XX XX XX XX" value={form.phone} onChange={set('phone')} />
+                <label>{t('landing.register.phone')}</label>
+                <input type="tel" placeholder={t('landing.register.phonePlaceholder')} value={form.phone} onChange={set('phone')} />
               </div>
               <div className="form-g">
-                <label>Email (optionnel)</label>
-                <input type="email" placeholder="vous@exemple.com" value={form.email} onChange={set('email')} />
+                <label>{t('landing.register.email')}</label>
+                <input type="email" placeholder={t('landing.register.emailPlaceholder')} value={form.email} onChange={set('email')} />
               </div>
               <div className="form-g">
-                <label>Cours souhaité</label>
+                <label>{t('landing.register.course')}</label>
                 <select value={form.course} onChange={set('course')}>
-                  <option value="">-- Choisir un cours --</option>
-                  <option>Allemand (A1–B2)</option>
-                  <option>Anglais</option>
-                  <option>Français</option>
-                  <option>Soutien scolaire</option>
-                  <option>Cours particulier</option>
+                  <option value="">{t('landing.register.coursePlaceholder')}</option>
+                  {courseOptions.map((o, i) => (
+                    <option key={i}>{o}</option>
+                  ))}
                 </select>
               </div>
               <div className="form-g">
-                <label>Niveau actuel</label>
+                <label>{t('landing.register.level')}</label>
                 <select value={form.level} onChange={set('level')}>
-                  <option value="">-- Votre niveau --</option>
-                  <option>Débutant (A1)</option>
-                  <option>Élémentaire (A2)</option>
-                  <option>Intermédiaire (B1)</option>
-                  <option>Supérieur (B2)</option>
-                  <option>Scolaire (primaire/collège/lycée)</option>
+                  <option value="">{t('landing.register.levelPlaceholder')}</option>
+                  {levelOptions.map((o, i) => (
+                    <option key={i}>{o}</option>
+                  ))}
                 </select>
               </div>
               <div className="form-g">
-                <label>Message (optionnel)</label>
+                <label>{t('landing.register.message')}</label>
                 <textarea
-                  placeholder="Vos questions ou précisions..."
+                  placeholder={t('landing.register.messagePlaceholder')}
                   value={form.message}
                   onChange={set('message')}
                 />
@@ -128,7 +127,7 @@ function Register() {
                 <p style={{ color: '#ef4444', fontSize: '13px', marginBottom: '12px' }}>{error}</p>
               )}
               <button className="btn-sub" onClick={handleSubmit} disabled={status === 'loading'}>
-                {status === 'loading' ? 'Envoi en cours...' : "Envoyer ma demande d'inscription →"}
+                {status === 'loading' ? t('landing.register.submitting') : t('landing.register.submit')}
               </button>
             </div>
           )}

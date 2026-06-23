@@ -1,26 +1,15 @@
+import { useTranslation } from 'react-i18next';
+
 const IMAGES = [
-  {
-    url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80',
-    alt: 'Apprentissage en groupe',
-    title: 'Apprentissage en groupe',
-    sub: 'Collaboration et entraide',
-    tall: true,
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=80',
-    alt: 'Salle moderne',
-    title: 'Salles Modernes',
-    sub: 'Équipements interactifs',
-  },
-  {
-    url: 'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=700&q=80',
-    alt: 'Cours particulier',
-    title: 'Cours Particuliers',
-    sub: 'Attention personnalisée',
-  },
+  { url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80', tall: true },
+  { url: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=80' },
+  { url: 'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=700&q=80' },
 ];
 
 function Gallery() {
+  const { t } = useTranslation();
+  const items = t('landing.gallery.items', { returnObjects: true });
+
   return (
     <section id="gallery" style={{ background: 'var(--b9)' }}>
       <div className="s-inner">
@@ -31,24 +20,24 @@ function Gallery() {
               <circle cx="8.5" cy="8.5" r="1.5" />
               <polyline points="21 15 16 10 5 21" />
             </svg>
-            <span>Notre Centre</span>
+            <span>{t('landing.gallery.tag')}</span>
           </div>
           <h2 className="s-title" style={{ color: 'white' }}>
-            La vie chez <em style={{ color: 'var(--b4)' }}>Fresh Start</em>
+            {t('landing.gallery.titlePre')}<em style={{ color: 'var(--b4)' }}>{t('landing.gallery.titleEm')}</em>{t('landing.gallery.titlePost')}
           </h2>
           <p className="s-sub" style={{ color: 'rgba(255,255,255,.65)', margin: '0 auto 40px' }}>
-            Un aperçu de nos salles modernes et de notre environnement d'apprentissage.
+            {t('landing.gallery.subtitle')}
           </p>
         </div>
 
         <div className="gal-grid">
           {IMAGES.map((img, i) => (
             <div key={i} className={`gal-item${img.tall ? ' tall' : ''} reveal${img.tall ? '-l' : ` d${i}`}`}>
-              <img src={img.url} alt={img.alt} />
+              <img src={img.url} alt={items[i]?.title} />
               <div className="gal-overlay">
                 <div>
-                  <strong>{img.title}</strong>
-                  <span>{img.sub}</span>
+                  <strong>{items[i]?.title}</strong>
+                  <span>{items[i]?.sub}</span>
                 </div>
               </div>
             </div>
@@ -58,7 +47,7 @@ function Gallery() {
         <div className="gal-bottom reveal">
           <img
             src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=80"
-            alt="Fresh Start Academy - Vue d'ensemble"
+            alt="Fresh Start Academy"
           />
         </div>
       </div>

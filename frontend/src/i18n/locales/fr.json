@@ -1,4 +1,202 @@
 {
+  "landing": {
+    "nav": {
+      "home": "Accueil",
+      "services": "Services",
+      "pricing": "Tarifs",
+      "about": "À propos",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "register": "S'inscrire",
+      "subtitle": "Centre de soutien et de langues"
+    },
+    "seo": {
+      "title": "Fresh Start Academy — Centre de langues à Salé",
+      "description": "Centre linguistique et de soutien scolaire à Salé, Maroc. Allemand, Anglais, Français et soutien scolaire. Note 5/5 sur Google."
+    },
+    "hero": {
+      "subtitle": "Centre de soutien et de langues",
+      "lead": "Votre passerelle vers la maîtrise des langues et l'excellence académique à Salé, Maroc.",
+      "ctaCourses": "Nos cours",
+      "rating": "5.0 · 31+ avis 5 étoiles",
+      "badgeTitle": "Salles Modernes",
+      "badgeSub": "Apprentissage interactif"
+    },
+    "stats": {
+      "googleRating": "Note Google",
+      "reviews": "Avis 5 étoiles",
+      "languages": "Langues enseignées",
+      "satisfaction": "Satisfaction élèves"
+    },
+    "services": {
+      "tag": "Nos Formations",
+      "titlePre": "Des cours adaptés à ",
+      "titleEm": "votre",
+      "titlePost": " réussite",
+      "subtitle": "Programmes complets pour atteindre vos objectifs linguistiques et académiques.",
+      "popular": "Populaire",
+      "items": [
+        { "title": "Cours d'Allemand", "desc": "Du niveau A1 au B2. Idéal pour l'immigration, les études ou le travail en Allemagne. Préparation Goethe incluse.", "tags": ["A1–B2", "Goethe Prep", "Conversation"] },
+        { "title": "Cours d'Anglais", "desc": "Approche communicative du débutant à l'avancé. Préparation IELTS et TOEFL disponible.", "tags": ["Général", "Business", "IELTS"] },
+        { "title": "Cours de Français", "desc": "Renforcez votre français pour la réussite académique et professionnelle. Préparation DELF/DALF.", "tags": ["Tous niveaux", "DELF/DALF", "Scolaire"] },
+        { "title": "Soutien Scolaire", "desc": "Cours particuliers du primaire au lycée. Toutes les matières, en arabe ou en français.", "tags": ["Toutes matières", "Devoirs", "Examens"] },
+        { "title": "Groupe & Privés", "desc": "Sessions interactives en groupe ou cours individuels personnalisés selon votre rythme.", "tags": ["Flexible", "Rythme perso", "Suivi régulier"] },
+        { "title": "Immigration & Visa", "desc": "Cours d'allemand spéciaux pour les démarches de visa. Préparation aux tests d'intégration.", "tags": ["Goethe-Zertifikat", "Intégration", "Visa"] }
+      ]
+    },
+    "pricing": {
+      "tag": "Tarifs & Niveaux",
+      "titlePre": "Des formules pour ",
+      "titleEm": "tous les budgets",
+      "titlePost": "",
+      "subtitle": "Matériel pédagogique inclus dans toutes les formules. Contactez-nous pour un devis personnalisé.",
+      "currency": "MAD",
+      "cta": "Commencer",
+      "footnote": "* Tarifs indicatifs. Contactez-nous pour un devis personnalisé.",
+      "plans": [
+        { "lang": "🌍 Anglais / Français", "name": "Essentiel", "price": "400", "period": "/ mois · 8 séances", "features": ["2 séances / semaine", "Groupe (max 8 élèves)", "Matériel inclus", "Suivi mensuel"] },
+        { "badge": "Meilleur choix", "lang": "🇩🇪 Allemand A1–B2", "name": "Intensif", "price": "600", "period": "/ mois · 12 séances", "features": ["3 séances / semaine", "Groupe réduit (max 6)", "Matériel inclus", "Préparation Goethe", "Certificat de niveau"] },
+        { "lang": "📚 Soutien Scolaire", "name": "Privé", "price": "150", "period": "/ séance individuelle", "features": ["Cours 1-sur-1", "Horaires flexibles", "Programme sur mesure", "Toutes matières"] }
+      ]
+    },
+    "about": {
+      "tag": "À propos",
+      "titlePre": "Votre partenaire de confiance ",
+      "titleEm": "à Salé",
+      "titlePost": "",
+      "body": "Fresh Start Academy est un centre linguistique et de soutien scolaire dirigé par une femme. Notre mission : accompagner chaque élève vers son plein potentiel, dans un environnement chaleureux et bienveillant.",
+      "cta": "S'inscrire maintenant →",
+      "overlayTitle": "Fresh Start Academy",
+      "overlaySub": "Centre de soutien et de langues",
+      "points": [
+        "Professeurs expérimentés et passionnés",
+        "Programmes adaptés à tous les âges et niveaux",
+        "Petits groupes pour un suivi personnalisé",
+        "100% de satisfaction garantie"
+      ]
+    },
+    "gallery": {
+      "tag": "Notre Centre",
+      "titlePre": "La vie chez ",
+      "titleEm": "Fresh Start",
+      "titlePost": "",
+      "subtitle": "Un aperçu de nos salles modernes et de notre environnement d'apprentissage.",
+      "items": [
+        { "title": "Apprentissage en groupe", "sub": "Collaboration et entraide" },
+        { "title": "Salles Modernes", "sub": "Équipements interactifs" },
+        { "title": "Cours Particuliers", "sub": "Attention personnalisée" }
+      ]
+    },
+    "testimonials": {
+      "tag": "Témoignages",
+      "titlePre": "Ce que disent nos ",
+      "titleEm": "élèves",
+      "titlePost": "",
+      "subtitle": "Des centaines d'élèves satisfaits. Voici quelques témoignages de notre communauté.",
+      "ratingCount": "Basé sur 31 avis Google",
+      "googleVerified": "Avis Google vérifiés",
+      "ownerReply": "Réponse du propriétaire :",
+      "prev": "Témoignages précédents",
+      "next": "Témoignages suivants",
+      "page": "Page {{n}}"
+    },
+    "faq": {
+      "tag": "FAQ",
+      "titlePre": "Questions ",
+      "titleEm": "fréquentes",
+      "titlePost": "",
+      "subtitle": "Tout ce que vous devez savoir avant de commencer votre formation.",
+      "items": [
+        { "q": "Quels niveaux de langue proposez-vous ?", "a": "Nous proposons tous les niveaux, du débutant absolu (A1) jusqu'au niveau avancé (B2). Un test de niveau gratuit est disponible à l'inscription pour vous placer dans le groupe adapté." },
+        { "q": "Quelle est la durée d'un cours ?", "a": "Chaque séance dure entre 1h30 et 2h selon la formule choisie. Les cours sont organisés 2 à 3 fois par semaine pour une progression régulière et efficace." },
+        { "q": "Y a-t-il des cours pour les enfants ?", "a": "Oui ! Nous accueillons les enfants dès l'âge de 6 ans. Le soutien scolaire couvre le primaire, le collège et le lycée, avec des méthodes adaptées à chaque tranche d'âge." },
+        { "q": "Les cours d'allemand préparent-ils au visa ?", "a": "Absolument. Nos cours d'allemand sont spécialement conçus pour préparer les examens Goethe-Zertifikat (A1 à B2), requis pour la plupart des demandes de visa et de regroupement familial en Allemagne." },
+        { "q": "Comment s'inscrire ?", "a": "Remplissez le formulaire d'inscription ci-dessous, ou appelez-nous au 07 14 26 04 53. Vous pouvez aussi nous contacter sur WhatsApp. Un conseiller vous répondra dans les 24h." },
+        { "q": "Le matériel pédagogique est-il inclus ?", "a": "Oui, le matériel pédagogique (livres, exercices, supports numériques) est inclus dans toutes nos formules. Aucun achat supplémentaire n'est nécessaire." }
+      ]
+    },
+    "register": {
+      "tag": "Inscription",
+      "titlePre": "Commencez votre ",
+      "titleEm": "Fresh Start",
+      "titlePost": " aujourd'hui",
+      "body": "Remplissez le formulaire et notre équipe vous contactera dans les 24 heures pour confirmer votre inscription et répondre à vos questions.",
+      "points": [
+        "Réponse garantie en moins de 24h",
+        "Test de niveau gratuit inclus",
+        "Cours essai sans engagement",
+        "Paiement mensuel flexible"
+      ],
+      "firstName": "Prénom",
+      "firstNamePlaceholder": "Votre prénom",
+      "lastName": "Nom",
+      "lastNamePlaceholder": "Votre nom",
+      "phone": "Téléphone",
+      "phonePlaceholder": "06 XX XX XX XX",
+      "email": "Email (optionnel)",
+      "emailPlaceholder": "vous@exemple.com",
+      "course": "Cours souhaité",
+      "coursePlaceholder": "-- Choisir un cours --",
+      "courseOptions": ["Allemand (A1–B2)", "Anglais", "Français", "Soutien scolaire", "Cours particulier"],
+      "level": "Niveau actuel",
+      "levelPlaceholder": "-- Votre niveau --",
+      "levelOptions": ["Débutant (A1)", "Élémentaire (A2)", "Intermédiaire (B1)", "Supérieur (B2)", "Scolaire (primaire/collège/lycée)"],
+      "message": "Message (optionnel)",
+      "messagePlaceholder": "Vos questions ou précisions...",
+      "submit": "Envoyer ma demande d'inscription →",
+      "submitting": "Envoi en cours...",
+      "successTitle": "Demande envoyée !",
+      "successBody": "Merci ! Notre équipe vous contactera dans les 24 heures. À très bientôt chez Fresh Start Academy !",
+      "errorRequired": "Veuillez remplir au moins le prénom, le téléphone et le cours souhaité.",
+      "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+      "subjectPrefix": "Inscription - ",
+      "messageFallback": "Demande d'inscription : {{course}}. Niveau : {{level}}.",
+      "levelUnset": "non précisé"
+    },
+    "cta": {
+      "title": "Prêt pour votre Fresh Start ?",
+      "body": "Rejoignez des centaines d'élèves qui ont transformé leur avenir grâce aux langues et à l'excellence académique.",
+      "call": "Appelez-nous",
+      "directions": "Itinéraire"
+    },
+    "contact": {
+      "tag": "Contact",
+      "titlePre": "Visitez-nous ou ",
+      "titleEm": "contactez-nous",
+      "titlePost": "",
+      "subtitle": "Nous sommes à votre disposition pour répondre à toutes vos questions.",
+      "calls": "Appels",
+      "whatsappCalls": "WhatsApp & Appels",
+      "address": "Adresse",
+      "addressValue": "76, Lot Al Majid II, Hay Chmaou, Salé",
+      "email": "Email",
+      "hoursTitle": "Horaires d'ouverture",
+      "closed": "Fermé",
+      "hours": [
+        { "day": "Lundi", "time": "9h00 – 19h00" },
+        { "day": "Mardi", "time": "9h00 – 19h00" },
+        { "day": "Mercredi", "time": "9h00 – 19h00" },
+        { "day": "Jeudi", "time": "9h00 – 19h00" },
+        { "day": "Vendredi", "time": "9h00 – 19h00" },
+        { "day": "Samedi", "time": "9h00 – 17h00" },
+        { "day": "Dimanche", "time": "" }
+      ],
+      "getDirections": "Obtenir l'itinéraire",
+      "findOnMaps": "Trouver sur Maps"
+    },
+    "footer": {
+      "desc": "Centre linguistique et de soutien scolaire à Salé, Maroc. Dirigé par une femme, pour l'excellence de tous.",
+      "navTitle": "Navigation",
+      "contactTitle": "Contact",
+      "rights": "© {{year}} Fresh Start Academy. Tous droits réservés.",
+      "tagline": "Centre de soutien et de langues — Salé, Maroc",
+      "whatsappTitle": "Contactez-nous sur WhatsApp",
+      "scrollTop": "Retour en haut",
+      "callsLabel": "(Appels)",
+      "whatsappLabel": "(WhatsApp)",
+      "addressShort": "Salé, Maroc"
+    }
+  },
   "common": {
     "home": "Accueil",
     "courses": "Cours",

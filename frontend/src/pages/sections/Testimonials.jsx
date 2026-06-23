@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+// Avis Google authentiques — conservés dans leur langue d'origine (français).
 const REVIEWS = [
   { initial: 'F', name: 'Faty', time: 'Il y a 7 mois', text: 'Le meilleur centre ! Je recommande vivement à tous.' },
   { initial: 'H', name: 'Hamza Nasir', time: 'Il y a 7 mois', text: 'Endroit magnifique, très bien organisé. Enseignement de haute qualité.' },
@@ -12,6 +14,7 @@ const REVIEWS = [
 const PER_PAGE = 3;
 
 function Testimonials() {
+  const { t } = useTranslation();
   const [page, setPage] = useState(0);
   const maxPage = Math.ceil(REVIEWS.length / PER_PAGE) - 1;
 
@@ -22,11 +25,13 @@ function Testimonials() {
       <div className="s-inner">
         <div className="center reveal">
           <div className="s-tag" style={{ justifyContent: 'center' }}>
-            ⭐ <span>Témoignages</span>
+            ⭐ <span>{t('landing.testimonials.tag')}</span>
           </div>
-          <h2 className="s-title">Ce que disent nos <em>élèves</em></h2>
+          <h2 className="s-title">
+            {t('landing.testimonials.titlePre')}<em>{t('landing.testimonials.titleEm')}</em>{t('landing.testimonials.titlePost')}
+          </h2>
           <p className="s-sub" style={{ margin: '0 auto 32px' }}>
-            Des centaines d'élèves satisfaits. Voici quelques témoignages de notre communauté.
+            {t('landing.testimonials.subtitle')}
           </p>
         </div>
 
@@ -35,7 +40,7 @@ function Testimonials() {
             <div className="rating-big">5.0</div>
             <div className="r-details">
               <div className="r-stars">⭐⭐⭐⭐⭐</div>
-              <div className="r-count">Basé sur 31 avis Google</div>
+              <div className="r-count">{t('landing.testimonials.ratingCount')}</div>
             </div>
           </div>
           <div className="g-badge">
@@ -45,7 +50,7 @@ function Testimonials() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05" />
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            <span>Avis Google vérifiés</span>
+            <span>{t('landing.testimonials.googleVerified')}</span>
           </div>
         </div>
 
@@ -64,7 +69,7 @@ function Testimonials() {
                 <p className="t-txt">"{r.text}"</p>
                 {r.reply && (
                   <div className="o-reply">
-                    <strong>Réponse du propriétaire :</strong>
+                    <strong>{t('landing.testimonials.ownerReply')}</strong>
                     {r.reply}
                   </div>
                 )}
@@ -73,17 +78,24 @@ function Testimonials() {
           </div>
 
           <div className="car-controls">
-            <button className="car-btn" onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0}>
+            <button className="car-btn" onClick={() => setPage(p => Math.max(0, p - 1))} disabled={page === 0} aria-label={t('landing.testimonials.prev')}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
             <div className="car-dots">
               {Array.from({ length: maxPage + 1 }).map((_, i) => (
-                <div key={i} className={`c-dot${i === page ? ' active' : ''}`} onClick={() => setPage(i)} />
+                <button
+                  key={i}
+                  type="button"
+                  className={`c-dot${i === page ? ' active' : ''}`}
+                  onClick={() => setPage(i)}
+                  aria-label={t('landing.testimonials.page', { n: i + 1 })}
+                  aria-current={i === page}
+                />
               ))}
             </div>
-            <button className="car-btn" onClick={() => setPage(p => Math.min(maxPage, p + 1))} disabled={page === maxPage}>
+            <button className="car-btn" onClick={() => setPage(p => Math.min(maxPage, p + 1))} disabled={page === maxPage} aria-label={t('landing.testimonials.next')}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <polyline points="9 18 15 12 9 6" />
               </svg>

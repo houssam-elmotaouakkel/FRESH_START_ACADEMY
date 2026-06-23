@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-const NAV_LINKS = [
-  { id: 'services', label: 'Services' },
-  { id: 'pricing', label: 'Tarifs' },
-  { id: 'about', label: 'À propos' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'contact', label: 'Contact' },
-];
+import { useTranslation } from 'react-i18next';
+import { LANGUAGES } from '../../i18n';
 
 function Header() {
+  const { t, i18n } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const isHome = location.pathname === '/';
+
+  const NAV_LINKS = [
+    { id: 'services', label: t('landing.nav.services') },
+    { id: 'pricing', label: t('landing.nav.pricing') },
+    { id: 'about', label: t('landing.nav.about') },
+    { id: 'faq', label: t('landing.nav.faq') },
+    { id: 'contact', label: t('landing.nav.contact') },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -33,6 +36,22 @@ function Header() {
     }
   };
 
+  const LangToggle = () => (
+    <div className="lang-toggle">
+      {LANGUAGES.map((l) => (
+        <button
+          key={l.code}
+          type="button"
+          className={`lang-btn${i18n.language?.startsWith(l.code) ? ' active' : ''}`}
+          onClick={() => i18n.changeLanguage(l.code)}
+          aria-label={l.label}
+        >
+          {l.code.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <>
       <nav className={`fsa-nav${scrolled ? ' scrolled' : ''}`}>
@@ -46,7 +65,7 @@ function Header() {
             </div>
             <div>
               <strong>Fresh Start Academy</strong>
-              <span>Centre de soutien et de langues</span>
+              <span>{t('landing.nav.subtitle')}</span>
             </div>
           </a>
 
@@ -54,8 +73,9 @@ function Header() {
             {NAV_LINKS.map((l) => (
               <button key={l.id} onClick={() => goTo(l.id)}>{l.label}</button>
             ))}
+            <LangToggle />
             <button className="btn-nav" onClick={() => goTo('register')}>
-              S'inscrire
+              {t('landing.nav.register')}
             </button>
           </div>
 
@@ -77,8 +97,11 @@ function Header() {
             <button key={l.id} onClick={() => goTo(l.id)}>{l.label}</button>
           ))}
           <button className="btn-nav" style={{ marginTop: '8px' }} onClick={() => goTo('register')}>
-            S'inscrire
+            {t('landing.nav.register')}
           </button>
+          <div style={{ marginTop: '12px' }}>
+            <LangToggle />
+          </div>
         </div>
       )}
     </>

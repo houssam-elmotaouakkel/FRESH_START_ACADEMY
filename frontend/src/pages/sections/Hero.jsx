@@ -1,4 +1,7 @@
+import { useTranslation } from 'react-i18next';
+
 function Hero() {
+  const { t } = useTranslation();
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
   return (
@@ -10,16 +13,14 @@ function Hero() {
         <div className="hero-content reveal">
           <h1 className="hero-title">Fresh Start</h1>
           <span className="hero-accent">Academy</span>
-          <p className="hero-ar">Centre de soutien et de langues</p>
-          <p className="hero-sub">
-            Votre passerelle vers la maîtrise des langues et l'excellence académique à Salé, Maroc.
-          </p>
+          <p className="hero-ar">{t('landing.hero.subtitle')}</p>
+          <p className="hero-sub">{t('landing.hero.lead')}</p>
           <div className="hero-acts">
             <button onClick={() => scrollTo('services')} className="btn-white">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-              Nos cours
+              {t('landing.hero.ctaCourses')}
             </button>
             <a href="tel:0714260453" className="btn-ghost">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
@@ -29,18 +30,18 @@ function Hero() {
             </a>
           </div>
           <div className="hero-rating">
-            ⭐⭐⭐⭐⭐ &nbsp;<strong>5.0</strong>&nbsp;·&nbsp;31+ avis 5 étoiles
+            ⭐⭐⭐⭐⭐ &nbsp;{t('landing.hero.rating')}
           </div>
         </div>
 
         <div className="hero-img-panel reveal-r">
           <img
             src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=960&q=80"
-            alt="Fresh Start Academy - Salle de cours"
+            alt="Fresh Start Academy"
           />
           <div className="hero-img-badge">
-            <strong>Salles Modernes</strong>
-            <span>Apprentissage interactif</span>
+            <strong>{t('landing.hero.badgeTitle')}</strong>
+            <span>{t('landing.hero.badgeSub')}</span>
           </div>
         </div>
       </div>

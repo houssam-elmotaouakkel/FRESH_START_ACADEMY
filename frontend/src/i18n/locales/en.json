@@ -1,4 +1,202 @@
 {
+  "landing": {
+    "nav": {
+      "home": "Home",
+      "services": "Services",
+      "pricing": "Pricing",
+      "about": "About",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "register": "Register",
+      "subtitle": "Language & tutoring center"
+    },
+    "seo": {
+      "title": "Fresh Start Academy — Language Center in Salé",
+      "description": "Language and academic support center in Salé, Morocco. German, English, French and school tutoring. Rated 5/5 on Google."
+    },
+    "hero": {
+      "subtitle": "Language & tutoring center",
+      "lead": "Your gateway to language mastery and academic excellence in Salé, Morocco.",
+      "ctaCourses": "Our courses",
+      "rating": "5.0 · 31+ five-star reviews",
+      "badgeTitle": "Modern Classrooms",
+      "badgeSub": "Interactive learning"
+    },
+    "stats": {
+      "googleRating": "Google rating",
+      "reviews": "5-star reviews",
+      "languages": "Languages taught",
+      "satisfaction": "Student satisfaction"
+    },
+    "services": {
+      "tag": "Our Programs",
+      "titlePre": "Courses built for ",
+      "titleEm": "your",
+      "titlePost": " success",
+      "subtitle": "Comprehensive programs to reach your language and academic goals.",
+      "popular": "Popular",
+      "items": [
+        { "title": "German Courses", "desc": "From A1 to B2. Ideal for immigration, studies or work in Germany. Goethe preparation included.", "tags": ["A1–B2", "Goethe Prep", "Conversation"] },
+        { "title": "English Courses", "desc": "Communicative approach from beginner to advanced. IELTS and TOEFL preparation available.", "tags": ["General", "Business", "IELTS"] },
+        { "title": "French Courses", "desc": "Strengthen your French for academic and professional success. DELF/DALF preparation.", "tags": ["All levels", "DELF/DALF", "School"] },
+        { "title": "Academic Support", "desc": "Private tutoring from primary to high school. All subjects, in Arabic or French.", "tags": ["All subjects", "Homework", "Exams"] },
+        { "title": "Group & Private", "desc": "Interactive group sessions or personalized one-to-one lessons at your own pace.", "tags": ["Flexible", "Your pace", "Regular follow-up"] },
+        { "title": "Immigration & Visa", "desc": "Special German courses for visa procedures. Integration test preparation.", "tags": ["Goethe-Zertifikat", "Integration", "Visa"] }
+      ]
+    },
+    "pricing": {
+      "tag": "Pricing & Levels",
+      "titlePre": "Plans for ",
+      "titleEm": "every budget",
+      "titlePost": "",
+      "subtitle": "Learning materials included in all plans. Contact us for a custom quote.",
+      "currency": "MAD",
+      "cta": "Get started",
+      "footnote": "* Indicative prices. Contact us for a custom quote.",
+      "plans": [
+        { "lang": "🌍 English / French", "name": "Essential", "price": "400", "period": "/ month · 8 sessions", "features": ["2 sessions / week", "Group (max 8 students)", "Materials included", "Monthly follow-up"] },
+        { "badge": "Best choice", "lang": "🇩🇪 German A1–B2", "name": "Intensive", "price": "600", "period": "/ month · 12 sessions", "features": ["3 sessions / week", "Small group (max 6)", "Materials included", "Goethe preparation", "Level certificate"] },
+        { "lang": "📚 Academic Support", "name": "Private", "price": "150", "period": "/ individual session", "features": ["1-on-1 lessons", "Flexible schedule", "Tailored program", "All subjects"] }
+      ]
+    },
+    "about": {
+      "tag": "About",
+      "titlePre": "Your trusted partner ",
+      "titleEm": "in Salé",
+      "titlePost": "",
+      "body": "Fresh Start Academy is a women-led language and academic support center. Our mission: guide every student toward their full potential in a warm, caring environment.",
+      "cta": "Register now →",
+      "overlayTitle": "Fresh Start Academy",
+      "overlaySub": "Language & tutoring center",
+      "points": [
+        "Experienced, passionate teachers",
+        "Programs adapted to all ages and levels",
+        "Small groups for personalized support",
+        "100% satisfaction guaranteed"
+      ]
+    },
+    "gallery": {
+      "tag": "Our Center",
+      "titlePre": "Life at ",
+      "titleEm": "Fresh Start",
+      "titlePost": "",
+      "subtitle": "A glimpse of our modern classrooms and learning environment.",
+      "items": [
+        { "title": "Group Learning", "sub": "Collaboration and mutual support" },
+        { "title": "Modern Classrooms", "sub": "Interactive equipment" },
+        { "title": "Private Lessons", "sub": "Personalized attention" }
+      ]
+    },
+    "testimonials": {
+      "tag": "Testimonials",
+      "titlePre": "What our ",
+      "titleEm": "students",
+      "titlePost": " say",
+      "subtitle": "Hundreds of satisfied students. Here are a few testimonials from our community.",
+      "ratingCount": "Based on 31 Google reviews",
+      "googleVerified": "Verified Google reviews",
+      "ownerReply": "Owner's response:",
+      "prev": "Previous testimonials",
+      "next": "Next testimonials",
+      "page": "Page {{n}}"
+    },
+    "faq": {
+      "tag": "FAQ",
+      "titlePre": "Frequently asked ",
+      "titleEm": "questions",
+      "titlePost": "",
+      "subtitle": "Everything you need to know before starting your training.",
+      "items": [
+        { "q": "What language levels do you offer?", "a": "We offer all levels, from absolute beginner (A1) to advanced (B2). A free placement test is available at registration to place you in the right group." },
+        { "q": "How long is a class?", "a": "Each session lasts between 1.5 and 2 hours depending on the chosen plan. Classes are held 2 to 3 times a week for steady, effective progress." },
+        { "q": "Are there classes for children?", "a": "Yes! We welcome children from age 6. Academic support covers primary, middle and high school, with methods adapted to each age group." },
+        { "q": "Do German courses prepare for the visa?", "a": "Absolutely. Our German courses are specially designed to prepare for the Goethe-Zertifikat exams (A1 to B2), required for most visa and family reunification applications in Germany." },
+        { "q": "How do I register?", "a": "Fill in the registration form below, or call us at 07 14 26 04 53. You can also reach us on WhatsApp. An advisor will reply within 24 hours." },
+        { "q": "Are learning materials included?", "a": "Yes, learning materials (books, exercises, digital resources) are included in all our plans. No extra purchase is needed." }
+      ]
+    },
+    "register": {
+      "tag": "Registration",
+      "titlePre": "Start your ",
+      "titleEm": "Fresh Start",
+      "titlePost": " today",
+      "body": "Fill in the form and our team will contact you within 24 hours to confirm your registration and answer your questions.",
+      "points": [
+        "Guaranteed reply within 24 hours",
+        "Free placement test included",
+        "Trial class with no commitment",
+        "Flexible monthly payment"
+      ],
+      "firstName": "First name",
+      "firstNamePlaceholder": "Your first name",
+      "lastName": "Last name",
+      "lastNamePlaceholder": "Your last name",
+      "phone": "Phone",
+      "phonePlaceholder": "06 XX XX XX XX",
+      "email": "Email (optional)",
+      "emailPlaceholder": "you@example.com",
+      "course": "Desired course",
+      "coursePlaceholder": "-- Choose a course --",
+      "courseOptions": ["German (A1–B2)", "English", "French", "Academic support", "Private lesson"],
+      "level": "Current level",
+      "levelPlaceholder": "-- Your level --",
+      "levelOptions": ["Beginner (A1)", "Elementary (A2)", "Intermediate (B1)", "Upper (B2)", "School (primary/middle/high)"],
+      "message": "Message (optional)",
+      "messagePlaceholder": "Your questions or details...",
+      "submit": "Send my registration request →",
+      "submitting": "Sending...",
+      "successTitle": "Request sent!",
+      "successBody": "Thank you! Our team will contact you within 24 hours. See you soon at Fresh Start Academy!",
+      "errorRequired": "Please fill in at least your first name, phone and desired course.",
+      "errorGeneric": "An error occurred. Please try again.",
+      "subjectPrefix": "Registration - ",
+      "messageFallback": "Registration request: {{course}}. Level: {{level}}.",
+      "levelUnset": "not specified"
+    },
+    "cta": {
+      "title": "Ready for your Fresh Start?",
+      "body": "Join hundreds of students who have transformed their future through languages and academic excellence.",
+      "call": "Call us",
+      "directions": "Directions"
+    },
+    "contact": {
+      "tag": "Contact",
+      "titlePre": "Visit us or ",
+      "titleEm": "contact us",
+      "titlePost": "",
+      "subtitle": "We're here to answer all your questions.",
+      "calls": "Calls",
+      "whatsappCalls": "WhatsApp & Calls",
+      "address": "Address",
+      "addressValue": "76, Lot Al Majid II, Hay Chmaou, Salé",
+      "email": "Email",
+      "hoursTitle": "Opening hours",
+      "closed": "Closed",
+      "hours": [
+        { "day": "Monday", "time": "9:00 AM – 7:00 PM" },
+        { "day": "Tuesday", "time": "9:00 AM – 7:00 PM" },
+        { "day": "Wednesday", "time": "9:00 AM – 7:00 PM" },
+        { "day": "Thursday", "time": "9:00 AM – 7:00 PM" },
+        { "day": "Friday", "time": "9:00 AM – 7:00 PM" },
+        { "day": "Saturday", "time": "9:00 AM – 5:00 PM" },
+        { "day": "Sunday", "time": "" }
+      ],
+      "getDirections": "Get directions",
+      "findOnMaps": "Find on Maps"
+    },
+    "footer": {
+      "desc": "Language and academic support center in Salé, Morocco. Women-led, for everyone's excellence.",
+      "navTitle": "Navigation",
+      "contactTitle": "Contact",
+      "rights": "© {{year}} Fresh Start Academy. All rights reserved.",
+      "tagline": "Language & tutoring center — Salé, Morocco",
+      "whatsappTitle": "Contact us on WhatsApp",
+      "scrollTop": "Back to top",
+      "callsLabel": "(Calls)",
+      "whatsappLabel": "(WhatsApp)",
+      "addressShort": "Salé, Morocco"
+    }
+  },
   "common": {
     "home": "Home",
     "courses": "Courses",

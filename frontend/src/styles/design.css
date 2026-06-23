@@ -1,8 +1,6 @@
 /* ── DESIGN SYSTEM — Fresh Start Academy ── */
 /* Extrait du design Standalone et adapté pour React */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Amiri:wght@400;700&display=swap');
-
 :root {
   --b9: #0f1e5c;
   --b8: #1a3080;
@@ -17,6 +15,15 @@
   --td: #0f172a;
   --tm: #334155;
   --ts: #64748b;
+}
+
+/* FOCUS VISIBLE — accessibilité clavier */
+a:focus-visible,
+button:focus-visible,
+.c-dot:focus-visible {
+  outline: 3px solid var(--b5);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* REVEAL ANIMATIONS */
@@ -83,7 +90,7 @@
 }
 .nav-logo-icon svg { width: 22px; height: 22px; fill: white; }
 .nav-logo strong { font-size: 15px; font-weight: 700; color: var(--b9); display: block; line-height: 1.2; }
-.nav-logo span { font-family: 'Amiri', serif; font-size: 11px; color: var(--b6); direction: rtl; }
+.nav-logo span { font-size: 11px; color: var(--b6); }
 .nav-links { display: flex; align-items: center; gap: 24px; }
 .nav-links a, .nav-links button {
   text-decoration: none;
@@ -233,7 +240,7 @@ h1.hero-title {
   display: block;
   margin-bottom: 12px;
 }
-.hero-ar { font-family: 'Amiri', serif; font-size: 22px; color: rgba(255,255,255,0.75); direction: rtl; margin-bottom: 18px; }
+.hero-ar { font-size: 22px; color: rgba(255,255,255,0.85); margin-bottom: 18px; }
 .hero-sub { font-size: 17px; color: rgba(255,255,255,0.82); line-height: 1.65; max-width: 500px; margin-bottom: 36px; }
 .hero-acts { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .btn-white {
@@ -472,7 +479,7 @@ section { padding: 96px 48px; }
   padding: 26px;
 }
 .about-overlay strong { font-size: 19px; font-weight: 800; color: white; display: block; margin-bottom: 3px; }
-.about-overlay span { font-family: 'Amiri', serif; font-size: 15px; color: rgba(255,255,255,0.75); direction: rtl; }
+.about-overlay span { font-size: 15px; color: rgba(255,255,255,0.85); }
 .about-stripe { position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--b4), var(--b9)); }
 .about-list { list-style: none; display: flex; flex-direction: column; gap: 13px; margin-bottom: 30px; }
 .about-list li { display: flex; align-items: flex-start; gap: 11px; font-size: 15px; color: var(--tm); line-height: 1.55; }
@@ -577,7 +584,7 @@ section { padding: 96px 48px; }
 .car-btn:disabled { opacity: 0.4; cursor: default; }
 .car-btn svg { width: 16px; height: 16px; stroke: var(--b6); fill: none; stroke-width: 2; }
 .car-dots { display: flex; gap: 7px; }
-.c-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--b1); cursor: pointer; transition: all 0.2s; }
+.c-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--b1); cursor: pointer; transition: all 0.2s; border: none; padding: 0; }
 .c-dot.active { background: var(--b6); width: 22px; border-radius: 4px; }
 
 /* FAQ */
@@ -585,7 +592,7 @@ section { padding: 96px 48px; }
 .faq-list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 11px; }
 .faq-item { border: 1.5px solid var(--b1); border-radius: 14px; overflow: hidden; transition: border-color 0.2s; }
 .faq-item.open { border-color: var(--b4); }
-.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; cursor: pointer; gap: 14px; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; cursor: pointer; gap: 14px; width: 100%; background: none; border: none; font-family: inherit; text-align: left; }
 .faq-q h4 { font-size: 15px; font-weight: 600; color: var(--td); }
 .faq-arr { width: 28px; height: 28px; border-radius: 8px; background: var(--b0); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.3s, background 0.2s; }
 .faq-item.open .faq-arr { transform: rotate(180deg); background: var(--b6); }
@@ -830,4 +837,33 @@ section { padding: 96px 48px; }
   .foot-bot { flex-direction: column; gap: 8px; text-align: center; }
   .nav-inner { padding: 0 20px; }
   .rating-banner { flex-direction: column; gap: 12px; }
+}
+
+/* ─────────────────────────────────────────────
+   COMPLÉMENTS — responsive, contraste, accessibilité
+   ───────────────────────────────────────────── */
+
+/* Palier tablette : 2 colonnes au lieu du saut 3 → 1 */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .srv-grid,
+  .price-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Texte secondaire : contraste renforcé (était #64748b) */
+:root { --ts: #51617a; }
+.foot-bot { color: rgba(255, 255, 255, 0.7); }
+
+/* Cibles tactiles agrandies (~32px) sans changer le visuel */
+.c-dot { position: relative; }
+.c-dot::before { content: ''; position: absolute; inset: -12px; }
+.hamburger { padding: 10px; }
+
+/* Respect de la préférence système « réduire les animations » */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal, .reveal-l, .reveal-r { opacity: 1 !important; transform: none !important; }
 }

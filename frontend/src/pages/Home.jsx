@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import SEO from '../components/common/SEO';
 import Hero from './sections/Hero';
 import Stats from './sections/Stats';
@@ -13,6 +14,8 @@ import CTA from './sections/CTA';
 import Contact from './sections/Contact';
 
 function Home() {
+  const { t } = useTranslation();
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -38,8 +41,8 @@ function Home() {
   return (
     <>
       <SEO
-        title="Fresh Start Academy — Centre de langues à Salé"
-        description="Centre linguistique et de soutien scolaire à Salé, Maroc. Allemand, Anglais, Français et soutien scolaire. Note 5/5 sur Google."
+        title={t('landing.seo.title')}
+        description={t('landing.seo.description')}
         path="/"
       />
       <Hero />

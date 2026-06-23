@@ -1,16 +1,18 @@
-const HOURS = [
-  { day: 'Lundi', time: '9h00 – 19h00' },
-  { day: 'Mardi', time: '9h00 – 19h00' },
-  { day: 'Mercredi', time: '9h00 – 19h00' },
-  { day: 'Jeudi', time: '9h00 – 19h00' },
-  { day: 'Vendredi', time: '9h00 – 19h00' },
-  { day: 'Samedi', time: '9h00 – 17h00' },
-  { day: 'Dimanche', closed: true },
-];
+import { useTranslation } from 'react-i18next';
 
 const MAPS_URL = 'https://maps.app.goo.gl/bxcavUfVyUPEpcDt7';
 
 function Contact() {
+  const { t } = useTranslation();
+  const hours = t('landing.contact.hours', { returnObjects: true });
+
+  const cards = [
+    { label: t('landing.contact.calls'), value: '07 14 26 04 53', href: 'tel:0714260453', type: 'phone' },
+    { label: t('landing.contact.whatsappCalls'), value: '07 15 81 16 51', href: 'tel:0715811651', type: 'phone' },
+    { label: t('landing.contact.address'), value: t('landing.contact.addressValue'), type: 'pin' },
+    { label: t('landing.contact.email'), value: 'Freshstartacademy12@gmail.com', href: 'mailto:Freshstartacademy12@gmail.com', type: 'mail' },
+  ];
+
   return (
     <section id="contact">
       <div className="s-inner">
@@ -20,23 +22,20 @@ function Contact() {
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            <span>Contact</span>
+            <span>{t('landing.contact.tag')}</span>
           </div>
-          <h2 className="s-title reveal">Visitez-nous ou <em>contactez-nous</em></h2>
+          <h2 className="s-title reveal">
+            {t('landing.contact.titlePre')}<em>{t('landing.contact.titleEm')}</em>{t('landing.contact.titlePost')}
+          </h2>
           <p className="s-sub reveal" style={{ margin: '0 auto 48px' }}>
-            Nous sommes à votre disposition pour répondre à toutes vos questions.
+            {t('landing.contact.subtitle')}
           </p>
         </div>
 
         <div className="contact-grid">
           <div>
             <div className="c-cards">
-              {[
-                { label: 'Appels', value: '07 14 26 04 53', href: 'tel:0714260453', type: 'phone' },
-                { label: 'WhatsApp & Appels', value: '07 15 81 16 51', href: 'tel:0715811651', type: 'phone' },
-                { label: 'Adresse', value: '76, Lot Al Majid II, Hay Chmaou, Salé', type: 'pin' },
-                { label: 'Email', value: 'Freshstartacademy12@gmail.com', href: 'mailto:Freshstartacademy12@gmail.com', type: 'mail' },
-              ].map((c, i) => (
+              {cards.map((c, i) => (
                 <div key={i} className={`c-card reveal d${i}`}>
                   <div className="c-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -59,12 +58,12 @@ function Contact() {
                   <circle cx="12" cy="12" r="10" />
                   <polyline points="12 6 12 12 16 14" />
                 </svg>
-                <h4>Horaires d'ouverture</h4>
+                <h4>{t('landing.contact.hoursTitle')}</h4>
               </div>
-              {HOURS.map((h, i) => (
+              {hours.map((h, i) => (
                 <div key={i} className="hrs-row">
                   <span className="day">{h.day}</span>
-                  {h.closed ? <span className="closed">Fermé</span> : <span className="time">{h.time}</span>}
+                  {h.time ? <span className="time">{h.time}</span> : <span className="closed">{t('landing.contact.closed')}</span>}
                 </div>
               ))}
             </div>
@@ -77,7 +76,7 @@ function Contact() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Fresh Start Academy - Salé, Maroc"
+                title="Fresh Start Academy"
               />
             </div>
             <div className="map-acts">
@@ -86,14 +85,14 @@ function Contact() {
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
-                Obtenir l'itinéraire
+                {t('landing.contact.getDirections')}
               </a>
               <a href={MAPS_URL} target="_blank" rel="noopener noreferrer" className="map-btn map-btn-s">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="11" cy="11" r="8" />
                   <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                Trouver sur Maps
+                {t('landing.contact.findOnMaps')}
               </a>
             </div>
           </div>
