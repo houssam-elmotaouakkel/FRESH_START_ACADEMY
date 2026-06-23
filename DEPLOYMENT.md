@@ -21,15 +21,14 @@ Architecture déployée :
    sélectionner ce repo. Render lit automatiquement `render.yaml`.
 3. Renseigner les variables marquées secrètes (onglet **Environment**) :
 
-   | Variable        | Valeur                                                        |
-   | --------------- | ------------------------------------------------------------- |
-   | `CORS_ORIGIN`   | URL exacte du frontend Vercel (ex. `https://xxx.vercel.app`)  |
-   | `SMTP_USER`     | Adresse Gmail expéditrice                                      |
-   | `SMTP_PASS`     | **App Password** Gmail (16 caractères, pas le vrai mot de passe) |
-   | `EMAIL_FROM`    | `Fresh Start Academy <ton-email@gmail.com>`                   |
-   | `CONTACT_EMAIL` | Adresse qui reçoit les messages de contact                    |
+   | Variable         | Valeur                                                        |
+   | ---------------- | ------------------------------------------------------------- |
+   | `CORS_ORIGIN`    | URL exacte du frontend Vercel (ex. `https://xxx.vercel.app`)  |
+   | `RESEND_API_KEY` | Clé API créée sur [resend.com](https://resend.com)            |
+   | `EMAIL_FROM`     | `Fresh Start Academy <onboarding@resend.dev>` (ou une adresse sur un domaine vérifié dans Resend) |
+   | `CONTACT_EMAIL`  | Adresse qui reçoit les messages de contact                    |
 
-   `NODE_ENV`, `SMTP_HOST`, `SMTP_PORT` sont déjà fixés par le blueprint.
+   `NODE_ENV` est déjà fixé par le blueprint.
 
 4. Déployer. L'API sera accessible sur `https://fresh-start-academy-api.onrender.com`.
    Vérifier : `GET /api/health` doit répondre `{"success":true,...}`.
@@ -37,9 +36,19 @@ Architecture déployée :
 > ⚠️ **Cold start (plan free)** : le service s'endort après ~15 min d'inactivité ;
 > la 1ʳᵉ requête après réveil prend ~30-50 s. Normal sur le tier gratuit.
 
-### Gmail — créer un App Password
-Compte Google → Sécurité → Validation en 2 étapes (activée) → **Mots de passe
-des applications** → générer. Coller le résultat dans `SMTP_PASS`.
+> ℹ️ **Pourquoi Resend et pas Gmail/SMTP ?** Les hébergeurs gratuits (Render,
+> Railway, Heroku…) bloquent ou dégradent très souvent les connexions SMTP
+> sortantes brutes vers Gmail (port 587/465), causant des `Connection timeout`
+> côté serveur. Resend envoie par appel HTTPS (`api.resend.com`), ce qui
+> contourne entièrement ce problème.
+
+### Resend — créer la clé API
+[resend.com](https://resend.com) → créer un compte (gratuit, 100 emails/jour) →
+**API Keys** → créer une clé → coller dans `RESEND_API_KEY`. Sans domaine
+vérifié, l'expéditeur doit rester `onboarding@resend.dev` (les emails arrivent
+bien sur `CONTACT_EMAIL`). Pour un expéditeur `@freshstartacademy.ma`, ajouter
+le domaine dans Resend → **Domains** et configurer les enregistrements DNS
+fournis.
 
 ---
 

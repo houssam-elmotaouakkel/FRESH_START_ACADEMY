@@ -8,7 +8,7 @@ const POINTS = [
   'Paiement mensuel flexible',
 ];
 
-const INITIAL = { firstName: '', lastName: '', phone: '', course: '', level: '', message: '' };
+const INITIAL = { firstName: '', lastName: '', email: '', phone: '', course: '', level: '', message: '' };
 
 function Register() {
   const [form, setForm] = useState(INITIAL);
@@ -27,7 +27,7 @@ function Register() {
     try {
       await contactService.sendMessage({
         name: `${form.firstName} ${form.lastName}`.trim(),
-        email: 'inscription@freshstartacademy.ma',
+        email: form.email.trim() || 'inscription@freshstartacademy.ma',
         phone: form.phone,
         subject: `Inscription - ${form.course}${form.level ? ` (${form.level})` : ''}`,
         message: form.message || `Demande d'inscription : ${form.course}. Niveau : ${form.level || 'non précisé'}.`,
@@ -89,6 +89,10 @@ function Register() {
               <div className="form-g">
                 <label>Téléphone</label>
                 <input type="tel" placeholder="06 XX XX XX XX" value={form.phone} onChange={set('phone')} />
+              </div>
+              <div className="form-g">
+                <label>Email (optionnel)</label>
+                <input type="email" placeholder="vous@exemple.com" value={form.email} onChange={set('email')} />
               </div>
               <div className="form-g">
                 <label>Cours souhaité</label>
